@@ -1,0 +1,24 @@
+{
+  "name": "price-calculator",
+  "version": "1.0.0",
+  "description": "Phoenix Experiment Pricing Calculator for ATMOS Space Cargo microgravity missions",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "deploy": "echo 'Deploy to GitHub Pages'"
+  },
+  "keywords": [
+    "space",
+    "atmos",
+    "pricing",
+    "calculator",
+    "phoenix",
+    "microgravity"
+  ],
+  "author": "ATMOS Space Cargo GmbH",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/price-calculator.git"
+  }
+}

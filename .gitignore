@@ -1,0 +1,15 @@
+# Ignore local development files
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+.env
+.env.local
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cache/
+dist/
+build/
