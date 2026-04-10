@@ -619,12 +619,12 @@ function generateMissionOrderFile() {
     // LEFT — ATMOS
     font('bold', 9, [5, 15, 50]);    at('Atmos Space Cargo GmbH:', L, cy);  cy += 5;
     font('italic', 8.5, [90, 90, 90]); at('Mission Manager:', L, cy);        cy += 4.5;
-    font('bold', 9, [40, 40, 40]);     at('Guillaume Dieppedalle', L, cy);   cy += 4.5;
+    font('bold', 9, [40, 40, 40]);     at('Juliana Merege', L, cy);          cy += 4.5;
     font('normal', 8.5, [80, 80, 80]);
     at('Im Gewerbegebiet 3-5', L, cy);                                        cy += 4;
     at('77839 Lichtenau, Germany', L, cy);                                    cy += 4;
-    at('guillaume.dieppedalle@atmos-space-cargo.com', L, cy);                 cy += 4;
-    at('+49 7227 9484-0', L, cy);
+    at('juliana.merege@atmos-space-cargo.com', L, cy);                        cy += 4;
+    at('+33 6 09 13 50 25', L, cy);
     const yAfterLeft = cy + 6;
 
     cy = ySave;
