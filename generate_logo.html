@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head><title>Logo Generator</title></head>
+<body>
+<canvas id="c" style="display:none"></canvas>
+<p id="msg" style="font-family:sans-serif;padding:20px">Generating logo…</p>
+<script>
+const W = 640, H = 160;
+const canvas = document.getElementById('c');
+canvas.width = W; canvas.height = H;
+const ctx = canvas.getContext('2d');
+
+const img = new Image();
+img.onload = () => {
+    // ── dark navy background pill ──────────────────────────────────
+    ctx.fillStyle = '#05081f';
+    roundRect(ctx, 0, 0, W, H, 22);
+    ctx.fill();
+
+    // ── border gradient ───────────────────────────────────────────
+    const border = ctx.createLinearGradient(0, 0, W, H);
+    border.addColorStop(0, '#1a3a8f');
+    border.addColorStop(1, '#00d4ff');
+    ctx.strokeStyle = border;
+    ctx.lineWidth = 2;
+    roundRect(ctx, 1, 1, W - 2, H - 2, 21);
+    ctx.stroke();
+
+    // ── capsule image (circular crop, left side) ──────────────────
+    const size = 120;
+    const cx = 80, cy = H / 2;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+    ctx.clip();
+
+    // source: center of the capsule image
+    const sx = img.width * 0.3, sy = img.height * 0.1;
+    const sw = img.width * 0.5, sh = img.height * 0.8;
+    ctx.drawImage(img, sx, sy, sw, sh, cx - size/2, cy - size/2, size, size);
+    ctx.restore();
+
+    // ── blue tint overlay on the circle ───────────────────────────
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.fillStyle = 'rgba(0, 60, 160, 0.45)';
+    ctx.fillRect(cx - size/2, cy - size/2, size, size);
+    ctx.restore();
+
+    // ── circle ring ───────────────────────────────────────────────
+    ctx.beginPath();
+    ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+    ctx.strokeStyle = '#1a6fff';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // orbit arc ───────────────────────────────────────────────────
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-0.3);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, size / 2 + 14, 10, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(0, 180, 255, 0.5)';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([5, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // capsule dot on orbit ────────────────────────────────────────
+    ctx.beginPath();
+    ctx.arc(cx + size/2 + 12, cy - 8, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#00d4ff';
+    ctx.fill();
+
+    // ── vertical divider ─────────────────────────────────────────
+    const divX = 155;
+    ctx.beginPath();
+    ctx.moveTo(divX, 22); ctx.lineTo(divX, H - 22);
+    const divGrad = ctx.createLinearGradient(0, 22, 0, H - 22);
+    divGrad.addColorStop(0, 'transparent');
+    divGrad.addColorStop(0.5, '#1a6fff');
+    divGrad.addColorStop(1, 'transparent');
+    ctx.strokeStyle = divGrad;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // ── PHOENIX text ─────────────────────────────────────────────
+    const textX = 175;
+
+    ctx.font = 'bold 62px "Segoe UI", Arial, sans-serif';
+    ctx.letterSpacing = '6px';
+
+    const txtGrad = ctx.createLinearGradient(textX, 0, W - 20, 0);
+    txtGrad.addColorStop(0, '#1a6fff');
+    txtGrad.addColorStop(0.5, '#4da6ff');
+    txtGrad.addColorStop(1, '#00d4ff');
+    ctx.fillStyle = txtGrad;
+
+    // glow
+    ctx.shadowColor = '#1a6fff';
+    ctx.shadowBlur = 18;
+    ctx.fillText('PHOENIX', textX, 95);
+    ctx.shadowBlur = 0;
+
+    // ── underline ────────────────────────────────────────────────
+    const ulGrad = ctx.createLinearGradient(textX, 0, W - 20, 0);
+    ulGrad.addColorStop(0, '#1a6fff');
+    ulGrad.addColorStop(1, 'rgba(0,212,255,0.3)');
+    ctx.fillStyle = ulGrad;
+    ctx.fillRect(textX, 104, W - textX - 20, 1.5);
+
+    // ── PRICING CALCULATOR subtitle ───────────────────────────────
+    ctx.font = '400 18px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#7ab4ff';
+    ctx.letterSpacing = '5px';
+    ctx.fillText('PRICING  CALCULATOR', textX, 132);
+
+    // ── download ─────────────────────────────────────────────────
+    const link = document.createElement('a');
+    link.download = 'phoenix_calc_logo.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    document.getElementById('msg').innerHTML =
+        '✅ <strong>phoenix_calc_logo.png</strong> downloaded!<br>' +
+        '<small style="color:#666">You can close this tab.</small>';
+};
+img.onerror = () => {
+    document.getElementById('msg').textContent = '❌ Could not load background1.webp — make sure this file is in the same folder.';
+};
+img.src = 'background1.webp';
+
+function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+}
+</script>
+</body>
+</html>
