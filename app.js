@@ -407,77 +407,300 @@ function formatEuro(value) {
 
 function generateMissionOrderFile() {
     if (!currentQuote) return;
-    const { customerName, mass, volume, mdl, power, missionName, launchDate, pricing, pricingConfig, payloadType, cubesatU } = currentQuote;
 
-    const quoteNumber = `PHOENIX-${Date.now()}`;
-    const today = new Date().toISOString().split('T')[0];
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    const PW = 210, PH = 297, L = 20, R = 190;
+    const CW = R - L;
+    let cy = 0;
+
+    const { customerName, mass, volume, mdl, power, missionName, launchDate,
+            pricing, pricingConfig, payloadType, cubesatU } = currentQuote;
+
+    const quoteNo    = `PHOENIX-${Date.now()}`;
+    const today      = new Date().toISOString().split('T')[0];
     const validUntil = (() => { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().split('T')[0]; })();
+    const payloadLabel = payloadType === 'cubesat'
+        ? `${cubesatU}U CubeSat (${formatEuro(cubesatU * 45000)} flat rate)`
+        : payloadType === 'mdl' ? `Mid Deck Locker × ${mdl}` : 'Custom / Other';
 
-    const payloadLine = payloadType === 'cubesat'
-        ? `Payload Type: ${cubesatU}U CubeSat (flat rate: ${formatEuro(cubesatU * 45000)})`
-        : payloadType === 'mdl'
-            ? `Payload Type: Mid Deck Locker × ${mdl}`
-            : 'Payload Type: Custom / Other';
+    // ── helpers ───────────────────────────────────────────────────────
+    const font = (s, sz, c) => {
+        doc.setFont('helvetica', s || 'normal');
+        doc.setFontSize(sz || 9.5);
+        doc.setTextColor(...(c || [50, 50, 50]));
+    };
+    const at    = (str, x, y, o) => doc.text(str, x, y, o || {});
+    const gap   = d  => { cy += d || 5; };
+    const block = (str, x, w, sz, style, col) => {
+        font(style, sz, col);
+        const lines = doc.splitTextToSize(str, w || CW);
+        doc.text(lines, x || L, cy);
+        cy += lines.length * ((sz || 9.5) * 0.42) + 2;
+    };
+    const rule = (col, lw) => {
+        doc.setDrawColor(...(col || [190, 200, 215]));
+        doc.setLineWidth(lw || 0.25);
+        doc.line(L, cy, R, cy);
+    };
+    const artTitle = (num, title) => {
+        font('bold', 9.5, [5, 15, 50]);
+        at(num, L, cy); at(title, L + 32, cy); cy += 7;
+    };
+    const checkSpace = needed => {
+        if (cy + (needed || 25) > PH - 18) {
+            doc.addPage(); cy = 15;
+            font('italic', 7.5, [160, 160, 160]);
+            at(`Mission Order — ${missionName} — CONFIDENTIAL`, L, cy);
+            at(quoteNo, R, cy, { align: 'right' });
+            cy += 3;
+            doc.setDrawColor(205, 210, 220); doc.setLineWidth(0.15);
+            doc.line(L, cy, R, cy);
+            cy += 5;
+        }
+    };
 
-    const content =
-`PHOENIX EXPERIMENT — MISSION ORDER
-================================================================================
-Quote Number : ${quoteNumber}
-Date         : ${today}  (UTC)
-Valid Until  : ${validUntil}
-================================================================================
-CUSTOMER INFORMATION
-================================================================================
-Customer Name : ${customerName}
-Mission Name  : ${missionName}
-Target Launch : ${launchDate}
-${payloadLine}
-================================================================================
-EXPERIMENT PARAMETERS
-================================================================================
-Mass        : ${mass} kg
-Volume      : ${volume} L
-MDL         : ${mdl} locker(s)
-Power       : ${power} W
-Density     : ${pricing.density.toFixed(3)} kg/L
-================================================================================
-PRICING BREAKDOWN
-================================================================================
-Base Cost          : ${formatEuro(pricing.baseCost)}
-  ${mass} kg × ${formatEuro(pricingConfig.basePricePerKg)}/kg
-Volume Surcharge   : ${formatEuro(pricing.volumeSurcharge)}
-  ${volume} L × ${pricingConfig.volumeSurchargePercent}% on base
-MDL Premium        : ${formatEuro(pricing.mdlCost)}
-  ${mdl} × ${formatEuro(pricingConfig.mdlFeePerLocker)}
-Power Surcharge    : ${formatEuro(pricing.powerCost)}
-  ${power > pricingConfig.powerThreshold ? `${power - pricingConfig.powerThreshold}W excess × ${pricingConfig.powerSurchargePercent}%` : `≤${pricingConfig.powerThreshold}W — no surcharge`}
---------------------------------------------------------------------------------
-TOTAL MISSION COST : ${formatEuro(pricing.totalCost)}
-================================================================================
-Cost per kg  : ${formatEuro(pricing.totalCost / mass)}
-Cost per L   : ${formatEuro(pricing.costPerLiter)}
-================================================================================
-TERMS
-================================================================================
-1. Quote valid 30 days from date above.
-2. Includes launch (SpaceX Bandwagon rideshare), orbital operations,
-   Phoenix IAD re-entry, recovery, and payload return.
-3. All dates subject to SpaceX launch schedule.
-4. Additional charges may apply for mechanical interface or antenna work.
-================================================================================
-ATMOS SPACE CARGO GMBH · Im Gewerbegebiet 3-5 · 77839 Lichtenau, Germany
-info@atmos-space-cargo.com · https://www.atmos-space-cargo.com
-================================================================================
-Generated : ${new Date().toLocaleString()} (local time)
-Calculator : Phoenix Pricing Calculator v2.0
-================================================================================
-`;
+    // ── navy header bar ───────────────────────────────────────────────
+    doc.setFillColor(5, 15, 50);
+    doc.rect(0, 0, PW, 20, 'F');
+    font('bold', 16, [255, 255, 255]);   at('ATMOS·', L, 13);
+    font('normal', 7, [160, 200, 255]);  at('SPACE CARGO', L, 18);
+    font('normal', 8, [200, 220, 255]);
+    at(quoteNo, R, 10, { align: 'right' });
+    at(`${today} (UTC)   ·   Valid until: ${validUntil}`, R, 15, { align: 'right' });
+    cy = 28;
 
-    const link = document.createElement('a');
-    link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
-    link.download = `mission-order-${quoteNumber}.txt`;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // ── title block ───────────────────────────────────────────────────
+    font('bold', 18, [5, 15, 50]);
+    at('MISSION ORDER', PW / 2, cy, { align: 'center' }); cy += 7;
+    font('normal', 9, [120, 120, 120]);
+    at(`No. ${quoteNo}`, PW / 2, cy, { align: 'center' }); cy += 5;
+    font('italic', 9.5, [90, 90, 90]);
+    at('Under Phoenix Service Agreement', PW / 2, cy, { align: 'center' }); cy += 6;
+    font('bold', 13, [0, 51, 153]);
+    at(missionName, PW / 2, cy, { align: 'center' }); cy += 9;
+    doc.setDrawColor(0, 51, 153); doc.setLineWidth(0.6);
+    doc.line(L, cy, R, cy); cy += 8;
+
+    // ── parties ───────────────────────────────────────────────────────
+    font('italic', 9.5, [110, 110, 110]); at('between', L, cy); cy += 7;
+
+    font('bold', 9.5, [5, 15, 50]); at('Atmos Space Cargo GmbH,', L, cy); cy += 5;
+    block(
+        'a company established at Im Gewerbegebiet 3, 77839 Lichtenau, Germany, ' +
+        'registered at the trade register Mannheim under registration number HRB 741961, ' +
+        'represented by Mr. Sebastian Klaus, acting as CEO ("Atmos"),',
+        L, CW, 9.5, 'normal', [65, 65, 65]
+    );
+    cy += 2;
+
+    font('italic', 9.5, [110, 110, 110]); at('and', L, cy); cy += 7;
+
+    font('bold', 9.5, [5, 15, 50]); at(`${customerName},`, L, cy); cy += 5;
+    font('normal', 9.5, [65, 65, 65]); at('(the "Customer")', L, cy); cy += 7;
+
+    block(
+        'together referred to as "Parties" and individually also as "Party"',
+        L, CW, 9.5, 'italic', [110, 110, 110]
+    );
+    cy += 3;
+    rule(); cy += 7;
+
+    // ── article 1: subject matter ─────────────────────────────────────
+    checkSpace(40);
+    artTitle('ARTICLE 1', 'SUBJECT MATTER');
+
+    font('bold', 9, [5, 15, 50]); at('1.1', L, cy);
+    block(
+        `This Mission Order covers the following Mission: "${missionName}", utilizing SpaceX's ` +
+        `Falcon 9 Bandwagon rideshare service at 53 \u00b1 0.1\u00b0 inclination, 500\u2013600 km orbit, ` +
+        `scheduled for launch on ${launchDate}.`,
+        L + 10, CW - 10, 9.5, 'normal', [65, 65, 65]
+    );
+    cy += 2;
+
+    checkSpace(15);
+    font('bold', 9, [5, 15, 50]); at('1.2', L, cy);
+    block(
+        `Payload specification: ${payloadLabel}. ` +
+        `Mass: ${mass} kg. Volume: ${volume} L. Mid Deck Lockers (MDL): ${mdl}. Power: ${power} W.`,
+        L + 10, CW - 10, 9.5, 'normal', [65, 65, 65]
+    );
+    cy += 4;
+    rule(); cy += 7;
+
+    // ── article 2: price and payments ────────────────────────────────
+    checkSpace(90);
+    artTitle('ARTICLE 2', 'PRICE AND PAYMENTS');
+
+    font('normal', 9.5, [65, 65, 65]);
+    at('2.1   The service fee for the present Mission Order amounts to:', L, cy); cy += 9;
+
+    font('bold', 20, [5, 15, 50]);
+    at(formatEuro(pricing.totalCost), PW / 2, cy, { align: 'center' }); cy += 11;
+
+    // Pricing breakdown table
+    doc.autoTable({
+        startY: cy,
+        head: [['Cost Component', 'Calculation', 'Amount (EUR)']],
+        body: [
+            ['Base Cost',
+             `${mass} kg \u00d7 ${formatEuro(pricingConfig.basePricePerKg)}/kg`,
+             formatEuro(pricing.baseCost)],
+            ['Volume Surcharge',
+             `${volume} L \u00d7 ${pricingConfig.volumeSurchargePercent}% on base`,
+             formatEuro(pricing.volumeSurcharge)],
+            ['MDL Premium',
+             `${mdl} locker(s) \u00d7 ${formatEuro(pricingConfig.mdlFeePerLocker)}`,
+             formatEuro(pricing.mdlCost)],
+            ['Power Surcharge',
+             power > pricingConfig.powerThreshold
+                ? `${power - pricingConfig.powerThreshold} W excess \u00d7 ${pricingConfig.powerSurchargePercent}%`
+                : `\u226450 W \u2014 no surcharge`,
+             formatEuro(pricing.powerCost)],
+        ],
+        foot: [['TOTAL MISSION COST', '', formatEuro(pricing.totalCost)]],
+        margin: { left: L, right: PW - R },
+        headStyles: { fillColor: [5, 15, 50], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8.5 },
+        bodyStyles: { fontSize: 8.5, textColor: [60, 60, 60] },
+        footStyles: { fillColor: [225, 235, 255], textColor: [5, 15, 50], fontStyle: 'bold', fontSize: 10 },
+        columnStyles: {
+            0: { cellWidth: 46, fontStyle: 'bold' },
+            2: { cellWidth: 44, halign: 'right', fontStyle: 'bold' }
+        },
+        alternateRowStyles: { fillColor: [248, 250, 255] },
+        theme: 'grid',
+    });
+    cy = doc.lastAutoTable.finalY + 5;
+
+    checkSpace(20);
+    block(
+        '2.2   Additional services: Mechanical interface design / structural simulations: \u20ac110/hour. ' +
+        'External antenna mounting: \u20ac110/hour. ' +
+        'If payload mass exceeds 100 kg: \u20ac50,000/kg (before L\u22128 months), ' +
+        '\u20ac65,000/kg (after L\u22128 months), \u20ac80,000/kg (at launch site).',
+        L, CW, 8.5, 'normal', [110, 110, 110]
+    );
+    cy += 3;
+
+    checkSpace(42);
+    font('normal', 9.5, [65, 65, 65]);
+    at('2.3   Payment milestones:', L, cy); cy += 6;
+    doc.autoTable({
+        startY: cy,
+        head: [['Payment Type', 'Date / Milestone', '% of Total Fee']],
+        body: [
+            ['Prepayment',       'At contract signature',            '10%'],
+            ['Advance Payment',  'Signature of this Mission Order',  '40%'],
+            ['Interim Payment',  'Payload FM handover',              '25%'],
+            ['Final Payment',    'Payload launch',                   '25%'],
+        ],
+        margin: { left: L, right: PW - R + 35 },
+        headStyles: { fillColor: [5, 15, 50], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8.5 },
+        bodyStyles: { fontSize: 8.5, textColor: [60, 60, 60] },
+        alternateRowStyles: { fillColor: [248, 250, 255] },
+        theme: 'grid',
+    });
+    cy = doc.lastAutoTable.finalY + 6;
+    rule(); cy += 7;
+
+    // ── article 3: contact persons ────────────────────────────────────
+    checkSpace(60);
+    artTitle('ARTICLE 3', 'CONTACT PERSONS');
+
+    font('normal', 9.5, [65, 65, 65]);
+    at('3.1   For the purpose of this Mission Order, the relevant contact persons are:', L, cy); cy += 7;
+
+    // Two-column: ATMOS left, Customer right
+    const C2   = L + CW / 2 + 5;
+    const ySave = cy;
+
+    // LEFT — ATMOS
+    font('bold', 9, [5, 15, 50]);    at('Atmos Space Cargo GmbH:', L, cy);  cy += 5;
+    font('italic', 8.5, [90, 90, 90]); at('Mission Manager:', L, cy);        cy += 4.5;
+    font('bold', 9, [40, 40, 40]);     at('Guillaume Dieppedalle', L, cy);   cy += 4.5;
+    font('normal', 8.5, [80, 80, 80]);
+    at('Im Gewerbegebiet 3-5', L, cy);                                        cy += 4;
+    at('77839 Lichtenau, Germany', L, cy);                                    cy += 4;
+    at('guillaume.dieppedalle@atmos-space-cargo.com', L, cy);                 cy += 4;
+    at('+49 7227 9484-0', L, cy);
+    const yAfterLeft = cy + 6;
+
+    cy = ySave;
+
+    // RIGHT — Customer
+    font('bold', 9, [5, 15, 50]);       at('Customer:', C2, cy);              cy += 5;
+    font('bold', 9, [40, 40, 40]);      at(customerName, C2, cy);             cy += 4.5;
+    font('italic', 8.5, [120, 120, 120]); at('(Contact details as provided)', C2, cy);
+
+    cy = yAfterLeft;
+    rule(); cy += 7;
+
+    // ── article 4: entry into force ───────────────────────────────────
+    checkSpace(35);
+    artTitle('ARTICLE 4', 'ENTRY INTO FORCE, DURATION');
+
+    font('bold', 9, [5, 15, 50]); at('4.1', L, cy);
+    block(
+        'This Mission Order enters into force on the date on which the last Party has signed it.',
+        L + 10, CW - 10, 9.5, 'normal', [65, 65, 65]
+    );
+    cy += 2;
+
+    font('bold', 9, [5, 15, 50]); at('4.2', L, cy);
+    block(
+        'The period of provision of the services is foreseen to start from the date of signature ' +
+        'and to last until the conclusion of the Post-Mission Review Meeting.',
+        L + 10, CW - 10, 9.5, 'normal', [65, 65, 65]
+    );
+    cy += 6;
+
+    doc.setDrawColor(0, 51, 153); doc.setLineWidth(0.5);
+    doc.line(L, cy, R, cy); cy += 11;
+
+    // ── signatures ────────────────────────────────────────────────────
+    checkSpace(58);
+    font('bold', 10.5, [5, 15, 50]);
+    at('SIGNATURES', PW / 2, cy, { align: 'center' }); cy += 10;
+
+    const halfW  = (CW - 12) / 2;
+    const sigR   = L + halfW + 12;
+    const sigSave = cy;
+
+    // LEFT: ATMOS signed block
+    font('bold', 9, [5, 15, 50]);    at('For Atmos Space Cargo GmbH', L, cy);     cy += 5;
+    font('normal', 8.5, [100, 100, 100]);
+    at(`Lichtenau, Germany, ________ ${new Date().getFullYear()}`, L, cy);           cy += 16;
+    doc.setDrawColor(100, 100, 100); doc.setLineWidth(0.3);
+    doc.line(L, cy, L + halfW, cy);                                                  cy += 5;
+    font('bold', 9, [40, 40, 40]);   at('Sebastian Klaus, CEO', L, cy);             cy += 4;
+    font('normal', 8, [100, 100, 100]); at('Atmos Space Cargo GmbH', L, cy);
+    const yAfterSigLeft = cy + 5;
+
+    cy = sigSave;
+
+    // RIGHT: Customer blank signature block
+    font('bold', 9, [5, 15, 50]);    at('For Customer', sigR, cy);                  cy += 5;
+    font('normal', 8.5, [100, 100, 100]);
+    at(`_________________, ${new Date().getFullYear()}`, sigR, cy);                 cy += 16;
+    doc.setDrawColor(100, 100, 100); doc.setLineWidth(0.3);
+    doc.line(sigR, cy, sigR + halfW, cy);                                           cy += 5;
+    font('bold', 9, [40, 40, 40]);   at(customerName, sigR, cy);                   cy += 4;
+    font('italic', 8, [100, 100, 100]); at('Authorized Representative', sigR, cy);
+
+    cy = yAfterSigLeft;
+
+    // ── footer on every page ──────────────────────────────────────────
+    const pageCount = doc.getNumberOfPages();
+    for (let p = 1; p <= pageCount; p++) {
+        doc.setPage(p);
+        doc.setDrawColor(190, 200, 215); doc.setLineWidth(0.2);
+        doc.line(L, PH - 13, R, PH - 13);
+        font('normal', 7.5, [155, 155, 155]);
+        at(`Mission Order \u2014 ${missionName} \u2014 CONFIDENTIAL`, L, PH - 8);
+        at(`Page ${p} of ${pageCount}`, R, PH - 8, { align: 'right' });
+    }
+
+    doc.save(`mission-order-${quoteNo}.pdf`);
 }
