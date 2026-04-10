@@ -282,15 +282,20 @@ function applyPreset(btn) {
 // PRICING CALCULATION
 // ─────────────────────────────────────────────────────
 
-function calculatePricing(mass, volume, mdl, power) {
-    const baseCost = mass * currentPricing.basePricePerKg;
-    const volumeSurcharge = baseCost * (volume * (currentPricing.volumeSurchargePercent / 100));
-    const mdlCost = mdl * currentPricing.mdlFeePerLocker;
+function calculatePricing(mass, volume, mdl, power, payloadType) {
+    const isMDL = payloadType === 'mdl';
 
+    // MDL: flat fee only — no mass or volume cost
+    const baseCost       = isMDL ? 0 : mass * currentPricing.basePricePerKg;
+    const volumeSurcharge = isMDL ? 0 : baseCost * (volume * (currentPricing.volumeSurchargePercent / 100));
+    const mdlCost        = mdl * currentPricing.mdlFeePerLocker;
+
+    // Power surcharge base: MDL fee when MDL, otherwise mass-based cost
+    const powerBase = isMDL ? mdlCost : baseCost;
     let powerCost = 0;
     if (power > currentPricing.powerThreshold) {
         const excess = power - currentPricing.powerThreshold;
-        powerCost = baseCost * (excess * (currentPricing.powerSurchargePercent / 100));
+        powerCost = powerBase * (excess * (currentPricing.powerSurchargePercent / 100));
     }
 
     const totalCost = baseCost + volumeSurcharge + mdlCost + powerCost;
@@ -300,6 +305,7 @@ function calculatePricing(mass, volume, mdl, power) {
         mdlCost,
         powerCost,
         totalCost,
+        isMDL,
         density: volume > 0 ? mass / volume : 0,
         costPerLiter: volume > 0 ? totalCost / volume : 0
     };
@@ -318,15 +324,25 @@ function recalculate() {
 
     updateCapacityBars(mass, volume, mdl, power);
 
-    if (!mass || !volume) {
+    const isMDL = selectedPayloadType === 'mdl';
+
+    // For MDL, only MDL count and power are needed — mass/volume not required
+    if (!isMDL && (!mass || !volume)) {
         document.getElementById('liveTotalCost').textContent = '€ 0';
         document.getElementById('readinessLabel').textContent = 'Fill in mass & volume to calculate';
         document.getElementById('generateMissionOrder').disabled = true;
         updateBreakdown(null);
         return;
     }
+    if (isMDL && !mdl) {
+        document.getElementById('liveTotalCost').textContent = '€ 0';
+        document.getElementById('readinessLabel').textContent = 'Select number of MDL lockers';
+        document.getElementById('generateMissionOrder').disabled = true;
+        updateBreakdown(null);
+        return;
+    }
 
-    const pricing = calculatePricing(mass, volume, mdl, power);
+    const pricing = calculatePricing(mass, volume, mdl, power, selectedPayloadType);
 
     // Live total
     document.getElementById('liveTotalCost').textContent = formatEuro(pricing.totalCost);
@@ -367,14 +383,16 @@ function updateBreakdown(pricing, mass, volume, mdl, power) {
         return;
     }
 
-    document.getElementById('baseCost').textContent   = formatEuro(pricing.baseCost);
-    document.getElementById('volumeCost').textContent = formatEuro(pricing.volumeSurcharge);
+    const isMDL = pricing.isMDL;
+
+    document.getElementById('baseCost').textContent   = isMDL ? 'N/A' : formatEuro(pricing.baseCost);
+    document.getElementById('volumeCost').textContent = isMDL ? 'N/A' : formatEuro(pricing.volumeSurcharge);
     document.getElementById('mdlCost').textContent    = formatEuro(pricing.mdlCost);
     document.getElementById('powerCost').textContent  = formatEuro(pricing.powerCost);
 
-    document.getElementById('baseCostSub').textContent   = `${mass} kg × ${formatEuro(currentPricing.basePricePerKg)}/kg`;
-    document.getElementById('volumeCostSub').textContent = `${volume} L × ${currentPricing.volumeSurchargePercent}%`;
-    document.getElementById('mdlCostSub').textContent    = `${mdl} locker(s) × ${formatEuro(currentPricing.mdlFeePerLocker)}`;
+    document.getElementById('baseCostSub').textContent   = isMDL ? 'Included in MDL flat fee' : `${mass} kg × ${formatEuro(currentPricing.basePricePerKg)}/kg`;
+    document.getElementById('volumeCostSub').textContent = isMDL ? 'Included in MDL flat fee' : `${volume} L × ${currentPricing.volumeSurchargePercent}%`;
+    document.getElementById('mdlCostSub').textContent    = `${mdl} locker(s) × ${formatEuro(currentPricing.mdlFeePerLocker)} flat`;
     document.getElementById('powerCostSub').textContent  = power > currentPricing.powerThreshold
         ? `${power - currentPricing.powerThreshold}W excess × ${currentPricing.powerSurchargePercent}%`
         : `≤${currentPricing.powerThreshold}W — no surcharge`;
