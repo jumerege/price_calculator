@@ -485,29 +485,10 @@ header {
     margin: 0;
 }
 
-.atmos-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-}
-
-.logo-icon { font-size: 1.8rem; }
-
-.logo-title {
-    font-size: 1.1rem;
-    font-weight: 900;
-    letter-spacing: 3px;
-    color: var(--primary-color);
-    line-height: 1;
-}
-
-.logo-dot { color: var(--secondary-color); }
-
-.logo-sub {
-    font-size: 0.65rem;
-    letter-spacing: 2px;
-    color: var(--text-secondary);
+.atmos-logo-img {
+    height: 44px;
+    width: auto;
+    display: block;
 }
 
 .settings-gear-btn {
