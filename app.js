@@ -7,7 +7,11 @@ const DEFAULT_PRICING = {
     volumeSurchargePercent: 15,
     mdlFeePerLocker: 3000000,
     powerSurchargePercent: 3,
-    powerThreshold: 50
+    powerThreshold: 50,
+    payPrepayment: 10,
+    payAdvance: 40,
+    payInterim: 25,
+    payFinal: 25
 };
 
 // CubeSat pricing: flat fee per U (45,000 × U)
@@ -177,7 +181,8 @@ function setupSettings() {
 
     if (resetSettingsBtn) resetSettingsBtn.addEventListener('click', resetSettings);
 
-    ['basePricePerKg','volumeSurchargePercent','mdlFeePerLocker','powerSurchargePercent'].forEach(id => {
+    ['basePricePerKg','volumeSurchargePercent','mdlFeePerLocker','powerSurchargePercent',
+     'payPrepayment','payAdvance','payInterim','payFinal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', () => { updatePricing(); recalculate(); });
     });
@@ -189,7 +194,11 @@ function updatePricing() {
         volumeSurchargePercent: parseFloat(document.getElementById('volumeSurchargePercent').value) || 0,
         mdlFeePerLocker: parseFloat(document.getElementById('mdlFeePerLocker').value) || 0,
         powerSurchargePercent: parseFloat(document.getElementById('powerSurchargePercent').value) || 0,
-        powerThreshold: DEFAULT_PRICING.powerThreshold
+        powerThreshold: DEFAULT_PRICING.powerThreshold,
+        payPrepayment: parseFloat(document.getElementById('payPrepayment').value) ?? DEFAULT_PRICING.payPrepayment,
+        payAdvance:    parseFloat(document.getElementById('payAdvance').value)    ?? DEFAULT_PRICING.payAdvance,
+        payInterim:    parseFloat(document.getElementById('payInterim').value)    ?? DEFAULT_PRICING.payInterim,
+        payFinal:      parseFloat(document.getElementById('payFinal').value)      ?? DEFAULT_PRICING.payFinal
     };
     savePricingToStorage();
 }
@@ -200,6 +209,10 @@ function resetSettings() {
     document.getElementById('volumeSurchargePercent').value = DEFAULT_PRICING.volumeSurchargePercent;
     document.getElementById('mdlFeePerLocker').value = DEFAULT_PRICING.mdlFeePerLocker;
     document.getElementById('powerSurchargePercent').value = DEFAULT_PRICING.powerSurchargePercent;
+    document.getElementById('payPrepayment').value = DEFAULT_PRICING.payPrepayment;
+    document.getElementById('payAdvance').value    = DEFAULT_PRICING.payAdvance;
+    document.getElementById('payInterim').value    = DEFAULT_PRICING.payInterim;
+    document.getElementById('payFinal').value      = DEFAULT_PRICING.payFinal;
     savePricingToStorage();
     recalculate();
 }
@@ -591,10 +604,10 @@ function generateMissionOrderFile() {
         startY: cy,
         head: [['Payment Type', 'Date / Milestone', '% of Total Fee']],
         body: [
-            ['Prepayment',       'At contract signature',            '10%'],
-            ['Advance Payment',  'Signature of this Mission Order',  '40%'],
-            ['Interim Payment',  'Payload FM handover',              '25%'],
-            ['Final Payment',    'Payload launch',                   '25%'],
+            ['Prepayment',       'At contract signature',            `${pricingConfig.payPrepayment}%`],
+            ['Advance Payment',  'Signature of this Mission Order',  `${pricingConfig.payAdvance}%`],
+            ['Interim Payment',  'Payload FM handover',              `${pricingConfig.payInterim}%`],
+            ['Final Payment',    'Payload launch',                   `${pricingConfig.payFinal}%`],
         ],
         margin: { left: L, right: PW - R + 35 },
         headStyles: { fillColor: [5, 15, 50], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8.5 },

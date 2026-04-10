@@ -538,7 +538,7 @@ header {
 }
 
 .settings-drawer.open {
-    max-height: 300px;
+    max-height: 500px;
     padding: 20px 28px;
 }
 
@@ -558,6 +558,15 @@ header {
     cursor: pointer;
     font-size: 0.85rem;
     transition: all 0.2s;
+}
+
+.settings-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary-color);
+    margin: 14px 0 8px;
+    font-weight: 700;
 }
 
 .reset-btn:hover {
