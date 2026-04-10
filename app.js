@@ -1,5 +1,5 @@
 // Phoenix Experiment Pricing Calculator
-// Version 1.0
+// Version 2.0 — with Payload Type Wizard
 
 // Default Pricing Configuration
 const DEFAULT_PRICING = {
@@ -10,67 +10,190 @@ const DEFAULT_PRICING = {
     powerThreshold: 50
 };
 
+// CubeSat pricing: flat fee per U (45,000 × U)
+const CUBESAT_PRICE_PER_U = 45000;
+
+// Wizard state
+let selectedPayloadType = null;  // 'cubesat' | 'mdl' | 'other'
+let selectedCubesatU = null;     // 1–6
+let selectedMDL = null;          // 1–2
+let wizardComplete = false;
+
 // Current pricing configuration
 let currentPricing = { ...DEFAULT_PRICING };
 
 // Quote data
 let currentQuote = null;
 
-// DOM Elements
-const settingsContent = document.getElementById('settingsContent');
-const toggleSettingsBtn = document.getElementById('toggleSettings');
-const resetSettingsBtn = document.getElementById('resetSettings');
-const quoteForm = document.getElementById('quoteForm');
-const resultsPanel = document.getElementById('resultsPanel');
-const generateMissionOrderBtn = document.getElementById('generateMissionOrder');
-const resetFormBtn = document.getElementById('resetForm');
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadPricingFromStorage();
-    setupEventListeners();
+    setupWizard();
+    setupSettings();
+    setupForm();
     populateLaunchDate();
 });
 
-// Setup Event Listeners
-function setupEventListeners() {
-    // Settings
-    toggleSettingsBtn.addEventListener('click', toggleSettings);
-    resetSettingsBtn.addEventListener('click', resetSettings);
-    
-    // Pricing inputs
-    document.getElementById('basePricePerKg').addEventListener('change', updatePricing);
-    document.getElementById('volumeSurchargePercent').addEventListener('change', updatePricing);
-    document.getElementById('mdlFeePerLocker').addEventListener('change', updatePricing);
-    document.getElementById('powerSurchargePercent').addEventListener('change', updatePricing);
-    
-    // Form
-    quoteForm.addEventListener('submit', handleFormSubmit);
-    generateMissionOrderBtn.addEventListener('click', generateMissionOrderFile);
-    resetFormBtn.addEventListener('click', resetCalculator);
+// ─────────────────────────────────────────────
+// WIZARD LOGIC
+// ─────────────────────────────────────────────
+
+function setupWizard() {
+    // Step 1: payload type buttons
+    document.querySelectorAll('.wizard-option[data-type]').forEach(btn => {
+        btn.addEventListener('click', () => selectPayloadType(btn.dataset.type));
+    });
+
+    // Step 2a: CubeSat size buttons
+    document.querySelectorAll('.cubesat-btn').forEach(btn => {
+        btn.addEventListener('click', () => selectCubesat(btn));
+    });
+
+    // Step 2b: MDL count buttons
+    document.querySelectorAll('.mdl-btn').forEach(btn => {
+        btn.addEventListener('click', () => selectMDL(btn));
+    });
+
+    // Back buttons
+    document.getElementById('backToStep1a').addEventListener('click', goToStep1);
+    document.getElementById('backToStep1b').addEventListener('click', goToStep1);
+
+    // Change selection
+    document.getElementById('wizardChangeBtn').addEventListener('click', resetWizard);
 }
 
-// Toggle Settings Panel
-function toggleSettings() {
-    settingsContent.classList.toggle('hidden');
-    toggleSettingsBtn.textContent = settingsContent.classList.contains('hidden') 
-        ? 'Show Settings' 
-        : 'Hide Settings';
+function selectPayloadType(type) {
+    selectedPayloadType = type;
+    document.querySelectorAll('.wizard-option[data-type]').forEach(b => b.classList.remove('selected'));
+    document.querySelector(`.wizard-option[data-type="${type}"]`).classList.add('selected');
+
+    if (type === 'cubesat') {
+        showStep('step2cubesat');
+    } else if (type === 'mdl') {
+        showStep('step2mdl');
+    } else {
+        // 'other' — skip step 2, go straight to form
+        completeWizard('Other / Custom', null, null);
+    }
 }
 
-// Update Pricing Configuration
+function selectCubesat(btn) {
+    const u = parseInt(btn.dataset.u);
+    const mass = parseFloat(btn.dataset.mass);
+    const volume = parseFloat(btn.dataset.volume);
+    selectedCubesatU = u;
+
+    // Override basePricePerKg so total = 45000 × U (flat CubeSat price)
+    // We set mass to the proper value and basePricePerKg so mass×price = 45000×U
+    const flatPrice = CUBESAT_PRICE_PER_U * u;
+    currentPricing.basePricePerKg = flatPrice / mass;
+    document.getElementById('basePricePerKg').value = currentPricing.basePricePerKg.toFixed(2);
+
+    // Pre-fill mass and volume fields
+    const massInput = document.getElementById('mass');
+    const volumeInput = document.getElementById('volume');
+    if (massInput) { massInput.value = mass; massInput.dispatchEvent(new Event('input')); }
+    if (volumeInput) { volumeInput.value = volume; volumeInput.dispatchEvent(new Event('input')); }
+    document.getElementById('mdl').value = 0;
+    document.getElementById('power').value = 5;
+
+    completeWizard(`${u}U CubeSat`, u, null);
+}
+
+function selectMDL(btn) {
+    const mdlCount = parseInt(btn.dataset.mdl);
+    const mass = parseFloat(btn.dataset.mass);
+    const volume = parseFloat(btn.dataset.volume);
+    selectedMDL = mdlCount;
+
+    // Reset base price to default for MDL
+    currentPricing.basePricePerKg = DEFAULT_PRICING.basePricePerKg;
+    document.getElementById('basePricePerKg').value = DEFAULT_PRICING.basePricePerKg;
+
+    // Pre-fill fields
+    const massInput = document.getElementById('mass');
+    const volumeInput = document.getElementById('volume');
+    if (massInput) { massInput.value = mass; massInput.dispatchEvent(new Event('input')); }
+    if (volumeInput) { volumeInput.value = volume; volumeInput.dispatchEvent(new Event('input')); }
+    document.getElementById('mdl').value = mdlCount;
+    document.getElementById('mdl').dispatchEvent(new Event('input'));
+
+    completeWizard(`${mdlCount} Mid Deck Locker${mdlCount > 1 ? 's' : ''}`, null, mdlCount);
+}
+
+function completeWizard(label, cubesatU, mdlCount) {
+    wizardComplete = true;
+    const icon = selectedPayloadType === 'cubesat' ? '📦' : selectedPayloadType === 'mdl' ? '🗄️' : '⚗️';
+    document.getElementById('wizardSelectedText').textContent = `${icon} ${label} selected`;
+    showStep('wizardSelected');
+    // Trigger live price recalculation
+    recalculate();
+}
+
+function goToStep1() {
+    showStep('step1');
+    selectedPayloadType = null;
+}
+
+function resetWizard() {
+    selectedPayloadType = null;
+    selectedCubesatU = null;
+    selectedMDL = null;
+    wizardComplete = false;
+    currentPricing.basePricePerKg = DEFAULT_PRICING.basePricePerKg;
+    document.getElementById('basePricePerKg').value = DEFAULT_PRICING.basePricePerKg;
+    showStep('step1');
+    document.querySelectorAll('.wizard-option').forEach(b => b.classList.remove('selected'));
+    recalculate();
+}
+
+function showStep(stepId) {
+    // Hide all steps and the selected badge
+    ['step1','step2cubesat','step2mdl','wizardSelected'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+    const target = document.getElementById(stepId);
+    if (target) target.classList.remove('hidden');
+}
+
+// ─────────────────────────────────────────────
+// SETTINGS LOGIC
+// ─────────────────────────────────────────────
+
+function setupSettings() {
+    const settingsToggleBtn = document.getElementById('settingsToggleBtn');
+    const settingsDrawer = document.getElementById('settingsDrawer');
+    const resetSettingsBtn = document.getElementById('resetSettings');
+
+    if (settingsToggleBtn) {
+        settingsToggleBtn.addEventListener('click', () => {
+            settingsDrawer.classList.toggle('open');
+            settingsToggleBtn.textContent = settingsDrawer.classList.contains('open')
+                ? '✕ Close Settings'
+                : '⚙️ Pricing Settings';
+        });
+    }
+
+    if (resetSettingsBtn) resetSettingsBtn.addEventListener('click', resetSettings);
+
+    ['basePricePerKg','volumeSurchargePercent','mdlFeePerLocker','powerSurchargePercent'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', () => { updatePricing(); recalculate(); });
+    });
+}
+
 function updatePricing() {
     currentPricing = {
-        basePricePerKg: parseFloat(document.getElementById('basePricePerKg').value),
-        volumeSurchargePercent: parseFloat(document.getElementById('volumeSurchargePercent').value),
-        mdlFeePerLocker: parseFloat(document.getElementById('mdlFeePerLocker').value),
-        powerSurchargePercent: parseFloat(document.getElementById('powerSurchargePercent').value),
+        basePricePerKg: parseFloat(document.getElementById('basePricePerKg').value) || DEFAULT_PRICING.basePricePerKg,
+        volumeSurchargePercent: parseFloat(document.getElementById('volumeSurchargePercent').value) || 0,
+        mdlFeePerLocker: parseFloat(document.getElementById('mdlFeePerLocker').value) || 0,
+        powerSurchargePercent: parseFloat(document.getElementById('powerSurchargePercent').value) || 0,
         powerThreshold: DEFAULT_PRICING.powerThreshold
     };
     savePricingToStorage();
 }
 
-// Reset Settings
 function resetSettings() {
     currentPricing = { ...DEFAULT_PRICING };
     document.getElementById('basePricePerKg').value = DEFAULT_PRICING.basePricePerKg;
@@ -78,10 +201,13 @@ function resetSettings() {
     document.getElementById('mdlFeePerLocker').value = DEFAULT_PRICING.mdlFeePerLocker;
     document.getElementById('powerSurchargePercent').value = DEFAULT_PRICING.powerSurchargePercent;
     savePricingToStorage();
-    alert('Pricing parameters reset to defaults');
+    recalculate();
 }
 
-// Save/Load from LocalStorage
+// ─────────────────────────────────────────────────────
+// STORAGE
+// ─────────────────────────────────────────────────────
+
 function savePricingToStorage() {
     localStorage.setItem('phoenixPricing', JSON.stringify(currentPricing));
 }
@@ -89,121 +215,183 @@ function savePricingToStorage() {
 function loadPricingFromStorage() {
     const stored = localStorage.getItem('phoenixPricing');
     if (stored) {
-        currentPricing = JSON.parse(stored);
-        document.getElementById('basePricePerKg').value = currentPricing.basePricePerKg;
-        document.getElementById('volumeSurchargePercent').value = currentPricing.volumeSurchargePercent;
-        document.getElementById('mdlFeePerLocker').value = currentPricing.mdlFeePerLocker;
-        document.getElementById('powerSurchargePercent').value = currentPricing.powerSurchargePercent;
+        try {
+            const p = JSON.parse(stored);
+            currentPricing = { ...DEFAULT_PRICING, ...p };
+            document.getElementById('basePricePerKg').value = currentPricing.basePricePerKg;
+            document.getElementById('volumeSurchargePercent').value = currentPricing.volumeSurchargePercent;
+            document.getElementById('mdlFeePerLocker').value = currentPricing.mdlFeePerLocker;
+            document.getElementById('powerSurchargePercent').value = currentPricing.powerSurchargePercent;
+        } catch (e) { /* ignore corrupt storage */ }
     }
 }
 
-// Populate launch date with default (6 months ahead)
+// ─────────────────────────────────────────────────────
+// FORM SETUP (live recalculation)
+// ─────────────────────────────────────────────────────
+
+function setupForm() {
+    // Live recalculate on every input change
+    ['mass','volume','mdl','power','customerName','missionName','launchDate'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', recalculate);
+    });
+
+    // Preset buttons
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyPreset(btn));
+    });
+
+    // Generate Mission Order button
+    document.getElementById('generateMissionOrder').addEventListener('click', generateMissionOrderFile);
+}
+
 function populateLaunchDate() {
     const date = new Date();
     date.setMonth(date.getMonth() + 6);
-    document.getElementById('launchDate').min = new Date().toISOString().split('T')[0];
-    document.getElementById('launchDate').value = date.toISOString().split('T')[0];
+    const launchEl = document.getElementById('launchDate');
+    launchEl.min = new Date().toISOString().split('T')[0];
+    launchEl.value = date.toISOString().split('T')[0];
 }
 
-// Calculate Pricing
+function applyPreset(btn) {
+    document.getElementById('mass').value   = btn.dataset.mass;
+    document.getElementById('volume').value = btn.dataset.volume;
+    document.getElementById('mdl').value    = btn.dataset.mdl;
+    document.getElementById('power').value  = btn.dataset.power;
+    if (btn.dataset.name) {
+        document.getElementById('missionName').value = btn.dataset.name;
+    }
+    recalculate();
+}
+
+// ─────────────────────────────────────────────────────
+// PRICING CALCULATION
+// ─────────────────────────────────────────────────────
+
 function calculatePricing(mass, volume, mdl, power) {
-    // 1. Base cost (kg × €45,000/kg)
     const baseCost = mass * currentPricing.basePricePerKg;
-
-    // 2. Volume surcharge (% per liter on base cost)
     const volumeSurcharge = baseCost * (volume * (currentPricing.volumeSurchargePercent / 100));
-
-    // 3. MDL premium (€3,000,000 per MDL)
     const mdlCost = mdl * currentPricing.mdlFeePerLocker;
 
-    // 4. Power surcharge (3% per watt if over 50W)
     let powerCost = 0;
     if (power > currentPricing.powerThreshold) {
-        const excessPower = power - currentPricing.powerThreshold;
-        powerCost = baseCost * (excessPower * (currentPricing.powerSurchargePercent / 100));
+        const excess = power - currentPricing.powerThreshold;
+        powerCost = baseCost * (excess * (currentPricing.powerSurchargePercent / 100));
     }
 
     const totalCost = baseCost + volumeSurcharge + mdlCost + powerCost;
-
     return {
         baseCost,
         volumeSurcharge,
         mdlCost,
         powerCost,
         totalCost,
-        costPerLiter: volume > 0 ? baseCost / volume : 0,
-        density: volume > 0 ? mass / volume : 0
+        density: volume > 0 ? mass / volume : 0,
+        costPerLiter: volume > 0 ? totalCost / volume : 0
     };
 }
 
-// Handle Form Submission
-function handleFormSubmit(e) {
-    e.preventDefault();
+// ─────────────────────────────────────────────────────
+// LIVE RECALCULATE (called on every input change)
+// ─────────────────────────────────────────────────────
 
-    // Get form values
+function recalculate() {
+    const mass   = parseFloat(document.getElementById('mass').value)   || 0;
+    const volume = parseFloat(document.getElementById('volume').value) || 0;
+    const mdl    = parseInt(document.getElementById('mdl').value)      || 0;
+    const power  = parseFloat(document.getElementById('power').value)  || 0;
     const customerName = document.getElementById('customerName').value.trim();
-    const mass = parseFloat(document.getElementById('mass').value);
-    const volume = parseFloat(document.getElementById('volume').value);
-    const mdl = parseInt(document.getElementById('mdl').value) || 0;
-    const power = parseFloat(document.getElementById('power').value) || 0;
-    const missionName = document.getElementById('missionName').value.trim();
-    const launchDate = document.getElementById('launchDate').value;
 
-    // Validate
-    if (!customerName || !mass || !volume) {
-        alert('Please fill in all required fields');
+    updateCapacityBars(mass, volume, mdl, power);
+
+    if (!mass || !volume) {
+        document.getElementById('liveTotalCost').textContent = '€ 0';
+        document.getElementById('readinessLabel').textContent = 'Fill in mass & volume to calculate';
+        document.getElementById('generateMissionOrder').disabled = true;
+        updateBreakdown(null);
         return;
     }
 
-    // Calculate
     const pricing = calculatePricing(mass, volume, mdl, power);
 
-    // Store quote
+    // Live total
+    document.getElementById('liveTotalCost').textContent = formatEuro(pricing.totalCost);
+
+    // Readiness label
+    const ready = customerName && document.getElementById('launchDate').value;
+    document.getElementById('readinessLabel').textContent = ready
+        ? '✅ Ready to generate mission order'
+        : 'Add customer name to generate mission order';
+    document.getElementById('generateMissionOrder').disabled = !ready;
+
+    updateBreakdown(pricing, mass, volume, mdl, power);
+    updateMetrics(pricing, mass, volume);
+
+    // Store current quote
     currentQuote = {
         customerName,
-        mass,
-        volume,
-        mdl,
-        power,
-        missionName: missionName || `Phoenix Mission - ${new Date().toLocaleDateString()}`,
-        launchDate,
+        mass, volume, mdl, power,
+        missionName: document.getElementById('missionName').value.trim() || `Phoenix Mission — ${new Date().toLocaleDateString()}`,
+        launchDate: document.getElementById('launchDate').value,
         pricing,
-        timestamp: new Date().toISOString(),
-        currentPricing
+        pricingConfig: { ...currentPricing },
+        payloadType: selectedPayloadType,
+        cubesatU: selectedCubesatU,
+        timestamp: new Date().toISOString()
     };
-
-    // Display results
-    displayResults();
 }
 
-// Display Results
-function displayResults() {
-    if (!currentQuote) return;
+function updateBreakdown(pricing, mass, volume, mdl, power) {
+    if (!pricing) {
+        ['baseCost','volumeCost','mdlCost','powerCost'].forEach(id => {
+            document.getElementById(id).textContent = '€ 0';
+        });
+        document.getElementById('baseCostSub').textContent   = '-- kg × €/kg';
+        document.getElementById('volumeCostSub').textContent = '-- L × 15%';
+        document.getElementById('mdlCostSub').textContent    = '0 lockers × €3M';
+        document.getElementById('powerCostSub').textContent  = '≤50W — no surcharge';
+        return;
+    }
 
-    const { pricing, mass, volume, mdl, power, customerName } = currentQuote;
-
-    // Update breakdown
-    document.getElementById('baseCost').textContent = formatEuro(pricing.baseCost);
+    document.getElementById('baseCost').textContent   = formatEuro(pricing.baseCost);
     document.getElementById('volumeCost').textContent = formatEuro(pricing.volumeSurcharge);
-    document.getElementById('mdlCost').textContent = formatEuro(pricing.mdlCost);
-    document.getElementById('powerCost').textContent = formatEuro(pricing.powerCost);
-    document.getElementById('totalCost').textContent = formatEuro(pricing.totalCost);
+    document.getElementById('mdlCost').textContent    = formatEuro(pricing.mdlCost);
+    document.getElementById('powerCost').textContent  = formatEuro(pricing.powerCost);
 
-    // Update details
-    document.getElementById('displayCustomer').textContent = customerName;
-    document.getElementById('displayMass').textContent = mass.toFixed(1);
-    document.getElementById('displayVolume').textContent = volume.toFixed(1);
-    document.getElementById('costPerLiter').textContent = formatEuro(pricing.costPerLiter);
-    document.getElementById('displayMDL').textContent = mdl > 0 ? `${mdl} locker(s)` : 'None';
-    document.getElementById('displayPower').textContent = power.toFixed(0);
-    document.getElementById('displayDensity').textContent = pricing.density.toFixed(3);
-
-    // Show results panel
-    resultsPanel.style.display = 'block';
-    resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('baseCostSub').textContent   = `${mass} kg × ${formatEuro(currentPricing.basePricePerKg)}/kg`;
+    document.getElementById('volumeCostSub').textContent = `${volume} L × ${currentPricing.volumeSurchargePercent}%`;
+    document.getElementById('mdlCostSub').textContent    = `${mdl} locker(s) × ${formatEuro(currentPricing.mdlFeePerLocker)}`;
+    document.getElementById('powerCostSub').textContent  = power > currentPricing.powerThreshold
+        ? `${power - currentPricing.powerThreshold}W excess × ${currentPricing.powerSurchargePercent}%`
+        : `≤${currentPricing.powerThreshold}W — no surcharge`;
 }
 
-// Format as Euro currency
+function updateMetrics(pricing, mass, volume) {
+    document.getElementById('metricDensity').textContent = volume > 0 ? (mass / volume).toFixed(3) : '—';
+    document.getElementById('metricPerKg').textContent   = mass > 0 ? formatEuro(pricing.totalCost / mass) : '—';
+    document.getElementById('metricPerL').textContent    = volume > 0 ? formatEuro(pricing.costPerLiter) : '—';
+}
+
+function updateCapacityBars(mass, volume, mdl, power) {
+    setBar('massBar',   'massLabel',   mass,   100,  `${mass} / 100 kg`);
+    setBar('volumeBar', 'volumeLabel', volume, 300,  `${volume} / 300 L`);
+    setBar('mdlBar',    'mdlLabel',    mdl,    2,    `${mdl} / 2 lockers`);
+    setBar('powerBar',  'powerLabel',  power,  200,  `${power} W`);
+}
+
+function setBar(barId, labelId, value, max, labelText) {
+    const pct = Math.min(100, (value / max) * 100);
+    const bar = document.getElementById(barId);
+    bar.style.width = pct + '%';
+    bar.style.background = pct >= 90 ? '#ef4444' : pct >= 70 ? '#f59e0b' : '#22c55e';
+    document.getElementById(labelId).textContent = labelText;
+}
+
+// ─────────────────────────────────────────────────────
+// FORMAT HELPER
+// ─────────────────────────────────────────────────────
+
 function formatEuro(value) {
     return new Intl.NumberFormat('de-DE', {
         style: 'currency',
@@ -213,146 +401,83 @@ function formatEuro(value) {
     }).format(value);
 }
 
-// Generate Mission Order File
+// ─────────────────────────────────────────────────────
+// MISSION ORDER FILE DOWNLOAD
+// ─────────────────────────────────────────────────────
+
 function generateMissionOrderFile() {
     if (!currentQuote) return;
+    const { customerName, mass, volume, mdl, power, missionName, launchDate, pricing, pricingConfig, payloadType, cubesatU } = currentQuote;
 
-    const { 
-        customerName, 
-        mass, 
-        volume, 
-        mdl, 
-        power, 
-        missionName,
-        launchDate,
-        pricing,
-        currentPricing
-    } = currentQuote;
-
-    // Generate quote number
     const quoteNumber = `PHOENIX-${Date.now()}`;
     const today = new Date().toISOString().split('T')[0];
+    const validUntil = (() => { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().split('T')[0]; })();
 
-    // Create mission order content
-    const missionOrderContent = `PHOENIX EXPERIMENT - MISSION ORDER
+    const payloadLine = payloadType === 'cubesat'
+        ? `Payload Type: ${cubesatU}U CubeSat (flat rate: ${formatEuro(cubesatU * 45000)})`
+        : payloadType === 'mdl'
+            ? `Payload Type: Mid Deck Locker × ${mdl}`
+            : 'Payload Type: Custom / Other';
+
+    const content =
+`PHOENIX EXPERIMENT — MISSION ORDER
 ================================================================================
-
-Quote Number: ${quoteNumber}
-Date: ${today}
-Valid Until: ${addDays(new Date(), 30).toISOString().split('T')[0]}
-
+Quote Number : ${quoteNumber}
+Date         : ${today}  (UTC)
+Valid Until  : ${validUntil}
 ================================================================================
 CUSTOMER INFORMATION
 ================================================================================
-
-Customer Name: ${customerName}
-Mission Name: ${missionName}
-Target Launch Date: ${launchDate}
-
+Customer Name : ${customerName}
+Mission Name  : ${missionName}
+Target Launch : ${launchDate}
+${payloadLine}
 ================================================================================
 EXPERIMENT PARAMETERS
 ================================================================================
-
-Mass: ${mass} kg
-Volume: ${volume} L
-Mid Deck Lockers (MDL): ${mdl}
-Power Requirement: ${power} W
-Density: ${pricing.density.toFixed(3)} kg/L
-
+Mass        : ${mass} kg
+Volume      : ${volume} L
+MDL         : ${mdl} locker(s)
+Power       : ${power} W
+Density     : ${pricing.density.toFixed(3)} kg/L
 ================================================================================
 PRICING BREAKDOWN
 ================================================================================
-
-Base Price per kg: ${formatEuro(currentPricing.basePricePerKg)}
-Volume Surcharge: ${currentPricing.volumeSurchargePercent}% per liter
-MDL Fee per Locker: ${formatEuro(currentPricing.mdlFeePerLocker)}
-Power Surcharge: ${currentPricing.powerSurchargePercent}% per watt (over ${currentPricing.powerThreshold}W)
-
-QUOTE CALCULATION:
-------------------
-
-1. Base Cost (${mass} kg × ${formatEuro(currentPricing.basePricePerKg)}/kg):
-   ${formatEuro(pricing.baseCost)}
-
-2. Volume Surcharge (${volume} L × ${currentPricing.volumeSurchargePercent}%):
-   ${formatEuro(pricing.volumeSurcharge)}
-
-3. MDL Premium (${mdl} MDL × ${formatEuro(currentPricing.mdlFeePerLocker)}):
-   ${formatEuro(pricing.mdlCost)}
-
-4. Power Surcharge (${power}W, ${currentPricing.powerSurchargePercent}% over ${currentPricing.powerThreshold}W):
-   ${formatEuro(pricing.powerCost)}
-
+Base Cost          : ${formatEuro(pricing.baseCost)}
+  ${mass} kg × ${formatEuro(pricingConfig.basePricePerKg)}/kg
+Volume Surcharge   : ${formatEuro(pricing.volumeSurcharge)}
+  ${volume} L × ${pricingConfig.volumeSurchargePercent}% on base
+MDL Premium        : ${formatEuro(pricing.mdlCost)}
+  ${mdl} × ${formatEuro(pricingConfig.mdlFeePerLocker)}
+Power Surcharge    : ${formatEuro(pricing.powerCost)}
+  ${power > pricingConfig.powerThreshold ? `${power - pricingConfig.powerThreshold}W excess × ${pricingConfig.powerSurchargePercent}%` : `≤${pricingConfig.powerThreshold}W — no surcharge`}
+--------------------------------------------------------------------------------
+TOTAL MISSION COST : ${formatEuro(pricing.totalCost)}
 ================================================================================
-TOTAL MISSION COST: ${formatEuro(pricing.totalCost)}
+Cost per kg  : ${formatEuro(pricing.totalCost / mass)}
+Cost per L   : ${formatEuro(pricing.costPerLiter)}
 ================================================================================
-
-Cost per Liter: ${formatEuro(pricing.costPerLiter)}
-Cost per kg: ${formatEuro(pricing.baseCost / mass)}
-
+TERMS
 ================================================================================
-TERMS & CONDITIONS
+1. Quote valid 30 days from date above.
+2. Includes launch (SpaceX Bandwagon rideshare), orbital operations,
+   Phoenix IAD re-entry, recovery, and payload return.
+3. All dates subject to SpaceX launch schedule.
+4. Additional charges may apply for mechanical interface or antenna work.
 ================================================================================
-
-1. This quote is valid for 30 days from the date above.
-2. Phoenix mission includes:
-   - Launch on SpaceX Bandwagon-5 or equivalent rideshare service
-   - 3-hour to 3-month orbital operation (configurable)
-   - Safe atmospheric re-entry using Inflatable Atmospheric Decelerator
-   - Recovery and return of payload
-   - Post-mission analysis
-
-3. All dates are subject to SpaceX launch schedule availability.
-
-4. Additional services and modifications may incur extra charges:
-   - Mechanical interface design: €110/hour
-   - External antenna mounting: €110/hour
-   - Mass exceeding 100kg: Price adjustment per agreement
-
+ATMOS SPACE CARGO GMBH · Im Gewerbegebiet 3-5 · 77839 Lichtenau, Germany
+info@atmos-space-cargo.com · https://www.atmos-space-cargo.com
 ================================================================================
-ATMOS SPACE CARGO GMBH
-Im Gewerbegebiet 3-5
-77839 Lichtenau, Germany
-
-Phone: +49 (0) XXX XXXX-XXXX
-Email: info@atmos-space-cargo.com
-Web: https://www.atmos-space-cargo.com
-
-================================================================================
-Generated on: ${new Date().toLocaleString()}
-Calculator Version: 1.0
+Generated : ${new Date().toLocaleString()} (local time)
+Calculator : Phoenix Pricing Calculator v2.0
 ================================================================================
 `;
 
-    // Create and download file
-    downloadFile(missionOrderContent, `mission-order-${quoteNumber}.txt`);
-    
-    alert(`Mission Order Generated!\n\nQuote: ${quoteNumber}\nTotal Cost: ${formatEuro(pricing.totalCost)}`);
-}
-
-// Add days to date
-function addDays(date, days) {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-}
-
-// Download file
-function downloadFile(content, filename) {
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-    element.setAttribute('download', filename);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-}
-
-// Reset Calculator
-function resetCalculator() {
-    quoteForm.reset();
-    resultsPanel.style.display = 'none';
-    currentQuote = null;
-    populateLaunchDate();
-    quoteForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const link = document.createElement('a');
+    link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+    link.download = `mission-order-${quoteNumber}.txt`;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }

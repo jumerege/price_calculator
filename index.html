@@ -3,150 +3,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phoenix Experiment Pricing Calculator</title>
+    <title>Phoenix Pricing Calculator — ATMOS Space Cargo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🚀 Phoenix Experiment Pricing Calculator</h1>
-            <p>Microgravity Research Pricing for ATMOS Space Cargo</p>
-        </header>
-
-        <main>
-            <!-- Settings Panel -->
-            <section class="settings-panel">
-                <div class="panel-header">
-                    <h2>⚙️ Pricing Parameters</h2>
-                    <button id="toggleSettings" class="toggle-btn">Hide Settings</button>
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <div class="atmos-logo">
+                <span class="logo-icon">🛰️</span>
+                <div>
+                    <div class="logo-title">ATMOS<span class="logo-dot">·</span></div>
+                    <div class="logo-sub">SPACE CARGO</div>
                 </div>
-                <div class="settings-content" id="settingsContent">
-                    <div class="settings-grid">
-                        <div class="setting-item">
-                            <label for="basePricePerKg">Base Price (€/kg)</label>
-                            <input type="number" id="basePricePerKg" value="45000" min="0" step="100">
-                        </div>
-                        <div class="setting-item">
-                            <label for="volumeSurchargePercent">Volume Surcharge (% per L)</label>
-                            <input type="number" id="volumeSurchargePercent" value="15" min="0" step="0.1">
-                        </div>
-                        <div class="setting-item">
-                            <label for="mdlFeePerLocker">MDL Fee (€ per locker)</label>
-                            <input type="number" id="mdlFeePerLocker" value="3000000" min="0" step="10000">
-                        </div>
-                        <div class="setting-item">
-                            <label for="powerSurchargePercent">Power Surcharge (% per W over 50W)</label>
-                            <input type="number" id="powerSurchargePercent" value="3" min="0" step="0.1">
-                        </div>
-                    </div>
-                    <button id="resetSettings" class="secondary-btn">Reset to Defaults</button>
+            </div>
+        </div>
+        <div class="header-center">
+            <h1>Phoenix Pricing Calculator</h1>
+            <p>Microgravity Experiment Cost Estimator</p>
+        </div>
+        <div class="header-right">
+            <button id="settingsToggleBtn" class="settings-gear-btn" title="Pricing Parameters">
+                ⚙️ Pricing Settings
+            </button>
+        </div>
+    </header>
+
+    <!-- STEP 1: Payload Type Selector -->
+    <div class="payload-wizard" id="payloadWizard">
+        <div class="wizard-inner">
+
+            <!-- Step 1: Payload Type -->
+            <div class="wizard-step" id="step1">
+                <div class="wizard-step-label">Step 1 of 2 — Select Payload Type</div>
+                <h2 class="wizard-title">What type of payload are you flying?</h2>
+                <div class="wizard-options">
+                    <button class="wizard-option" data-type="cubesat">
+                        <span class="wizard-option-icon">📦</span>
+                        <span class="wizard-option-name">CubeSat</span>
+                        <span class="wizard-option-desc">Standard 1U–6U format</span>
+                    </button>
+                    <button class="wizard-option" data-type="mdl">
+                        <span class="wizard-option-icon">🗄️</span>
+                        <span class="wizard-option-name">Mid Deck Locker</span>
+                        <span class="wizard-option-desc">ISS MDL form factor</span>
+                    </button>
+                    <button class="wizard-option" data-type="other">
+                        <span class="wizard-option-icon">⚗️</span>
+                        <span class="wizard-option-name">Other / Custom</span>
+                        <span class="wizard-option-desc">Define by mass & volume</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2a: CubeSat Size -->
+            <div class="wizard-step hidden" id="step2cubesat">
+                <div class="wizard-step-label">Step 2 of 2 — CubeSat Size</div>
+                <h2 class="wizard-title">Select your CubeSat unit size</h2>
+                <div class="wizard-options cubesat-options">
+                    <button class="wizard-option cubesat-btn" data-u="1" data-mass="1.33" data-volume="1">
+                        <span class="wizard-option-icon">🟦</span>
+                        <span class="wizard-option-name">1U</span>
+                        <span class="wizard-option-desc">€45,000</span>
+                    </button>
+                    <button class="wizard-option cubesat-btn" data-u="2" data-mass="2.66" data-volume="2">
+                        <span class="wizard-option-icon">🟦🟦</span>
+                        <span class="wizard-option-name">2U</span>
+                        <span class="wizard-option-desc">€90,000</span>
+                    </button>
+                    <button class="wizard-option cubesat-btn" data-u="3" data-mass="4" data-volume="3">
+                        <span class="wizard-option-icon">🟦🟦🟦</span>
+                        <span class="wizard-option-name">3U</span>
+                        <span class="wizard-option-desc">€135,000</span>
+                    </button>
+                    <button class="wizard-option cubesat-btn" data-u="4" data-mass="5.33" data-volume="4">
+                        <span class="wizard-option-icon">🟦🟦🟦🟦</span>
+                        <span class="wizard-option-name">4U</span>
+                        <span class="wizard-option-desc">€180,000</span>
+                    </button>
+                    <button class="wizard-option cubesat-btn" data-u="5" data-mass="6.66" data-volume="5">
+                        <span class="wizard-option-icon">🟦🟦🟦🟦🟦</span>
+                        <span class="wizard-option-name">5U</span>
+                        <span class="wizard-option-desc">€225,000</span>
+                    </button>
+                    <button class="wizard-option cubesat-btn" data-u="6" data-mass="8" data-volume="6">
+                        <span class="wizard-option-icon">🟦🟦🟦🟦🟦🟦</span>
+                        <span class="wizard-option-name">6U</span>
+                        <span class="wizard-option-desc">€270,000</span>
+                    </button>
+                </div>
+                <button class="wizard-back-btn" id="backToStep1a">← Back</button>
+            </div>
+
+            <!-- Step 2b: MDL Count -->
+            <div class="wizard-step hidden" id="step2mdl">
+                <div class="wizard-step-label">Step 2 of 2 — MDL Count</div>
+                <h2 class="wizard-title">How many Mid Deck Lockers?</h2>
+                <div class="wizard-options">
+                    <button class="wizard-option mdl-btn" data-mdl="1" data-mass="30" data-volume="150">
+                        <span class="wizard-option-icon">🗄️</span>
+                        <span class="wizard-option-name">1 MDL</span>
+                        <span class="wizard-option-desc">€3,000,000 flat + mass</span>
+                    </button>
+                    <button class="wizard-option mdl-btn" data-mdl="2" data-mass="60" data-volume="300">
+                        <span class="wizard-option-icon">🗄️🗄️</span>
+                        <span class="wizard-option-name">2 MDL</span>
+                        <span class="wizard-option-desc">€6,000,000 flat + mass</span>
+                    </button>
+                </div>
+                <button class="wizard-back-btn" id="backToStep1b">← Back</button>
+            </div>
+
+            <!-- Selected badge -->
+            <div class="wizard-selected hidden" id="wizardSelected">
+                <span id="wizardSelectedText">📦 1U CubeSat selected</span>
+                <button class="wizard-change-btn" id="wizardChangeBtn">Change selection</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Settings Drawer (hidden by default) -->
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="settings-drawer-inner">
+            <div class="settings-drawer-title">⚙️ Pricing Parameters <small>(adjustable)</small></div>
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label>Base Price (€/kg)</label>
+                    <input type="number" id="basePricePerKg" value="45000" min="0" step="100">
+                </div>
+                <div class="setting-item">
+                    <label>Volume Surcharge (% per L)</label>
+                    <input type="number" id="volumeSurchargePercent" value="15" min="0" step="0.1">
+                </div>
+                <div class="setting-item">
+                    <label>MDL Fee (€ per locker)</label>
+                    <input type="number" id="mdlFeePerLocker" value="3000000" min="0" step="10000">
+                </div>
+                <div class="setting-item">
+                    <label>Power Surcharge (% per W over 50W)</label>
+                    <input type="number" id="powerSurchargePercent" value="3" min="0" step="0.1">
+                </div>
+            </div>
+            <button id="resetSettings" class="reset-btn">↺ Reset to Defaults</button>
+        </div>
+    </div>
+
+    <!-- Main Two-Column Layout -->
+    <main class="main-grid">
+
+        <!-- LEFT COLUMN: Form -->
+        <div class="form-column">
+
+            <!-- Experiment Presets -->
+            <section class="card">
+                <h2 class="card-title">🧪 Experiment Presets</h2>
+                <div class="presets-grid">
+                    <button class="preset-btn" data-mass="2.5" data-volume="5" data-mdl="0" data-power="30" data-name="Protein Crystallization">
+                        🔬 Protein<br>Crystallization
+                    </button>
+                    <button class="preset-btn" data-mass="15" data-volume="30" data-mdl="1" data-power="80" data-name="Cell Biology Lab">
+                        🧬 Cell<br>Biology Lab
+                    </button>
+                    <button class="preset-btn" data-mass="30" data-volume="100" data-mdl="1" data-power="100" data-name="Bioprinting Unit">
+                        🖨️ Bio-<br>printing Unit
+                    </button>
+                    <button class="preset-btn" data-mass="60" data-volume="200" data-mdl="2" data-power="200" data-name="Full Biolaboratory">
+                        🏭 Full Bio-<br>laboratory
+                    </button>
+                    <button class="preset-btn" data-mass="1" data-volume="1" data-mdl="0" data-power="5" data-name="1U CubeSat">
+                        📦 1U<br>CubeSat
+                    </button>
+                    <button class="preset-btn" data-mass="8" data-volume="12" data-mdl="0" data-power="20" data-name="Materials Science">
+                        ⚗️ Materials<br>Science
+                    </button>
                 </div>
             </section>
 
-            <!-- Quote Form -->
-            <section class="quote-form-panel">
-                <h2>📋 Customer Information</h2>
-                <form id="quoteForm">
-                    <div class="form-group">
-                        <label for="customerName">Customer Name *</label>
+            <!-- Customer & Mission Details -->
+            <section class="card">
+                <h2 class="card-title">📋 Customer & Mission</h2>
+                <div class="form-grid-2">
+                    <div class="form-group full-width">
+                        <label>Customer Name *</label>
                         <input type="text" id="customerName" placeholder="e.g., Space Cargo Unlimited" required>
                     </div>
-
-                    <div class="form-section">
-                        <h3>Experiment Parameters</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="mass">Mass (kg) *</label>
-                                <input type="number" id="mass" placeholder="e.g., 30" min="0.1" step="0.1" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="volume">Volume (L) *</label>
-                                <input type="number" id="volume" placeholder="e.g., 50" min="0.1" step="0.1" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="mdl">Mid Deck Lockers (MDL)</label>
-                                <input type="number" id="mdl" placeholder="0" min="0" max="2" step="1" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label for="power">Power Requirement (W)</label>
-                                <input type="number" id="power" placeholder="e.g., 100" min="0" step="1" value="50">
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label>Mission Name</label>
+                        <input type="text" id="missionName" placeholder="e.g., BioLab Flight 001">
                     </div>
-
-                    <div class="form-section">
-                        <h3>Mission Details</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="missionName">Mission Name</label>
-                                <input type="text" id="missionName" placeholder="e.g., BioLab Experiment 001">
-                            </div>
-                            <div class="form-group">
-                                <label for="launchDate">Target Launch Date</label>
-                                <input type="date" id="launchDate">
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label>Target Launch Date</label>
+                        <input type="date" id="launchDate">
                     </div>
-
-                    <button type="submit" class="primary-btn">Calculate & Generate Quote</button>
-                </form>
+                </div>
             </section>
 
-            <!-- Quote Results -->
-            <section class="quote-results-panel" id="resultsPanel" style="display: none;">
-                <h2>💰 Price Quote</h2>
-                <div class="quote-summary">
-                    <div class="summary-card">
-                        <h3>Breakdown</h3>
-                        <div class="breakdown">
-                            <div class="breakdown-item">
-                                <span>Base Cost (Mass × €45,000/kg)</span>
-                                <span id="baseCost">€0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>Volume Surcharge</span>
-                                <span id="volumeCost">€0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>MDL Premium</span>
-                                <span id="mdlCost">€0.00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>Power Surcharge</span>
-                                <span id="powerCost">€0.00</span>
-                            </div>
-                            <div class="breakdown-item total">
-                                <span>Total Mission Cost</span>
-                                <span id="totalCost">€0.00</span>
-                            </div>
+            <!-- Experiment Parameters -->
+            <section class="card">
+                <h2 class="card-title">🚀 Experiment Parameters</h2>
+                <div class="form-grid-2">
+
+                    <!-- Mass -->
+                    <div class="form-group">
+                        <label>Mass (kg) * <span class="limit-label">max 100 kg</span></label>
+                        <input type="number" id="mass" placeholder="e.g., 30" min="0.1" max="100" step="0.1">
+                        <div class="capacity-bar-wrap">
+                            <div class="capacity-bar" id="massBar"></div>
                         </div>
+                        <div class="capacity-label" id="massLabel">0 / 100 kg</div>
                     </div>
 
-                    <div class="summary-card">
-                        <h3>Details</h3>
-                        <div class="details">
-                            <p><strong>Customer:</strong> <span id="displayCustomer"></span></p>
-                            <p><strong>Mass:</strong> <span id="displayMass"></span> kg</p>
-                            <p><strong>Volume:</strong> <span id="displayVolume"></span> L (<span id="costPerLiter"></span>€/L)</p>
-                            <p><strong>MDL:</strong> <span id="displayMDL"></span></p>
-                            <p><strong>Power:</strong> <span id="displayPower"></span> W</p>
-                            <p><strong>Density:</strong> <span id="displayDensity"></span> kg/L</p>
+                    <!-- Volume -->
+                    <div class="form-group">
+                        <label>Volume (L) * <span class="limit-label">max 300 L</span></label>
+                        <input type="number" id="volume" placeholder="e.g., 50" min="0.1" max="300" step="0.1">
+                        <div class="capacity-bar-wrap">
+                            <div class="capacity-bar" id="volumeBar"></div>
                         </div>
+                        <div class="capacity-label" id="volumeLabel">0 / 300 L</div>
+                    </div>
+
+                    <!-- MDL -->
+                    <div class="form-group">
+                        <label>Mid Deck Lockers (MDL) <span class="limit-label">max 2</span></label>
+                        <input type="number" id="mdl" min="0" max="2" step="1" value="0">
+                        <div class="capacity-bar-wrap">
+                            <div class="capacity-bar" id="mdlBar"></div>
+                        </div>
+                        <div class="capacity-label" id="mdlLabel">0 / 2 lockers</div>
+                    </div>
+
+                    <!-- Power -->
+                    <div class="form-group">
+                        <label>Power (W) <span class="limit-label">surcharge >50W</span></label>
+                        <input type="number" id="power" min="0" step="1" value="50">
+                        <div class="capacity-bar-wrap">
+                            <div class="capacity-bar" id="powerBar"></div>
+                        </div>
+                        <div class="capacity-label" id="powerLabel">50 W</div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Generate Button -->
+            <button id="generateMissionOrder" class="generate-btn" disabled>
+                📄 Generate Mission Order
+            </button>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Live Price Preview -->
+        <div class="preview-column">
+            <div class="price-preview sticky-preview">
+
+                <!-- Live Total -->
+                <div class="total-display">
+                    <div class="total-label">ESTIMATED MISSION COST</div>
+                    <div class="total-amount" id="liveTotalCost">€ 0</div>
+                    <div class="total-sublabel" id="readinessLabel">Fill in the form to calculate</div>
+                </div>
+
+                <!-- Breakdown -->
+                <div class="breakdown-list">
+                    <div class="breakdown-row">
+                        <div class="breakdown-icon">⚖️</div>
+                        <div class="breakdown-desc">
+                            <div class="breakdown-name">Base Cost</div>
+                            <div class="breakdown-sub" id="baseCostSub">-- kg × €45,000/kg</div>
+                        </div>
+                        <div class="breakdown-value" id="baseCost">€ 0</div>
+                    </div>
+                    <div class="breakdown-row">
+                        <div class="breakdown-icon">📦</div>
+                        <div class="breakdown-desc">
+                            <div class="breakdown-name">Volume Surcharge</div>
+                            <div class="breakdown-sub" id="volumeCostSub">-- L × 15%</div>
+                        </div>
+                        <div class="breakdown-value" id="volumeCost">€ 0</div>
+                    </div>
+                    <div class="breakdown-row">
+                        <div class="breakdown-icon">🗄️</div>
+                        <div class="breakdown-desc">
+                            <div class="breakdown-name">MDL Premium</div>
+                            <div class="breakdown-sub" id="mdlCostSub">0 lockers × €3M</div>
+                        </div>
+                        <div class="breakdown-value" id="mdlCost">€ 0</div>
+                    </div>
+                    <div class="breakdown-row">
+                        <div class="breakdown-icon">⚡</div>
+                        <div class="breakdown-desc">
+                            <div class="breakdown-name">Power Surcharge</div>
+                            <div class="breakdown-sub" id="powerCostSub">≤50W — no surcharge</div>
+                        </div>
+                        <div class="breakdown-value" id="powerCost">€ 0</div>
                     </div>
                 </div>
 
-                <div class="action-buttons">
-                    <button id="generateMissionOrder" class="primary-btn">📄 Generate Mission Order File</button>
-                    <button id="resetForm" class="secondary-btn">← Create Another Quote</button>
+                <!-- Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-val" id="metricDensity">—</div>
+                        <div class="metric-name">kg/L density</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-val" id="metricPerKg">—</div>
+                        <div class="metric-name">€ per kg</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-val" id="metricPerL">—</div>
+                        <div class="metric-name">€ per L</div>
+                    </div>
                 </div>
-            </section>
-        </main>
 
-        <footer>
-            <p>Phoenix Experiment Pricing Calculator v1.0 | ATMOS Space Cargo GmbH</p>
-            <p>Lichtenau, Germany | 📧 info@atmos-space-cargo.com</p>
-        </footer>
-    </div>
+                <!-- Phoenix Capsule Limits Info -->
+                <div class="capsule-info">
+                    <div class="capsule-info-title">🛰️ Phoenix Capsule Limits</div>
+                    <div class="capsule-limits">
+                        <span>Max payload: <strong>100 kg</strong></span>
+                        <span>Max volume: <strong>300 L</strong></span>
+                        <span>Max MDL: <strong>2</strong></span>
+                        <span>Orbit: <strong>LEO 550 km</strong></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Phoenix Experiment Pricing Calculator v2.0 · ATMOS Space Cargo GmbH · Lichtenau, Germany</p>
+    </footer>
 
     <script src="app.js"></script>
 </body>
