@@ -81,6 +81,37 @@ function setupMissionTypeSelector() {
     }
 }
 
+function setupFundingSourceSelector() {
+    console.log('💰 setupFundingSourceSelector called');
+    const fundingRadios = document.querySelectorAll('input[name="fundingSource"]');
+    const esaInfoNote = document.getElementById('esaInfoNote');
+    
+    console.log('   - Found', fundingRadios.length, 'funding source radios');
+    console.log('   - esaInfoNote element:', esaInfoNote);
+    
+    fundingRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                fundingSource = this.value;
+                console.log('✅ Funding Source selected:', fundingSource);
+                
+                // Show/hide ESA info note
+                if (esaInfoNote) {
+                    if (fundingSource === 'esa') {
+                        esaInfoNote.style.display = 'block';
+                        console.log('   ℹ️ ESA info note shown');
+                    } else {
+                        esaInfoNote.style.display = 'none';
+                        console.log('   ℹ️ ESA info note hidden');
+                    }
+                }
+                
+                recalculate(); // Trigger recalculation with new funding source
+            }
+        });
+    });
+}
+
 // ─────────────────────────────────────────────────────// WIZARD LOGIC
 // ─────────────────────────────────────────────
 
