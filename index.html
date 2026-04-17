@@ -241,6 +241,7 @@
                             <option value="spacex-falcon9">SpaceX's Falcon 9 Bandwagon</option>
                             <option value="request-other">Request another launcher</option>
                         </select>
+                        <button type="button" id="payloadDetailsBtn" class="info-btn">📋 Payload Integration Details</button>
                     </div>
 
                 </div>
@@ -382,6 +383,22 @@
     <footer>
         <p>Phoenix Experiment Pricing Calculator v2.0 · ATMOS Space Cargo GmbH · Lichtenau, Germany</p>
     </footer>
+
+    <!-- Payload Integration Details Modal -->
+    <div id="payloadModal" class="modal-overlay">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <h3>📋 Payload Integration Details</h3>
+                <button type="button" class="modal-close-btn" id="modalCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>The payload assembly, integration and testing (AIT) will be performed in our facility in Germany, before sending it to the launch site. For late access needs, the AIT could also be perfomed at the lauch site. Further discussions need to be addressed to the payload management team.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-action-btn" id="modalConfirmBtn">Got it</button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>

@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupWizard();
     setupSettings();
     setupForm();
+    setupModalHandlers();
     populateLaunchDate();
 });
 
@@ -266,6 +267,50 @@ function setupForm() {
 
     // Generate Mission Order button
     document.getElementById('generateMissionOrder').addEventListener('click', generateMissionOrderFile);
+}
+
+// ─────────────────────────────────────────────────────
+// MODAL HANDLERS - Payload Integration Details
+// ─────────────────────────────────────────────────────
+
+function setupModalHandlers() {
+    const modal = document.getElementById('payloadModal');
+    const openBtn = document.getElementById('payloadDetailsBtn');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+
+    if (openBtn) {
+        openBtn.addEventListener('click', () => openPayloadModal());
+    }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => closePayloadModal());
+    }
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => closePayloadModal());
+    }
+    
+    // Close modal when clicking outside the panel
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closePayloadModal();
+        });
+    }
+}
+
+function openPayloadModal() {
+    const modal = document.getElementById('payloadModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closePayloadModal() {
+    const modal = document.getElementById('payloadModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
 }
 
 // Mission name to launch date mapping
