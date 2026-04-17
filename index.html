@@ -388,6 +388,60 @@
                 </div>
             </section>
 
+            <!-- Funding Source -->
+            <section class="card">
+                <h2 class="card-title">💰 Funding Source</h2>
+                <p class="section-helper-text">How do you expect to fund this mission?</p>
+                <div class="funding-source-container">
+                    
+                    <!-- Commercial -->
+                    <label class="funding-card">
+                        <input type="radio" name="fundingSource" value="commercial" class="funding-radio">
+                        <div class="funding-content">
+                            <div class="funding-title">Commercial Budget</div>
+                            <div class="funding-desc">Privately funded mission (internal budget or private investment)</div>
+                        </div>
+                        <div class="funding-indicator">✓</div>
+                    </label>
+
+                    <!-- ESA-Funded -->
+                    <label class="funding-card">
+                        <input type="radio" name="fundingSource" value="esa" class="funding-radio">
+                        <div class="funding-content">
+                            <div class="funding-title">ESA-Funded Project</div>
+                            <div class="funding-desc">Mission supported through a European Space Agency program</div>
+                        </div>
+                        <div class="funding-indicator">✓</div>
+                    </label>
+
+                    <!-- National Grant -->
+                    <label class="funding-card">
+                        <input type="radio" name="fundingSource" value="national" class="funding-radio">
+                        <div class="funding-content">
+                            <div class="funding-title">National Grant or Public Funding</div>
+                            <div class="funding-desc">Funded by national agencies (e.g., CNES, DLR, ASI, etc.)</div>
+                        </div>
+                        <div class="funding-indicator">✓</div>
+                    </label>
+
+                    <!-- Not Decided -->
+                    <label class="funding-card">
+                        <input type="radio" name="fundingSource" value="undecided" class="funding-radio">
+                        <div class="funding-content">
+                            <div class="funding-title">Not Decided Yet</div>
+                            <div class="funding-desc">Funding source is still being defined</div>
+                        </div>
+                        <div class="funding-indicator">✓</div>
+                    </label>
+
+                </div>
+
+                <!-- ESA Info Note (shown conditionally) -->
+                <div id="esaInfoNote" class="esa-info-note" style="display: none;">
+                    ℹ️ ESA programs may have specific eligibility and scheduling constraints.
+                </div>
+            </section>
+
             <!-- Generate Button -->
             <button id="generateMissionOrder" class="generate-btn" disabled>
                 📄 Generate Mission Order

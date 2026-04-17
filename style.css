@@ -1031,6 +1031,118 @@ header {
     flex-shrink: 0;
 }
 
+/* ─────────────────────────────────────────────────────
+   FUNDING SOURCE COMPONENT
+   ───────────────────────────────────────────────────── */
+
+.section-helper-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.funding-source-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.funding-card {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 107, 53, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    user-select: none;
+}
+
+.funding-card:hover {
+    background: rgba(255, 107, 53, 0.08);
+    border-color: rgba(255, 107, 53, 0.4);
+    transform: translateY(-2px);
+}
+
+.funding-radio {
+    display: none;
+}
+
+.funding-card:has(input:checked) {
+    background: rgba(255, 107, 53, 0.1);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+}
+
+.funding-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.funding-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.funding-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.funding-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 107, 53, 0.3);
+    color: var(--text-secondary);
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 12px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.funding-card input:checked ~ .funding-indicator {
+    opacity: 1;
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.esa-info-note {
+    padding: 12px 16px;
+    background: rgba(255, 107, 53, 0.08);
+    border-left: 4px solid var(--secondary-color);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /*  ─────────────────────────────────────────────────────
    MISSION DURATION COMPONENT
    ───────────────────────────────────────────────────── */

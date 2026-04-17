@@ -33,12 +33,16 @@ let currentQuote = null;
 // Global mission type variable
 let selectedMissionType = 'shared'; // Default: Shared Phoenix Flight
 
+// Global funding source variable
+let fundingSource = null; // Default: No selection
+
 document.addEventListener('DOMContentLoaded', () => {
     loadPricingFromStorage();
     setupWizard();
     setupSettings();
     setupForm();
     setupMissionTypeSelector();
+    setupFundingSourceSelector();
     setupModalHandlers();
     populateLaunchDate();
 });
@@ -509,6 +513,7 @@ function recalculate() {
     // Store current quote
     currentQuote = {
         missionType: selectedMissionType,
+        fundingSource: fundingSource,
         customerName,
         mass, volume, mdl, power,
         missionName: document.getElementById('missionName').value.trim() || `Phoenix Mission — ${new Date().toLocaleDateString()}`,
@@ -888,3 +893,4 @@ function generateMissionOrderFile() {
 
     doc.save(`mission-order-${quoteNo}.pdf`);
 }
+
