@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupMissionTypeSelector();
     setupFundingSourceSelector();
     setupModalHandlers();
+    setupMissionDurationSlider();
     populateLaunchDate();
 });
 
@@ -325,9 +326,6 @@ function setupModalHandlers() {
             if (e.target === modal) closePayloadModal();
         });
     }
-    
-    // Setup mission duration slider
-    setupMissionDurationSlider();
 }
 
 function openPayloadModal() {
