@@ -245,9 +245,10 @@ function loadPricingFromStorage() {
 
 function setupForm() {
     // Live recalculate on every input change
-    ['mass','volume','mdl','power','customerName','missionName','launchDate'].forEach(id => {
+    ['mass','volume','mdl','power','customerName','missionName','launchDate','lateAccessRequired','launcherType'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', recalculate);
+        if (el) el.addEventListener('change', recalculate);
     });
 
     // Auto-set launch date based on mission name
@@ -390,6 +391,8 @@ function recalculate() {
         mass, volume, mdl, power,
         missionName: document.getElementById('missionName').value.trim() || `Phoenix Mission — ${new Date().toLocaleDateString()}`,
         launchDate: document.getElementById('launchDate').value,
+        lateAccessRequired: document.getElementById('lateAccessRequired').value,
+        launcherType: document.getElementById('launcherType').value,
         pricing,
         pricingConfig: { ...currentPricing },
         payloadType: selectedPayloadType,
