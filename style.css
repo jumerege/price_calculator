@@ -267,6 +267,17 @@ main {
     Box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
 }
 
+.form-group input[type="month"] {
+    cursor: default;
+}
+
+.form-group input[readonly] {
+    background: rgba(255, 255, 255, 0.02);
+    cursor: default;
+    color: var(--success-color);
+    font-weight: 600;
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

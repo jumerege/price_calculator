@@ -250,6 +250,14 @@ function setupForm() {
         if (el) el.addEventListener('input', recalculate);
     });
 
+    // Auto-set launch date based on mission name
+    const missionSelect = document.getElementById('missionName');
+    if (missionSelect) {
+        missionSelect.addEventListener('change', function() {
+            updateLaunchDateFromMission(this.value);
+        });
+    }
+
     // Preset buttons
     document.querySelectorAll('.preset-btn').forEach(btn => {
         btn.addEventListener('click', () => applyPreset(btn));
@@ -257,6 +265,23 @@ function setupForm() {
 
     // Generate Mission Order button
     document.getElementById('generateMissionOrder').addEventListener('click', generateMissionOrderFile);
+}
+
+// Mission name to launch date mapping
+const missionDates = {
+    'Phoenix 2.1': '2026-12',  // Dec/2026
+    'Phoenix 2.2': '2027-04',  // Apr/2027
+    'Phoenix 2.3': '2027-08',  // Aug/2027
+    'Phoenix 2.4': '2028-01'   // Jan/2028
+};
+
+// Auto-update launch date when mission changes
+function updateLaunchDateFromMission(missionName) {
+    const launchDateInput = document.getElementById('launchDate');
+    if (missionDates[missionName]) {
+        launchDateInput.value = missionDates[missionName];
+        recalculate(); // Trigger recalculation with new date
+    }
 }
 
 function populateLaunchDate() {
@@ -273,7 +298,9 @@ function applyPreset(btn) {
     document.getElementById('mdl').value    = btn.dataset.mdl;
     document.getElementById('power').value  = btn.dataset.power;
     if (btn.dataset.name) {
-        document.getElementById('missionName').value = btn.dataset.name;
+        const missionName = btn.dataset.name;
+        document.getElementById('missionName').value = missionName;
+        updateLaunchDateFromMission(missionName); // Auto-set launch date
     }
     recalculate();
 }
