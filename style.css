@@ -278,6 +278,17 @@ main {
     font-weight: 600;
 }
 
+.info-text-green {
+    font-size: 0.85rem;
+    color: var(--success-color);
+    margin-top: 6px;
+    padding: 6px 8px;
+    background: rgba(6, 214, 160, 0.1);
+    border-left: 3px solid var(--success-color);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
