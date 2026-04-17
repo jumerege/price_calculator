@@ -534,7 +534,7 @@ function updateCapacityBars(mass, volume, mdl, power) {
     setBar('massBar',   'massLabel',   mass,   100,  `${mass} / 100 kg`);
     setBar('volumeBar', 'volumeLabel', volume, 300,  `${volume} / 300 L`);
     setBar('mdlBar',    'mdlLabel',    mdl,    2,    `${mdl} / 2 lockers`);
-    setBar('powerBar',  'powerLabel',  power,  200,  `${power} W`);
+    setBar('powerBar',  'powerLabel',  power,  135,  `${power} / 135 W`);
 }
 
 function setBar(barId, labelId, value, max, labelText) {
