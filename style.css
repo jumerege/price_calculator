@@ -940,6 +940,98 @@ header {
 }
 
 /* ─────────────────────────────────────────────────────
+   MISSION TYPE COMPONENT
+   ───────────────────────────────────────────────────── */
+
+.mission-type-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.mission-type-card {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(0, 212, 255, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    user-select: none;
+}
+
+.mission-type-card:hover {
+    background: rgba(0, 212, 255, 0.08);
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.mission-type-radio {
+    display: none;
+}
+
+.mission-type-card input:checked + .mission-type-content ~ .mission-type-indicator {
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+.mission-type-card input:checked ~ .mission-type-content {
+    color: var(--text-primary);
+}
+
+.mission-type-card input:checked {
+    border-color: var(--primary-color);
+}
+
+/* Selected card state */
+.mission-type-radio:checked ~ div {
+    --check-opacity: 1;
+}
+
+.mission-type-card:has(input:checked) {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+.mission-type-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mission-type-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.mission-type-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.mission-type-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    color: var(--text-secondary);
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 12px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+/*  ─────────────────────────────────────────────────────
    MISSION DURATION COMPONENT
    ───────────────────────────────────────────────────── */
 

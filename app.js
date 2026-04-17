@@ -30,17 +30,43 @@ let currentPricing = { ...DEFAULT_PRICING };
 let currentQuote = null;
 
 // Initialize
+// Global mission type variable
+let selectedMissionType = 'shared'; // Default: Shared Phoenix Flight
+
 document.addEventListener('DOMContentLoaded', () => {
     loadPricingFromStorage();
     setupWizard();
     setupSettings();
     setupForm();
+    setupMissionTypeSelector();
     setupModalHandlers();
     populateLaunchDate();
 });
 
-// ─────────────────────────────────────────────
-// WIZARD LOGIC
+// ─────────────────────────────────────────────// MISSION TYPE SELECTOR
+// ─────────────────────────────────────────────────────
+
+function setupMissionTypeSelector() {
+    const missionTypeRadios = document.querySelectorAll('input[name="missionType"]');
+    
+    missionTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                selectedMissionType = this.value;
+                console.log('✅ Mission Type selected:', selectedMissionType);
+                recalculate(); // Trigger recalculation with new mission type
+            }
+        });
+    });
+    
+    // Initialize with default selected value
+    const defaultRadio = document.querySelector('input[name="missionType"]:checked');
+    if (defaultRadio) {
+        selectedMissionType = defaultRadio.value;
+    }
+}
+
+// ─────────────────────────────────────────────────────// WIZARD LOGIC
 // ─────────────────────────────────────────────
 
 function setupWizard() {
@@ -482,6 +508,7 @@ function recalculate() {
 
     // Store current quote
     currentQuote = {
+        missionType: selectedMissionType,
         customerName,
         mass, volume, mdl, power,
         missionName: document.getElementById('missionName').value.trim() || `Phoenix Mission — ${new Date().toLocaleDateString()}`,
