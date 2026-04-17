@@ -248,6 +248,70 @@
                 </div>
             </section>
 
+            <!-- Mission Duration -->
+            <section class="card">
+                <h2 class="card-title">⏳ Mission Duration</h2>
+                
+                <!-- Duration Display -->
+                <div class="duration-display">
+                    <span class="duration-label">Mission duration:</span>
+                    <span class="duration-value" id="durationValue">3</span>
+                    <span class="duration-unit">weeks</span>
+                </div>
+
+                <!-- Duration Slider -->
+                <div class="slider-container">
+                    <input type="range" id="missionDurationSlider" class="duration-slider" min="3" max="12" value="3" step="1">
+                    <div class="slider-labels">
+                        <span class="slider-min">3 weeks</span>
+                        <span class="slider-max">12 weeks</span>
+                    </div>
+                </div>
+
+                <!-- Info Text -->
+                <div class="mission-info-text">
+                    <p><strong>Missions can last between 3 and 12 weeks.</strong></p>
+                    <p><strong>Week 1:</strong> Launch, deployment, sun orientation</p>
+                    <p><strong>Final week:</strong> De-orbit, re-entry, splashdown, transportation to Lichtenau headquarters</p>
+                    <p><em>The weeks in between are considered the operational mission period.</em></p>
+                </div>
+
+                <!-- Dynamic Mission Breakdown -->
+                <div class="mission-breakdown">
+                    <div class="breakdown-row">
+                        <div class="breakdown-phase week1">
+                            <div class="phase-title">📡 Week 1</div>
+                            <div class="phase-items">
+                                <span>Launch</span>
+                                <span>Deployment</span>
+                                <span>Sun orientation</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="midPhaseContainer" class="breakdown-row">
+                        <div class="breakdown-phase operations">
+                            <div class="phase-title" id="midPhaseTitle">🚀 Operations (10 weeks)</div>
+                            <div class="phase-items">
+                                <span>Mission operations</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-row">
+                        <div class="breakdown-phase final">
+                            <div class="phase-title">🛬 Final Week</div>
+                            <div class="phase-items">
+                                <span>De-orbit</span>
+                                <span>Re-entry</span>
+                                <span>Splashdown</span>
+                                <span>Transportation</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Experiment Parameters -->
             <section class="card">
                 <h2 class="card-title">🚀 Experiment Parameters</h2>

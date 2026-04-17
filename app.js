@@ -246,7 +246,7 @@ function loadPricingFromStorage() {
 
 function setupForm() {
     // Live recalculate on every input change
-    ['mass','volume','mdl','power','customerName','missionName','launchDate','lateAccessRequired','launcherType'].forEach(id => {
+    ['mass','volume','mdl','power','customerName','missionName','launchDate','lateAccessRequired','launcherType','missionDurationSlider'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', recalculate);
         if (el) el.addEventListener('change', recalculate);
@@ -295,6 +295,9 @@ function setupModalHandlers() {
             if (e.target === modal) closePayloadModal();
         });
     }
+    
+    // Setup mission duration slider
+    setupMissionDurationSlider();
 }
 
 function openPayloadModal() {
@@ -310,6 +313,53 @@ function closePayloadModal() {
     if (modal) {
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
+    }
+}
+
+// ─────────────────────────────────────────────────────
+// MISSION DURATION SLIDER
+// ─────────────────────────────────────────────────────
+
+function setupMissionDurationSlider() {
+    const slider = document.getElementById('missionDurationSlider');
+    const durationValue = document.getElementById('durationValue');
+    const midPhaseTitle = document.getElementById('midPhaseTitle');
+    
+    if (!slider) return;
+    
+    // Update on input
+    slider.addEventListener('input', function() {
+        updateMissionDuration(parseInt(this.value), durationValue, midPhaseTitle);
+        recalculate();
+    });
+    
+    // Initial setup
+    updateMissionDuration(3, durationValue, midPhaseTitle);
+}
+
+function updateMissionDuration(weeks, durationValue, midPhaseTitle) {
+    // Update the duration display
+    if (durationValue) {
+        durationValue.textContent = weeks;
+    }
+    
+    // Calculate middle weeks
+    const middleWeeks = weeks - 2; // Subtract week 1 and final week
+    
+    // Update the middle phase title
+    if (midPhaseTitle) {
+        midPhaseTitle.textContent = `🚀 Operations (${middleWeeks} ${middleWeeks === 1 ? 'week' : 'weeks'})`;
+    }
+    
+    // Show/hide the middle phase container based on duration
+    const midPhaseContainer = document.getElementById('midPhaseContainer');
+    if (midPhaseContainer) {
+        if (weeks === 3) {
+            // For 3 weeks, show the middle phase but with minimal content
+            midPhaseContainer.style.display = 'block';
+        } else {
+            midPhaseContainer.style.display = 'block';
+        }
     }
 }
 
@@ -438,6 +488,7 @@ function recalculate() {
         launchDate: document.getElementById('launchDate').value,
         lateAccessRequired: document.getElementById('lateAccessRequired').value,
         launcherType: document.getElementById('launcherType').value,
+        missionDuration: parseInt(document.getElementById('missionDurationSlider').value) || 3,
         pricing,
         pricingConfig: { ...currentPricing },
         payloadType: selectedPayloadType,
