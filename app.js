@@ -37,15 +37,25 @@ let selectedMissionType = 'shared'; // Default: Shared Phoenix Flight
 let fundingSource = null; // Default: No selection
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('📋 DOMContentLoaded fired');
     loadPricingFromStorage();
+    console.log('✓ loadPricingFromStorage');
     setupWizard();
+    console.log('✓ setupWizard');
     setupSettings();
+    console.log('✓ setupSettings');
     setupForm();
+    console.log('✓ setupForm');
     setupMissionTypeSelector();
+    console.log('✓ setupMissionTypeSelector');
     setupFundingSourceSelector();
+    console.log('✓ setupFundingSourceSelector');
     setupModalHandlers();
+    console.log('✓ setupModalHandlers');
     setupMissionDurationSlider();
+    console.log('✓ setupMissionDurationSlider');
     populateLaunchDate();
+    console.log('✓ populateLaunchDate - ALL SETUP COMPLETE');
 });
 
 // ─────────────────────────────────────────────// MISSION TYPE SELECTOR
@@ -305,42 +315,77 @@ function setupForm() {
 // ─────────────────────────────────────────────────────
 
 function setupModalHandlers() {
+    console.log('🪟 setupModalHandlers called');
     const modal = document.getElementById('payloadModal');
     const openBtn = document.getElementById('payloadDetailsBtn');
     const closeBtn = document.getElementById('modalCloseBtn');
     const confirmBtn = document.getElementById('modalConfirmBtn');
+    
+    console.log('   - payloadModal element:', modal);
+    console.log('   - payloadDetailsBtn element:', openBtn);
+    console.log('   - modalCloseBtn element:', closeBtn);
+    console.log('   - modalConfirmBtn element:', confirmBtn);
 
     if (openBtn) {
-        openBtn.addEventListener('click', () => openPayloadModal());
+        openBtn.addEventListener('click', () => {
+            console.log('   📋 Open button clicked');
+            openPayloadModal();
+        });
+        console.log('   ✓ Open button listener attached');
+    } else {
+        console.error('   ❌ ERROR: payloadDetailsBtn not found');
     }
+    
     if (closeBtn) {
-        closeBtn.addEventListener('click', () => closePayloadModal());
+        closeBtn.addEventListener('click', () => {
+            console.log('   ✓ Close button clicked');
+            closePayloadModal();
+        });
+        console.log('   ✓ Close button listener attached');
     }
     if (confirmBtn) {
-        confirmBtn.addEventListener('click', () => closePayloadModal());
+        confirmBtn.addEventListener('click', () => {
+            console.log('   ✓ Confirm button clicked');
+            closePayloadModal();
+        });
+        console.log('   ✓ Confirm button listener attached');
     }
     
     // Close modal when clicking outside the panel
     if (modal) {
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) closePayloadModal();
+            if (e.target === modal) {
+                console.log('   ✓ Clicked outside modal');
+                closePayloadModal();
+            }
         });
+        console.log('   ✓ Outside click listener attached');
     }
 }
 
 function openPayloadModal() {
+    console.log('🪟 openPayloadModal called');
     const modal = document.getElementById('payloadModal');
+    console.log('   - modal element:', modal);
     if (modal) {
+        console.log('   - adding active class');
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        console.log('   ✓ Modal should now be visible');
+    } else {
+        console.error('   ❌ ERROR: Modal element not found!');
     }
 }
 
 function closePayloadModal() {
+    console.log('🪟 closePayloadModal called');
     const modal = document.getElementById('payloadModal');
     if (modal) {
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
+        console.log('   ✓ Modal closed');
+    } else {
+        console.error('   ❌ ERROR: Modal element not found!');
     }
 }
 
@@ -349,26 +394,43 @@ function closePayloadModal() {
 // ─────────────────────────────────────────────────────
 
 function setupMissionDurationSlider() {
+    console.log('🎚️ setupMissionDurationSlider called');
     const slider = document.getElementById('missionDurationSlider');
     const durationValue = document.getElementById('durationValue');
     const midPhaseTitle = document.getElementById('midPhaseTitle');
     
-    if (!slider) return;
+    console.log('   - slider element:', slider);
+    console.log('   - durationValue element:', durationValue);
+    console.log('   - midPhaseTitle element:', midPhaseTitle);
+    
+    if (!slider) {
+        console.error('   ❌ ERROR: missionDurationSlider element not found!');
+        return;
+    }
     
     // Update on input
     slider.addEventListener('input', function() {
+        console.log('   🎚️ Slider input event fired, value:', this.value);
         updateMissionDuration(parseInt(this.value), durationValue, midPhaseTitle);
         recalculate();
     });
     
+    console.log('   ✓ Slider input listener attached');
+    
     // Initial setup
     updateMissionDuration(3, durationValue, midPhaseTitle);
+    console.log('   ✓ Initial duration set to 3 weeks');
 }
 
 function updateMissionDuration(weeks, durationValue, midPhaseTitle) {
+    console.log('📊 updateMissionDuration called with weeks:', weeks);
+    
     // Update the duration display
     if (durationValue) {
         durationValue.textContent = weeks;
+        console.log('   ✓ Updated durationValue to:', weeks);
+    } else {
+        console.error('   ❌ durationValue element is null');
     }
     
     // Calculate middle weeks
@@ -377,6 +439,9 @@ function updateMissionDuration(weeks, durationValue, midPhaseTitle) {
     // Update the middle phase title
     if (midPhaseTitle) {
         midPhaseTitle.textContent = `🚀 Operations (${middleWeeks} ${middleWeeks === 1 ? 'week' : 'weeks'})`;
+        console.log('   ✓ Updated midPhaseTitle');
+    } else {
+        console.error('   ❌ midPhaseTitle element is null');
     }
     
     // Show/hide the middle phase container based on duration
@@ -388,6 +453,9 @@ function updateMissionDuration(weeks, durationValue, midPhaseTitle) {
         } else {
             midPhaseContainer.style.display = 'block';
         }
+        console.log('   ✓ Updated midPhaseContainer display');
+    } else {
+        console.error('   ❌ midPhaseContainer element not found');
     }
 }
 
