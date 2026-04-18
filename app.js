@@ -1253,13 +1253,35 @@ function generateMissionReservationPDF(customerNameArg, customerCompany, custome
     };
 
     // ── HEADER with ATMOS Logo ─────────────────────────────────────────
-    // Add logo image (60mm width)
-    try {
-        doc.addImage('atmos_logo.webp', 'WEBP', L, 8, 60, 20);
-        cy = 32;
-    } catch (e) {
-        // Fallback to text if logo fails
-        console.warn('Could not embed logo:', e);
+    // Load logo from HTML img tag that's already on page
+    const logoImg = document.querySelector('.atmos-logo-img');
+    let logoAdded = false;
+    
+    if (logoImg && logoImg.src) {
+        try {
+            // Use the already-loaded image from the page
+            const canvas = document.createElement('canvas');
+            canvas.width = logoImg.naturalWidth || 300;
+            canvas.height = logoImg.naturalHeight || 100;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(logoImg, 0, 0);
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Add logo to PDF (60mm width, maintaining aspect ratio)
+            const logoWidth = 60;
+            const logoHeight = (logoWidth * canvas.height) / canvas.width;
+            doc.addImage(imgData, 'PNG', L, 8, logoWidth, logoHeight);
+            cy = 8 + logoHeight + 3;
+            logoAdded = true;
+            console.log('✓ Logo added to PDF');
+        } catch (e) {
+            console.warn('Could not embed logo from image:', e);
+        }
+    }
+
+    // Fallback if logo couldn't be added
+    if (!logoAdded) {
+        console.warn('Logo not available, using text header');
         font('bold', 18, [10, 24, 80]);
         at('ATMOS', L, cy); cy += 8;
         at('SPACE CARGO', L, cy); cy += 1;
