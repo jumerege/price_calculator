@@ -576,6 +576,21 @@ header {
     padding: 20px 28px;
 }
 
+/* ── Presets Drawer ────────────────────────────────── */
+.presets-drawer {
+    max-height: 0;
+    overflow: hidden;
+    background: rgba(10,14,39,0.95);
+    border-bottom: 1px solid var(--card-border);
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    padding: 0 28px;
+}
+
+.presets-drawer.open {
+    max-height: 600px;
+    padding: 20px 28px;
+}
+
 .settings-drawer .settings-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

@@ -438,16 +438,24 @@ function setupModalHandlers() {
     // ─── HELP CHOOSE PARAMETERS BUTTON ───────────────────────────
     console.log('🆘 Setting up help choose parameters button');
     const helpChooseBtn = document.getElementById('helpChooseParamsBtn');
+    const experimentPresetsSection = document.getElementById('experimentPresetsSection');
+    const closePresetsBtn = document.getElementById('closePresetsBtn');
+    
     if (helpChooseBtn) {
         helpChooseBtn.addEventListener('click', () => {
             console.log('   🆘 Help choose button clicked');
-            const presetsSection = document.getElementById('experimentPresetsSection');
-            if (presetsSection) {
-                presetsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                console.log('   ✓ Scrolled to experiment presets');
-            }
+            experimentPresetsSection.classList.toggle('open');
+            console.log('   ✓ Toggled presets visibility');
         });
         console.log('   ✓ Help choose button listener attached');
+    }
+    
+    if (closePresetsBtn) {
+        closePresetsBtn.addEventListener('click', () => {
+            console.log('   ✓ Close presets button clicked');
+            experimentPresetsSection.classList.remove('open');
+        });
+        console.log('   ✓ Close presets button listener attached');
     }
 }
 
@@ -581,6 +589,11 @@ function applyPreset(btn) {
         const missionName = btn.dataset.name;
         document.getElementById('missionName').value = missionName;
         updateLaunchDateFromMission(missionName); // Auto-set launch date
+    }
+    // Close presets section after selection
+    const experimentPresetsSection = document.getElementById('experimentPresetsSection');
+    if (experimentPresetsSection) {
+        experimentPresetsSection.classList.remove('open');
     }
     recalculate();
 }
