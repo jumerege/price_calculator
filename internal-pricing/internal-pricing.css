@@ -31,6 +31,30 @@ body::before {
     transform: translateX(-3px);
 }
 
+/* Calculation Engine Button */
+.calc-engine-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1));
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.calc-engine-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 212, 255, 0.2));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 212, 255, 0.2);
+}
+
+.calc-engine-btn:active {
+    transform: translateY(0);
+}
+
 /* Pricing Card Base */
 .pricing-card {
     background: var(--card-bg);

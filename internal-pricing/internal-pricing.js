@@ -49,6 +49,25 @@ function setupEventListeners() {
     // Action buttons
     document.getElementById('resetBtn').addEventListener('click', reset);
     document.getElementById('exportBtn').addEventListener('click', exportAnalysis);
+
+    // Calculation Engine Modal
+    const modal = document.getElementById('calcEngineModal');
+    const calcEngineBtn = document.getElementById('calcEngineBtn');
+    const calcEngineClose = document.getElementById('calcEngineClose');
+
+    calcEngineBtn.addEventListener('click', function() {
+        modal.classList.add('active');
+    });
+
+    calcEngineClose.addEventListener('click', function() {
+        modal.classList.remove('active');
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.classList.remove('active');
+        }
+    });
 }
 
 /**

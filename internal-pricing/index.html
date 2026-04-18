@@ -18,6 +18,7 @@
             <p>For use of finance and BD team only.</p>
         </div>
         <div class="header-right">
+            <button id="calcEngineBtn" class="calc-engine-btn">📐 Calculation Engine</button>
             <a href="../index.html" class="back-link">← Back to Public Calculator</a>
         </div>
     </header>
@@ -292,7 +293,140 @@
         .tooltip-icon:hover {
             background: rgba(0, 212, 255, 0.6);
         }
+
+        /* Calculation Engine Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #16213e 100%);
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            color: var(--secondary-color);
+        }
+
+        .modal-formulas {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .modal-formulas p {
+            margin: 10px 0;
+            color: var(--text-secondary);
+        }
+
+        .modal-formulas strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 25px;
+                max-width: 95%;
+            }
+
+            .modal-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .modal-formulas {
+                font-size: 0.85rem;
+                padding: 15px;
+            }
+        }
     </style>
+
+    <!-- Calculation Engine Modal -->
+    <div id="calcEngineModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📐 Calculation Engine</h2>
+                <button class="modal-close" id="calcEngineClose">&times;</button>
+            </div>
+            <div class="modal-formulas">
+                <p><strong>Total NRC</strong> = Phase A + B + C + D</p>
+                <p><strong>Dev Cost per Mission</strong> = Total NRC / Mission Count</p>
+                <p><strong>Total Recurring</strong> = Launch + Ops + Recovery + Integration + Refurbishment + Logistics</p>
+                <p><strong>Total Cost per Mission</strong> = Dev Cost + Recurring</p>
+                <p><strong>Break-even €/kg</strong> = Total Cost / Sold Mass</p>
+                <p><strong>Recommended €/kg</strong> = Break-even × (1 + Target Margin %)</p>
+                <p><strong>Revenue per Mission</strong> = Recommended Price × Sold Mass</p>
+                <p><strong>Operational Margin %</strong> = (Revenue - Cost) / Revenue × 100</p>
+            </div>
+        </div>
+    </div>
 
     <script src="internal-pricing.js"></script>
 </body>
