@@ -577,19 +577,7 @@ header {
 }
 
 /* ── Presets Drawer ────────────────────────────────── */
-.presets-drawer {
-    max-height: 0;
-    overflow: hidden;
-    background: rgba(10,14,39,0.95);
-    border-bottom: 1px solid var(--card-border);
-    transition: max-height 0.35s ease, padding 0.35s ease;
-    padding: 0 28px;
-}
-
-.presets-drawer.open {
-    max-height: 600px;
-    padding: 20px 28px;
-}
+/* Old presets drawer - removed, using right-side drawer instead */
 
 .settings-drawer .settings-grid {
     display: grid;
@@ -1597,6 +1585,150 @@ header {
 }
 
 .breakdown-icon { font-size: 1.1rem; margin-top: 1px; }
+
+/* ── Right-side Presets Drawer ───────────────────────── */
+.presets-drawer-wrapper {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.presets-drawer-wrapper.open {
+    pointer-events: auto;
+}
+
+.presets-drawer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.3s ease;
+    pointer-events: none;
+}
+
+.presets-drawer-wrapper.open .presets-drawer-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    pointer-events: auto;
+}
+
+.presets-drawer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 420px;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(10,14,39,0.98) 0%, rgba(15,20,50,0.98) 100%);
+    border-left: 1px solid var(--card-border);
+    transform: translateX(100%);
+    transition: transform 0.35s ease;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 20px rgba(0, 212, 255, 0.1);
+}
+
+.presets-drawer-wrapper.open .presets-drawer-panel {
+    transform: translateX(0);
+}
+
+.presets-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--card-border);
+    flex-shrink: 0;
+}
+
+.presets-drawer-header h2 {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.drawer-close-btn {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+}
+
+.drawer-close-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-dark);
+    transform: scale(1.1);
+}
+
+.drawer-close-btn:active {
+    transform: scale(0.95);
+}
+
+.presets-drawer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.presets-grid-right {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.presets-grid-right .preset-btn {
+    width: 100%;
+    padding: 14px;
+    text-align: center;
+    background: rgba(0, 212, 255, 0.08);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #e0e0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-direction: column;
+}
+
+.presets-grid-right .preset-btn:hover {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
+    transform: translateX(-4px);
+}
+
+.presets-grid-right .preset-btn:active {
+    transform: translateX(-2px);
+}
+
+.presets-grid-right .preset-desc {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: #a0a0d0;
+}
+
+/* Responsive: hide drawer on mobile when in portrait */
+@media (max-width: 768px) {
+    .presets-drawer-panel {
+        max-width: 100%;
+    }
+}
 
 .breakdown-desc { flex: 1; min-width: 0; }
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phoenix Pricing Calculator — ATMOS Space Cargo</title>
-    <link rel="stylesheet" href="style.css?v=20260418-5">
+    <link rel="stylesheet" href="style.css?v=20260418-6">
 </head>
 <body>
     <!-- Header -->
@@ -170,40 +170,6 @@
 
         <!-- LEFT COLUMN: Form -->
         <div class="form-column">
-
-            <!-- Experiment Presets -->
-            <section class="card presets-drawer" id="experimentPresetsSection">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h2 class="card-title" style="margin: 0;">🧪 Experiment Presets</h2>
-                    <button type="button" id="closePresetsBtn" class="help-choose-btn" style="padding: 4px 8px; font-size: 0.8rem;">✕ Hide</button>
-                </div>
-                <div class="presets-grid">
-                    <button class="preset-btn" data-mass="2.5" data-volume="5" data-mdl="0" data-power="30" data-name="Protein Crystallization">
-                        🔬 Protein<br>Crystallization
-                        <span class="preset-desc">2.5 kg • 5 L • 30 W</span>
-                    </button>
-                    <button class="preset-btn" data-mass="15" data-volume="30" data-mdl="1" data-power="80" data-name="Cell Biology Lab">
-                        🧬 Cell<br>Biology Lab
-                        <span class="preset-desc">15 kg • 30 L • 80 W</span>
-                    </button>
-                    <button class="preset-btn" data-mass="30" data-volume="100" data-mdl="1" data-power="100" data-name="Bioprinting Unit">
-                        🖨️ Bio-<br>printing Unit
-                        <span class="preset-desc">30 kg • 100 L • 100 W</span>
-                    </button>
-                    <button class="preset-btn" data-mass="5" data-volume="10" data-mdl="0" data-power="25" data-name="Atmospheric Studies">
-                        🌧️ Atmospheric<br>Studies
-                        <span class="preset-desc">5 kg • 10 L • 25 W</span>
-                    </button>
-                    <button class="preset-btn" data-mass="8" data-volume="12" data-mdl="0" data-power="20" data-name="Materials Science">
-                        ⚗️ Materials<br>Science
-                        <span class="preset-desc">8 kg • 12 L • 20 W</span>
-                    </button>
-                    <button class="preset-btn" data-mass="3" data-volume="8" data-mdl="0" data-power="45" data-name="Data Processing Module">
-                        💻 Data Processing<br>Module
-                        <span class="preset-desc">3 kg • 8 L • 45 W</span>
-                    </button>
-                </div>
-            </section>
 
             <!-- Mission Type Selection -->
             <section class="card">
@@ -632,8 +598,47 @@
         </div>
     </div>
 
+    <!-- Right-side Experiment Presets Drawer -->
+    <div class="presets-drawer-wrapper" id="presetsDrawerWrapper">
+        <div class="presets-drawer-overlay" id="presetsDrawerOverlay"></div>
+        <div class="presets-drawer-panel">
+            <div class="presets-drawer-header">
+                <h2>🧪 Experiment Presets</h2>
+                <button type="button" id="closePresetsDrawerBtn" class="drawer-close-btn">✕</button>
+            </div>
+            <div class="presets-drawer-content">
+                <div class="presets-grid-right">
+                    <button class="preset-btn" data-mass="2.5" data-volume="5" data-mdl="0" data-power="30" data-name="Protein Crystallization">
+                        🔬 Protein<br>Crystallization
+                        <span class="preset-desc">2.5 kg • 5 L • 30 W</span>
+                    </button>
+                    <button class="preset-btn" data-mass="15" data-volume="30" data-mdl="1" data-power="80" data-name="Cell Biology Lab">
+                        🧬 Cell<br>Biology Lab
+                        <span class="preset-desc">15 kg • 30 L • 80 W</span>
+                    </button>
+                    <button class="preset-btn" data-mass="30" data-volume="100" data-mdl="1" data-power="100" data-name="Bioprinting Unit">
+                        🖨️ Bio-<br>printing Unit
+                        <span class="preset-desc">30 kg • 100 L • 100 W</span>
+                    </button>
+                    <button class="preset-btn" data-mass="5" data-volume="10" data-mdl="0" data-power="25" data-name="Atmospheric Studies">
+                        🌧️ Atmospheric<br>Studies
+                        <span class="preset-desc">5 kg • 10 L • 25 W</span>
+                    </button>
+                    <button class="preset-btn" data-mass="8" data-volume="12" data-mdl="0" data-power="20" data-name="Materials Science">
+                        ⚗️ Materials<br>Science
+                        <span class="preset-desc">8 kg • 12 L • 20 W</span>
+                    </button>
+                    <button class="preset-btn" data-mass="3" data-volume="8" data-mdl="0" data-power="45" data-name="Data Processing Module">
+                        💻 Data Processing<br>Module
+                        <span class="preset-desc">3 kg • 8 L • 45 W</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <script src="app.js?v=20260418-5"></script>
+    <script src="app.js?v=20260418-6"></script>
 </body>
 </html>

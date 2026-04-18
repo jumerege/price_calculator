@@ -438,24 +438,33 @@ function setupModalHandlers() {
     // ─── HELP CHOOSE PARAMETERS BUTTON ───────────────────────────
     console.log('🆘 Setting up help choose parameters button');
     const helpChooseBtn = document.getElementById('helpChooseParamsBtn');
-    const experimentPresetsSection = document.getElementById('experimentPresetsSection');
-    const closePresetsBtn = document.getElementById('closePresetsBtn');
+    const presetsDrawerWrapper = document.getElementById('presetsDrawerWrapper');
+    const closePresetsDrawerBtn = document.getElementById('closePresetsDrawerBtn');
+    const presetsDrawerOverlay = document.getElementById('presetsDrawerOverlay');
     
     if (helpChooseBtn) {
         helpChooseBtn.addEventListener('click', () => {
             console.log('   🆘 Help choose button clicked');
-            experimentPresetsSection.classList.toggle('open');
-            console.log('   ✓ Toggled presets visibility');
+            presetsDrawerWrapper.classList.toggle('open');
+            console.log('   ✓ Toggled presets drawer');
         });
         console.log('   ✓ Help choose button listener attached');
     }
     
-    if (closePresetsBtn) {
-        closePresetsBtn.addEventListener('click', () => {
-            console.log('   ✓ Close presets button clicked');
-            experimentPresetsSection.classList.remove('open');
+    if (closePresetsDrawerBtn) {
+        closePresetsDrawerBtn.addEventListener('click', () => {
+            console.log('   ✓ Close presets drawer button clicked');
+            presetsDrawerWrapper.classList.remove('open');
         });
-        console.log('   ✓ Close presets button listener attached');
+        console.log('   ✓ Close presets drawer button listener attached');
+    }
+    
+    if (presetsDrawerOverlay) {
+        presetsDrawerOverlay.addEventListener('click', () => {
+            console.log('   ✓ Clicked presets drawer overlay');
+            presetsDrawerWrapper.classList.remove('open');
+        });
+        console.log('   ✓ Overlay click listener attached');
     }
 }
 
@@ -590,10 +599,10 @@ function applyPreset(btn) {
         document.getElementById('missionName').value = missionName;
         updateLaunchDateFromMission(missionName); // Auto-set launch date
     }
-    // Close presets section after selection
-    const experimentPresetsSection = document.getElementById('experimentPresetsSection');
-    if (experimentPresetsSection) {
-        experimentPresetsSection.classList.remove('open');
+    // Close presets drawer after selection
+    const presetsDrawerWrapper = document.getElementById('presetsDrawerWrapper');
+    if (presetsDrawerWrapper) {
+        presetsDrawerWrapper.classList.remove('open');
     }
     recalculate();
 }
