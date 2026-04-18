@@ -893,6 +893,20 @@ function formatEuro(value) {
 }
 
 // ─────────────────────────────────────────────────────
+// FUNDING SOURCE HELPER
+// ─────────────────────────────────────────────────────
+
+function getFundingSourceDescription(fundingSource) {
+    const fundingMap = {
+        'commercial': 'Commercially funded mission (internal or private funding)',
+        'esa': 'Mission supported through a European Space Agency (ESA) program',
+        'national': 'Mission supported through national public funding (e.g., CNES, DLR, ASI, etc.)',
+        'undecided': 'Funding source to be determined'
+    };
+    return fundingMap[fundingSource] || 'Funding source not specified';
+}
+
+// ─────────────────────────────────────────────────────
 // MISSION ORDER FILE DOWNLOAD
 // ─────────────────────────────────────────────────────
 
@@ -1016,6 +1030,14 @@ function generateMissionOrderFile() {
     block(
         `Payload specification: ${payloadLabel}. ` +
         `Mass: ${mass} kg. Volume: ${volume} L. Mid Deck Lockers (MDL): ${mdl}. Power: ${power} W.`,
+        L + 10, CW - 10, 9.5, 'normal', [65, 65, 65]
+    );
+    cy += 4;
+
+    checkSpace(15);
+    font('bold', 9, [5, 15, 50]); at('1.3', L, cy);
+    block(
+        `Funding Source: ${getFundingSourceDescription(fundingSource)}`,
         L + 10, CW - 10, 9.5, 'normal', [65, 65, 65]
     );
     cy += 4;
@@ -1376,6 +1398,13 @@ function generateMissionReservationPDF(customerNameArg, customerCompany, custome
         cy += 4.5;
     });
     gap(3);
+
+    // – Funding Source –
+    font('bold', 9, [5, 15, 50]);
+    at('Funding Source:', L, cy); cy += 4;
+    font('normal', 8.5, [80, 80, 100]);
+    block(getFundingSourceDescription(fundingSource), L + 3, CW - 3, 8.5, 'normal', [80, 80, 100]);
+    gap(2);
 
     // ── ARTICLE 3: PRICING & RESERVATION FEE ──────────────────────────
     checkSpace(50);
