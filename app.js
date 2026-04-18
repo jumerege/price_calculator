@@ -8,6 +8,7 @@ const DEFAULT_PRICING = {
     mdlFeePerLocker: 3000000,
     powerSurchargePercent: 3,
     powerThreshold: 50,
+    exclusiveFlightDiscount: 10,   // % discount for Dedicated Phoenix Flight
     payPrepayment: 10,
     payAdvance: 40,
     payInterim: 25,
@@ -84,6 +85,7 @@ const TRANSLATIONS = {
         'pricing.billable_mass': 'Billable Mass',
         'pricing.mdl_premium': 'MDL Premium',
         'pricing.power_surcharge': 'Power Surcharge',
+        'pricing.exclusive_discount': 'Exclusive Flight Discount',
         'pricing.density': 'kg/L density',
         'pricing.per_kg': '€ per kg',
         'pricing.per_liter': '€ per L',
@@ -106,6 +108,8 @@ const TRANSLATIONS = {
         'settings.show_examples': 'Show Examples',
         'settings.mdl_fee': 'MDL Fee (€ per locker)',
         'settings.power_surcharge': 'Power Surcharge (% per W over 50W)',
+        'settings.exclusive_flight_discount': 'Discount for Exclusive Flights (%)',
+        'settings.exclusive_flight_discount_desc': 'Percentage discount applied to final mission price when selecting Dedicated Phoenix Flight',
         'settings.payment_milestones': '💳 Payment Milestones (%)',
         'settings.prepayment': 'Prepayment %',
         'settings.advance': 'Advance %',
@@ -205,6 +209,7 @@ const TRANSLATIONS = {
         'pricing.billable_mass': 'Masse Facturable',
         'pricing.mdl_premium': 'Supplément MDL',
         'pricing.power_surcharge': 'Surcharge Puissance',
+        'pricing.exclusive_discount': 'Remise Vol Exclusif',
         'pricing.density': 'densité kg/L',
         'pricing.per_kg': '€ par kg',
         'pricing.per_liter': '€ par L',
@@ -227,6 +232,8 @@ const TRANSLATIONS = {
         'settings.show_examples': 'Afficher les Exemples',
         'settings.mdl_fee': 'Frais MDL (€ par casier)',
         'settings.power_surcharge': 'Surcharge Puissance (% par W au-delà de 50W)',
+        'settings.exclusive_flight_discount': 'Remise pour Vols Exclusifs (%)',
+        'settings.exclusive_flight_discount_desc': 'Pourcentage de réduction appliqué au prix final de la mission lors de la sélection d\'un vol Phoenix dédié',
         'settings.payment_milestones': '💳 Étapes de Paiement (%)',
         'settings.prepayment': 'Prépaiement %',
         'settings.advance': 'Acompte %',
@@ -326,6 +333,7 @@ const TRANSLATIONS = {
         'pricing.billable_mass': 'Abrechenbare Masse',
         'pricing.mdl_premium': 'MDL-Aufschlag',
         'pricing.power_surcharge': 'Leistungszuschlag',
+        'pricing.exclusive_discount': 'Rabatt Exklusivflug',
         'pricing.density': 'kg/L Dichte',
         'pricing.per_kg': '€ pro kg',
         'pricing.per_liter': '€ pro L',
@@ -348,6 +356,8 @@ const TRANSLATIONS = {
         'settings.show_examples': 'Beispiele Anzeigen',
         'settings.mdl_fee': 'MDL-Gebühr (€ pro Fach)',
         'settings.power_surcharge': 'Leistungszuschlag (% pro W über 50W)',
+        'settings.exclusive_flight_discount': 'Rabatt für Exklusive Flüge (%)',
+        'settings.exclusive_flight_discount_desc': 'Prozentsatz-Rabatt auf den endgültigen Missionspreisen bei Auswahl eines dedizierten Phoenix-Flugs',
         'settings.payment_milestones': '💳 Zahlungsmeilensteine (%)',
         'settings.prepayment': 'Vorauszahlung %',
         'settings.advance': 'Anzahlung %',
@@ -696,7 +706,7 @@ function setupSettings() {
 
     if (resetSettingsBtn) resetSettingsBtn.addEventListener('click', resetSettings);
 
-    ['basePricePerKg','volumetricFactor','mdlFeePerLocker','powerSurchargePercent',
+    ['basePricePerKg','volumetricFactor','mdlFeePerLocker','powerSurchargePercent','exclusiveFlightDiscount',
      'payPrepayment','payAdvance','payInterim','payFinal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', () => { updatePricing(); recalculate(); });
@@ -709,6 +719,7 @@ function updatePricing() {
         volumetricFactor: parseFloat(document.getElementById('volumetricFactor').value) || DEFAULT_PRICING.volumetricFactor,
         mdlFeePerLocker: parseFloat(document.getElementById('mdlFeePerLocker').value) ||0,
         powerSurchargePercent: parseFloat(document.getElementById('powerSurchargePercent').value) || 0,
+        exclusiveFlightDiscount: parseFloat(document.getElementById('exclusiveFlightDiscount').value) || DEFAULT_PRICING.exclusiveFlightDiscount,
         powerThreshold: DEFAULT_PRICING.powerThreshold,
         payPrepayment: parseFloat(document.getElementById('payPrepayment').value) ?? DEFAULT_PRICING.payPrepayment,
         payAdvance:    parseFloat(document.getElementById('payAdvance').value)    ?? DEFAULT_PRICING.payAdvance,
@@ -724,6 +735,7 @@ function resetSettings() {
     document.getElementById('volumetricFactor').value = DEFAULT_PRICING.volumetricFactor;
     document.getElementById('mdlFeePerLocker').value = DEFAULT_PRICING.mdlFeePerLocker;
     document.getElementById('powerSurchargePercent').value = DEFAULT_PRICING.powerSurchargePercent;
+    document.getElementById('exclusiveFlightDiscount').value = DEFAULT_PRICING.exclusiveFlightDiscount;
     document.getElementById('payPrepayment').value = DEFAULT_PRICING.payPrepayment;
     document.getElementById('payAdvance').value    = DEFAULT_PRICING.payAdvance;
     document.getElementById('payInterim').value    = DEFAULT_PRICING.payInterim;
@@ -750,6 +762,7 @@ function loadPricingFromStorage() {
             document.getElementById('volumetricFactor').value = currentPricing.volumetricFactor;
             document.getElementById('mdlFeePerLocker').value = currentPricing.mdlFeePerLocker;
             document.getElementById('powerSurchargePercent').value = currentPricing.powerSurchargePercent;
+            document.getElementById('exclusiveFlightDiscount').value = currentPricing.exclusiveFlightDiscount;
         } catch (e) { /* ignore corrupt storage */ }
     }
 }
@@ -1162,7 +1175,17 @@ function calculatePricing(mass, volume, mdl, power, payloadType) {
         powerCost = powerBase * (excess * (currentPricing.powerSurchargePercent / 100));
     }
 
-    const totalCost = baseCost + mdlCost + powerCost;
+    // Subtotal before discount
+    const subtotal = baseCost + mdlCost + powerCost;
+
+    // ─── EXCLUSIVE FLIGHT DISCOUNT ───────────────────────────────
+    // Apply discount only if mission type is "dedicated"
+    let discountAmount = 0;
+    if (selectedMissionType === 'dedicated') {
+        discountAmount = subtotal * (currentPricing.exclusiveFlightDiscount / 100);
+    }
+
+    const totalCost = subtotal - discountAmount;
     
     return {
         // Original inputs
@@ -1181,6 +1204,9 @@ function calculatePricing(mass, volume, mdl, power, payloadType) {
         baseCost: baseCost,
         mdlCost: mdlCost,
         powerCost: powerCost,
+        subtotal: subtotal,
+        discountAmount: discountAmount,
+        exclusiveFlightDiscount: currentPricing.exclusiveFlightDiscount,
         totalCost: totalCost,
         
         // Metrics
@@ -1258,13 +1284,18 @@ function recalculate() {
 
 function updateBreakdown(pricing, mass, volume, mdl, power) {
     if (!pricing) {
-        ['baseCost','billableMassValue','mdlCost','powerCost'].forEach(id => {
-            document.getElementById(id).textContent = '€ 0';
+        ['baseCost','billableMassValue','mdlCost','powerCost','discountCost'].forEach(id => {
+            if (document.getElementById(id)) {
+                document.getElementById(id).textContent = '€ 0';
+            }
         });
         document.getElementById('baseCostSub').textContent      = '-- kg (billable) × €45,000/kg';
         document.getElementById('billableMassSub').textContent  = 'Actual: -- kg | Volumetric: -- kg';
         document.getElementById('mdlCostSub').textContent       = '0 lockers × €3M';
         document.getElementById('powerCostSub').textContent     = '≤50W — no surcharge';
+        // Hide discount row if exists
+        const discountRow = document.getElementById('discountRow');
+        if (discountRow) discountRow.style.display = 'none';
         return;
     }
 
@@ -1286,7 +1317,7 @@ function updateBreakdown(pricing, mass, volume, mdl, power) {
             `Actual: ${pricing.actualMass.toFixed(2)} kg | Volumetric: ${volumetricMassStr} kg (${pricing.volume.toFixed(1)} L ÷ ${pricing.volumetricFactor} L/kg)`;
     }
     
-    // MDL and Power costs unchanged
+    // MDL and Power costs
     document.getElementById('mdlCost').textContent = formatEuro(pricing.mdlCost);
     document.getElementById('powerCost').textContent = formatEuro(pricing.powerCost);
 
@@ -1298,6 +1329,19 @@ function updateBreakdown(pricing, mass, volume, mdl, power) {
     document.getElementById('powerCostSub').textContent = power > currentPricing.powerThreshold
         ? `${power - currentPricing.powerThreshold}W excess × ${currentPricing.powerSurchargePercent}%`
         : `≤${currentPricing.powerThreshold}W — no surcharge`;
+
+    // ─── EXCLUSIVE FLIGHT DISCOUNT ───────────────────────────────
+    // Show/hide discount row based on mission type
+    const discountRow = document.getElementById('discountRow');
+    if (selectedMissionType === 'dedicated' && pricing.discountAmount > 0) {
+        if (discountRow) {
+            discountRow.style.display = 'block';
+            document.getElementById('discountCost').textContent = '-' + formatEuro(pricing.discountAmount);
+            document.getElementById('discountCostSub').textContent = `${pricing.exclusiveFlightDiscount}% discount`;
+        }
+    } else {
+        if (discountRow) discountRow.style.display = 'none';
+    }
 }
 
 function updateMetrics(pricing, mass, volume) {
