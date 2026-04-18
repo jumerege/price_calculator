@@ -1223,7 +1223,7 @@ function generateMissionReservationPDF(customerNameArg, customerCompany, custome
         doc.setFontSize(sz || 9.5);
         doc.setTextColor(...(c || [50, 50, 50]));
     };
-    const at = (str, x, y, o) => doc.text(str, x, y, o || {});
+    const at = (str, x, y, o) => { doc.text(str, x, y, o || {}); };
     const gap = (d) => { cy += d || 5; };
     const block = (str, x, w, sz, style, col) => {
         font(style, sz, col);
@@ -1252,15 +1252,24 @@ function generateMissionReservationPDF(customerNameArg, customerCompany, custome
         }
     };
 
-    // ── HEADER ───────────────────────────────────────────────────────
-    font('bold', 18, [10, 24, 80]);
-    at('ATMOS', L, cy); cy += 8;
-    at('SPACE CARGO', L, cy); cy += 1;
+    // ── HEADER with ATMOS Logo ─────────────────────────────────────────
+    // Add logo image (60mm width)
+    try {
+        doc.addImage('atmos_logo.webp', 'WEBP', L, 8, 60, 20);
+        cy = 32;
+    } catch (e) {
+        // Fallback to text if logo fails
+        console.warn('Could not embed logo:', e);
+        font('bold', 18, [10, 24, 80]);
+        at('ATMOS', L, cy); cy += 8;
+        at('SPACE CARGO', L, cy); cy += 1;
+        cy += 5;
+    }
 
-    at(reservationNo, R, cy - 9, { align: 'right' });
+    at(reservationNo, R, 12, { align: 'right' });
     font('normal', 8.5, [120, 120, 120]);
-    at(today + ' (UTC)', R, cy - 4.5, { align: 'right' });
-    at(`Valid until: ${validUntil}`, R, cy, { align: 'right' }); cy += 5;
+    at(today + ' (UTC)', R, 16, { align: 'right' });
+    at(`Valid until: ${validUntil}`, R, 20, { align: 'right' }); 
 
     rule([0, 170, 220], 1.5); gap(8);
 
