@@ -1464,35 +1464,46 @@ function generateMissionReservationPDF(customerNameArg, customerCompany, custome
 
     gap(2);
 
-    // RESERVATION FEE - PROMINENT
-    checkSpace(25);
+    // RESERVATION DEPOSIT - PROMINENT
+    checkSpace(35);
     doc.setFillColor(0, 212, 255);
-    doc.rect(L, cy, CW, 30, 'F');
+    doc.rect(L, cy, CW, 35, 'F');
     
-    font('bold', 12, [10, 20, 60]);
-    at('MISSION SLOT RESERVATION FEE', L + CW/2, cy + 6, { align: 'center' });
+    font('bold', 11, [10, 20, 60]);
+    at('RESERVATION DEPOSIT', L + CW/2, cy + 5, { align: 'center' });
     
-    font('bold', 14, [10, 20, 60]);
-    at('EUR 5,000', L + CW/2, cy + 13, { align: 'center' });
-    
-    font('bold', 10, [10, 20, 60]);
-    at('Status: NON-REFUNDABLE', L + CW/2, cy + 20, { align: 'center' });
+    font('bold', 16, [10, 20, 60]);
+    at('EUR 5,000', L + CW/2, cy + 12, { align: 'center' });
     
     font('normal', 8.5, [10, 20, 60]);
-    at('Purpose: To secure the Customer\'s position in the mission queue / waiting list', L + CW/2, cy + 26, { align: 'center' });
+    at('Secures priority position in the Phoenix mission queue', L + CW/2, cy + 20, { align: 'center' });
     
-    cy += 32;
+    font('bold', 9, [10, 20, 60]);
+    at('Refundable / Creditable per deposit terms below', L + CW/2, cy + 27, { align: 'center' });
+    
+    cy += 38;
     gap(2);
 
     font('bold', 9.5, [30, 30, 80]);
-    at('3.2 Payment Terms:', L, cy); cy += 5;
-    font('normal', 8.5, [60, 60, 100]);
-    at('• EUR 5,000 reservation fee is due immediately upon signature of this document', L + 4, cy); cy += 4;
-    at('• Reservation fee is non-refundable and does not constitute payment for the full mission', L + 4, cy); cy += 4;
-    at('• In the event the Customer withdraws before execution of a definitive Mission Order,', L + 4, cy); cy += 3.5;
-    at('  the EUR 5,000 fee remains non-refundable and retains Atmos', L + 4, cy); cy += 4;
+    at('3.2 Reservation Deposit Terms:', L, cy); cy += 5;
+    
+    font('bold', 8.5, [40, 40, 80]);
+    at('A. If Atmos cannot accommodate the Customer\'s experiment:', L + 4, cy); cy += 3.5;
+    font('normal', 8, [60, 60, 100]);
+    at('Full refund of the EUR 5,000 deposit', L + 8, cy); cy += 4;
+    
+    font('bold', 8.5, [40, 40, 80]);
+    at('B. If Customer proceeds with full mission contract and completes payment:', L + 4, cy); cy += 3.5;
+    font('normal', 8, [60, 60, 100]);
+    at('EUR 5,000 deposit is credited toward the total mission price', L + 8, cy); cy += 4;
+    
+    font('bold', 8.5, [40, 40, 80]);
+    at('C. If Customer withdraws voluntarily:', L + 4, cy); cy += 3.5;
+    font('normal', 8, [60, 60, 100]);
+    at('• Withdrawal >8 months before launch (L-8): 50% of deposit refunded', L + 8, cy); cy += 3.5;
+    at('• Withdrawal ≤8 months before launch: Deposit is non-refundable', L + 8, cy); cy += 4;
 
-    gap(4);
+    gap(3);
 
     // ── ARTICLE 4: RESERVATION TERMS ──────────────────────────────────
     checkSpace(60);
@@ -1500,16 +1511,17 @@ function generateMissionReservationPDF(customerNameArg, customerCompany, custome
     gap(2);
 
     const terms = [
-        { num: '4.1', title: 'Nature of Reservation', text: 'This document reserves a position in the Phoenix mission queue/waiting list for the selected mission and mission parameters specified above. The Reservation confirms that Atmos will allocate a provisional slot to the Customer, contingent on successful technical and commercial review.' },
-        { num: '4.2', title: 'Non-Refundable Fee', text: 'The EUR 5,000 reservation fee is non-refundable under all circumstances, including but not limited to: voluntary withdrawal by the Customer, incompatibility discovered during technical review, failure to execute a definitive Mission Order, or force majeure events that prevent mission execution.' },
-        { num: '4.3', title: 'No Final Commitment', text: 'This reservation does NOT constitute a final Mission Order or final service contract. A separate, definitive Mission Order Agreement must be mutually executed in writing before any commitment to integrate, prepare, or launch the Customer\'s payload.' },
-        { num: '4.4', title: 'Technical Review', text: 'Atmos will conduct a comprehensive technical and compatibility review of the payload, including mass distribution analysis, power budget verification, thermal analysis, structural compatibility, and integration feasibility. This review may require additional information from the Customer.' },
-        { num: '4.5', title: 'Vehicle & Schedule Subject to Change', text: 'Final mission allocation is subject to flight vehicle availability, launch manifest constraints, schedule changes, and weather delays. Atmos makes no guarantees regarding specific launch dates or flight assignment.' },
-        { num: '4.6', title: 'Future Pricing & Terms', text: 'Final pricing, payment schedule, launch date, mission parameters, and commercial terms will be confirmed only in a separate written definitive Mission Order. The estimated pricing in this document is for budgeting purposes only and is subject to change based on final technical review and market conditions.' },
+        { num: '4.1', title: 'Nature of Reservation', text: 'This document reserves a priority position in the Phoenix mission queue/waiting list for the selected mission and parameters specified above. The Reservation confirms that Atmos will allocate a provisional slot to the Customer contingent on successful technical and commercial review.' },
+        { num: '4.2', title: 'Reservation Deposit Purpose', text: 'The EUR 5,000 Reservation Deposit secures the Customer\'s priority position in the mission queue and demonstrates serious commercial intent. The deposit is NOT the final mission contract and does NOT constitute payment for the full mission service.' },
+        { num: '4.3', title: 'Deposit Refund & Credit Rules', text: 'The EUR 5,000 Reservation Deposit shall be treated as follows:\n\n(a) If Atmos Space Cargo determines following technical or operational review that the Customer\'s experiment cannot be accommodated on the Phoenix mission, the Reservation Deposit shall be fully refunded.\n\n(b) If the Customer proceeds to execute a definitive Mission Order and completes full payment of the mission price, the EUR 5,000 Reservation Deposit shall be credited toward the total mission price.\n\n(c) If the Customer withdraws voluntarily prior to execution of a definitive Mission Order: (i) withdrawal more than 8 months prior to scheduled launch (L-8): 50% of the deposit shall be refunded; (ii) withdrawal at or within 8 months of scheduled launch: the deposit shall be non-refundable.' },
+        { num: '4.4', title: 'No Final Commitment', text: 'This reservation does NOT constitute a final Mission Order or final service contract. A separate, definitive Mission Order Agreement must be mutually executed in writing before any commitment to integrate, prepare, or launch the Customer\'s payload.' },
+        { num: '4.5', title: 'Technical Review', text: 'Atmos will conduct a comprehensive technical and compatibility review of the payload, including mass distribution analysis, power budget verification, thermal analysis, structural compatibility, and integration feasibility. This review may require additional information or clarifications from the Customer.' },
+        { num: '4.6', title: 'Vehicle & Schedule Subject to Change', text: 'Final mission allocation is subject to flight vehicle availability, launch manifest constraints, schedule changes, and weather delays. Atmos makes no guarantees regarding specific launch dates or flight assignment.' },
+        { num: '4.7', title: 'Future Pricing & Terms', text: 'Final pricing, payment schedule, launch date, mission parameters, and commercial terms will be confirmed only in a separate written definitive Mission Order. The estimated pricing shown in this document is for budgeting purposes only and is subject to change based on final technical review and market conditions.' },
     ];
 
     terms.forEach(term => {
-        checkSpace(20);
+        checkSpace(25);
         font('bold', 9, [10, 30, 80]);
         at(`${term.num} ${term.title}`, L, cy); cy += 4;
         block(term.text, L + 2, CW - 2, 8.5, 'normal', [40, 40, 70]); gap(2);
@@ -1518,19 +1530,19 @@ function generateMissionReservationPDF(customerNameArg, customerCompany, custome
     // ── Additional Terms
     checkSpace(30);
     font('bold', 9, [10, 30, 80]);
-    at('4.7 No Guarantee of Execution', L, cy); cy += 4;
-    block('The payment of the EUR 5,000 reservation fee does NOT by itself guarantee technical acceptance, payload integration, launch execution, mission success, or any other outcome. Atmos retains full discretion to review, approve, delay, postpone, or decline the mission based on technical, operational, contractual, or regulatory grounds.', L + 2, CW - 2, 8.5, 'normal', [40, 40, 70]); gap(2);
+    at('4.8 No Guarantee of Execution', L, cy); cy += 4;
+    block('Payment of the EUR 5,000 Reservation Deposit does NOT guarantee technical acceptance, payload integration, launch execution, mission success, or any other outcome. Atmos retains full discretion to review, approve, delay, postpone, or decline the mission based on technical, operational, contractual, or regulatory grounds.', L + 2, CW - 2, 8.5, 'normal', [40, 40, 70]); gap(2);
 
     checkSpace(25);
     font('bold', 9, [10, 30, 80]);
-    at('4.8 Atmos Reservation of Rights', L, cy); cy += 4;
+    at('4.9 Atmos Reservation of Rights', L, cy); cy += 4;
     block('Atmos reserves the right to: (a) decline acceptance if technical review reveals incompatibility; (b) request additional information or modifications to the payload; (c) adjust mission allocation based on manifest optimization; (d) reschedule or cancel the mission for safety, operational, or regulatory reasons; (e) require separate agreements on insurance, liability, and indemnification before final acceptance.', L + 2, CW - 2, 8.5, 'normal', [40, 40, 70]); gap(2);
 
     // ── ARTICLE 5: NEXT STEPS ─────────────────────────────────────────
     checkSpace(25);
     artTitle('ARTICLE 5', 'NEXT STEPS & PROCESS');
     gap(2);
-    block('5.1 Upon payment of the EUR 5,000 reservation fee, Atmos will contact the Customer within 3–5 business days to initiate the technical review process.\n\n5.2 Atmos will provide a preliminary technical assessment within 10 business days and discuss any required modifications or clarifications.\n\n5.3 If technical review is successful and both Parties agree in principle on mission scope, Atmos will propose a definitive Mission Order for execution within 15 business days.', L, CW, 8.5, 'normal', [40, 40, 70]); gap(3);
+    block('5.1 Upon payment of the EUR 5,000 Reservation Deposit, Atmos will contact the Customer within 3–5 business days to initiate the technical review process.\n\n5.2 Atmos will provide a preliminary technical assessment within 10 business days and discuss any required modifications or clarifications.\n\n5.3 If technical review is successful and both Parties agree in principle on mission scope, Atmos will propose a definitive Mission Order for execution within 15 business days.', L, CW, 8.5, 'normal', [40, 40, 70]); gap(3);
 
     // ── SIGNATURES ────────────────────────────────────────────────────
     checkSpace(45);
