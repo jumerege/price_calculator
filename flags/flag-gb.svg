@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+  <clipPath id="circle">
+    <circle cx="30" cy="30" r="30"/>
+  </clipPath>
+  <g clip-path="url(#circle)">
+    <rect width="60" height="60" fill="#012169"/>
+
+    <!-- Diagonal white -->
+    <polygon points="0,0 8,0 60,52 60,60 52,60 0,8" fill="#FFFFFF"/>
+    <polygon points="60,0 52,0 0,52 0,60 8,60 60,8" fill="#FFFFFF"/>
+
+    <!-- Diagonal red -->
+    <polygon points="0,0 4,0 60,56 60,60 56,60 0,4" fill="#C8102E"/>
+    <polygon points="60,0 56,0 0,56 0,60 4,60 60,4" fill="#C8102E"/>
+
+    <!-- Central white cross -->
+    <rect x="24" width="12" height="60" fill="#FFFFFF"/>
+    <rect y="24" width="60" height="12" fill="#FFFFFF"/>
+
+    <!-- Central red cross -->
+    <rect x="26" width="8" height="60" fill="#C8102E"/>
+    <rect y="26" width="60" height="8" fill="#C8102E"/>
+  </g>
+</svg>
