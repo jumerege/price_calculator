@@ -602,6 +602,12 @@ header {
     box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
 }
 
+.flag-emoji {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
 .settings-gear-btn {
     padding: 8px 16px;
     background: rgba(255,255,255,0.06);
