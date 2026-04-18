@@ -1501,7 +1501,7 @@ function generateMissionReservationPDF(customerNameArg, customerCompany, custome
     at('C. If Customer withdraws voluntarily:', L + 4, cy); cy += 3.5;
     font('normal', 8, [60, 60, 100]);
     at('• Withdrawal >8 months before launch (L-8): 50% of deposit refunded', L + 8, cy); cy += 3.5;
-    at('• Withdrawal ≤8 months before launch: Deposit is non-refundable', L + 8, cy); cy += 4;
+    at('• Withdrawal shorter than 8 months before launch (L-7 or closer to launch day): Not-refundable', L + 8, cy); cy += 4;
 
     gap(3);
 
