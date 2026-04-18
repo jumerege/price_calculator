@@ -151,6 +151,13 @@ function selectPayloadType(type) {
     } else {
         // 'other' — skip step 2, go straight to form
         completeWizard('Other / Custom', null, null);
+        // Scroll to Experiment Parameters section
+        setTimeout(() => {
+            const experimentParams = document.getElementById('experimentParams');
+            if (experimentParams) {
+                experimentParams.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 300);
     }
 }
 
