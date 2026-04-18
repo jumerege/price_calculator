@@ -339,6 +339,94 @@ function setupForm() {
 
     // Generate Mission Order button
     document.getElementById('generateMissionOrder').addEventListener('click', generateMissionOrderFile);
+
+    // ─── Reservation Modal Setup ─────────────────────────────────────
+    console.log('🎫 Setting up mission reservation flow');
+    const joinWaitingListBtn = document.getElementById('joinWaitingListBtn');
+    const reservationModal = document.getElementById('reservationModal');
+    const reservationModalCloseBtn = document.getElementById('reservationModalCloseBtn');
+    const reservationModalCancelBtn = document.getElementById('reservationModalCancelBtn');
+    const reservationConfirmBtn = document.getElementById('reservationConfirmBtn');
+    const reservationCompanyInput = document.getElementById('reservationCompany');
+    const reservationEmailInput = document.getElementById('reservationEmail');
+    const reservationPhoneInput = document.getElementById('reservationPhone');
+    const reservationAgreementCheckbox = document.getElementById('reservationAgreement');
+
+    if (joinWaitingListBtn) {
+        joinWaitingListBtn.addEventListener('click', () => {
+            console.log('   🎫 Open reservation modal');
+            // Pre-fill company if customer name exists
+            if (!reservationCompanyInput.value && currentQuote?.customerName) {
+                reservationCompanyInput.value = currentQuote.customerName;
+            }
+            reservationModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            reservationAgreementCheckbox.checked = false;
+        });
+    }
+
+    if (reservationModalCloseBtn || reservationModalCancelBtn) {
+        const closeReservationModal = () => {
+            console.log('   ✓ Close reservation modal');
+            reservationModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        };
+        if (reservationModalCloseBtn) reservationModalCloseBtn.addEventListener('click', closeReservationModal);
+        if (reservationModalCancelBtn) reservationModalCancelBtn.addEventListener('click', closeReservationModal);
+    }
+
+    if (reservationConfirmBtn) {
+        reservationConfirmBtn.addEventListener('click', () => {
+            console.log('   🎫 Reservation confirm clicked');
+            
+            const company = reservationCompanyInput.value.trim();
+            const email = reservationEmailInput.value.trim();
+            const phone = reservationPhoneInput.value.trim();
+            const agreed = reservationAgreementCheckbox.checked;
+
+            // Validation
+            if (!company) {
+                alert('Please enter your Company / Organization name');
+                reservationCompanyInput.focus();
+                return;
+            }
+            if (!email) {
+                alert('Please enter your Contact Email');
+                reservationEmailInput.focus();
+                return;
+            }
+            if (!email.includes('@')) {
+                alert('Please enter a valid email address');
+                reservationEmailInput.focus();
+                return;
+            }
+            if (!agreed) {
+                alert('Please confirm you understand this is a non-refundable reservation');
+                reservationAgreementCheckbox.focus();
+                return;
+            }
+
+            console.log('   ✓ Reservation validated, generating PDF');
+            generateMissionReservationPDF(currentQuote?.customerName || '', company, email, phone);
+            
+            // Close modal after generation
+            reservationModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Show success message
+            alert('✓ Mission Slot Reservation PDF has been generated and downloaded!\n\nPlease review the document and submit payment of EUR 5,000 as instructed.');
+        });
+    }
+
+    // Close modal when clicking outside
+    if (reservationModal) {
+        reservationModal.addEventListener('click', (e) => {
+            if (e.target === reservationModal) {
+                reservationModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
 }
 
 // ─────────────────────────────────────────────────────
@@ -702,6 +790,7 @@ function recalculate() {
         ? '✅ Ready to generate mission order'
         : 'Add customer name to generate mission order';
     document.getElementById('generateMissionOrder').disabled = !ready;
+    document.getElementById('joinWaitingListBtn').disabled = !ready;
 
     updateBreakdown(pricing, mass, volume, mdl, power);
     updateMetrics(pricing, mass, volume);
@@ -1105,5 +1194,303 @@ function generateMissionOrderFile() {
     }
 
     doc.save(`mission-order-${quoteNo}.pdf`);
+}
+
+// ─────────────────────────────────────────────────────
+// GENERATE MISSION SLOT RESERVATION PDF
+// ─────────────────────────────────────────────────────
+
+function generateMissionReservationPDF(customerNameArg, customerCompany, customerEmail, customerPhone) {
+    if (!currentQuote) return;
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    const PW = 210, PH = 297, L = 20, R = 190;
+    const CW = R - L;
+    let cy = 0;
+
+    const { mass, volume, mdl, power, missionName, launchDate,
+            pricing, pricingConfig, payloadType } = currentQuote;
+
+    const reservationNo = `RESV-${new Date().toISOString().split('T')[0].replace(/-/g,'')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+    const today = new Date().toISOString().split('T')[0];
+    const validUntil = (() => { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().split('T')[0]; })();
+
+    // ── Helper functions ───────────────────────────────────────────────
+    const font = (s, sz, c) => {
+        doc.setFont('helvetica', s || 'normal');
+        doc.setFontSize(sz || 9.5);
+        doc.setTextColor(...(c || [50, 50, 50]));
+    };
+    const at = (str, x, y, o) => doc.text(str, x, y, o || {});
+    const gap = (d) => { cy += d || 5; };
+    const block = (str, x, w, sz, style, col) => {
+        font(style, sz, col);
+        const lines = doc.splitTextToSize(str, w || CW);
+        doc.text(lines, x || L, cy);
+        cy += lines.length * ((sz || 9.5) * 0.42) + 2;
+    };
+    const rule = (col, lw) => {
+        doc.setDrawColor(...(col || [190, 200, 215]));
+        doc.setLineWidth(lw || 0.25);
+        doc.line(L, cy, R, cy);
+    };
+    const artTitle = (num, title) => {
+        font('bold', 10, [5, 15, 50]);
+        at(num, L, cy); at(title, L + 36, cy); cy += 7;
+    };
+    const checkSpace = (needed) => {
+        if (cy + (needed || 25) > PH - 18) {
+            doc.addPage(); cy = 15;
+            font('italic', 7.5, [160, 160, 160]);
+            at(`Mission Slot Reservation — CONFIDENTIAL`, L, cy);
+            at(reservationNo, R, cy, { align: 'right' });
+            cy += 3;
+            doc.setDrawColor(205, 210, 220); doc.setLineWidth(0.15);
+            doc.line(L, cy, R, cy); cy += 5;
+        }
+    };
+
+    // ── HEADER ───────────────────────────────────────────────────────
+    font('bold', 18, [10, 24, 80]);
+    at('ATMOS', L, cy); cy += 8;
+    at('SPACE CARGO', L, cy); cy += 1;
+
+    at(reservationNo, R, cy - 9, { align: 'right' });
+    font('normal', 8.5, [120, 120, 120]);
+    at(today + ' (UTC)', R, cy - 4.5, { align: 'right' });
+    at(`Valid until: ${validUntil}`, R, cy, { align: 'right' }); cy += 5;
+
+    rule([0, 170, 220], 1.5); gap(8);
+
+    font('bold', 14, [0, 180, 255]);
+    at('MISSION SLOT RESERVATION', L + CW/2, cy, { align: 'center' }); cy += 9;
+
+    font('normal', 9, [80, 80, 100]);
+    at(`No. ${reservationNo}`, L, cy);
+    at('Under Phoenix Service Agreement', L, cy + 4); cy += 10;
+
+    gap(3);
+
+    // ── PARTIES ───────────────────────────────────────────────────────
+    checkSpace(35);
+    font('bold', 9.5, [20, 30, 60]);
+    at('between', L, cy); cy += 5;
+
+    font('bold', 9.5, [5, 15, 50]);
+    at('Atmos Space Cargo GmbH,', L, cy); cy += 4;
+    font('normal', 8, [100, 100, 100]);
+    block('a company established at Im Gewerbegebiet 3, 77839 Lichtenau, Germany, registered at the trade register Mannheim under registration number HRB 741961, represented by Mr. Sebastian Klaus ("Atmos")', L, CW, 8);
+    gap(3);
+
+    font('bold', 9.5, [20, 30, 60]);
+    at('and', L, cy); cy += 5;
+
+    font('bold', 9.5, [5, 15, 50]);
+    at(customerNameArg || customerCompany || 'Customer', L, cy); cy += 4;
+    if (customerCompany) block(customerCompany, L, CW, 8);
+    font('normal', 8.5, [100, 100, 100]);
+    if (customerEmail) at(customerEmail, L, cy), cy += 4;
+    if (customerPhone) at(customerPhone, L, cy), cy += 4;
+    gap(3);
+
+    font('normal', 9, [80, 80, 100]);
+    at('together referred to as "Parties" and individually also as "Party"', L, cy); cy += 6;
+
+    rule([100, 150, 200], 1);
+    gap(6);
+
+    // ── ARTICLE 1: SUBJECT MATTER ─────────────────────────────────────
+    checkSpace(30);
+    artTitle('ARTICLE 1', 'MISSION SLOT RESERVATION');
+    gap(2);
+
+    block(`1.1 This document constitutes a non-binding reservation request for a position in the waiting list / scheduled queue for the Phoenix mission service. The selected Phoenix mission is "${missionName}", scheduled for launch on ${launchDate || 'TBD'}.`, L, CW, 9, 'normal', [30, 30, 50]);
+    gap(3);
+
+    block('1.2 This Mission Slot Reservation is subject to technical compatibility review, mission manifest constraints, and final execution of a separate definitive Mission Order by both Parties. Acceptance of this reservation does not constitute acceptance of the Customer\'s payload for flight or guarantee of mission execution.', L, CW, 9, 'normal', [30, 30, 50]);
+    gap(3);
+
+    // ── ARTICLE 2: PAYLOAD SPECIFICATION ──────────────────────────────
+    checkSpace(40);
+    artTitle('ARTICLE 2', 'PAYLOAD SPECIFICATION');
+    gap(2);
+
+    const payloadData = [
+        ['Parameter', 'Value'],
+        ['Mass (kg)', mass.toFixed(2)],
+        ['Volume (L)', volume.toFixed(2)],
+        ['Power (W)', power.toString()],
+        ['Mid Deck Lockers', mdl.toString()],
+        ['Mission Type', currentQuote.missionType === 'dedicated' ? 'Dedicated' : 'Shared'],
+    ];
+
+    doc.setFillColor(15, 30, 80);
+    font('bold', 9, [255, 255, 255]);
+    doc.rect(L, cy, CW/2, 5, 'F');
+    at('Parameter', L + 2, cy + 3.5);
+    doc.rect(L + CW/2, cy, CW/2, 5, 'F');
+    at('Value', L + CW/2 + 2, cy + 3.5);
+    cy += 5;
+
+    font('normal', 8.5, [50, 50, 80]);
+    payloadData.slice(1).forEach((row, idx) => {
+        if (idx % 2 === 0) doc.setFillColor(240, 245, 255);
+        else doc.setFillColor(255, 255, 255);
+        doc.rect(L, cy, CW/2, 4.5, 'F');
+        doc.rect(L + CW/2, cy, CW/2, 4.5, 'F');
+        at(row[0], L + 2, cy + 2.8);
+        at(row[1], L + CW/2 + 2, cy + 2.8);
+        cy += 4.5;
+    });
+    gap(3);
+
+    // ── ARTICLE 3: PRICING & RESERVATION FEE ──────────────────────────
+    checkSpace(50);
+    artTitle('ARTICLE 3', 'ESTIMATED MISSION PRICING & RESERVATION FEE');
+    gap(2);
+
+    font('normal', 9, [80, 100, 120]);
+    at('3.1 Estimated Mission Pricing (subject to final technical review and confirmation):', L, cy); cy += 6;
+
+    // Pricing table
+    const pricingRows = [
+        ['Cost Component', 'Calculation', 'Amount (EUR)'],
+        ['Base Cost', `${pricing.billableMass.toFixed(2)} kg × ${formatEuro(pricingConfig.basePricePerKg)}/kg`, formatEuro(pricing.baseCost)],
+        ['MDL Premium', `${mdl} locker(s) × ${formatEuro(pricingConfig.mdlFeePerLocker)}`, formatEuro(pricing.mdlCost)],
+        ['Power Surcharge', pricing.powerCost > 0 ? `${(power - pricingConfig.powerThreshold)} W excess × ${pricingConfig.powerSurchargePercent}%` : 'None', formatEuro(pricing.powerCost)],
+    ];
+
+    doc.setFillColor(15, 30, 80);
+    font('bold', 8.5, [255, 255, 255]);
+    let colW = [CW * 0.35, CW * 0.4, CW * 0.25];
+    doc.rect(L, cy, colW[0], 5, 'F');
+    at(pricingRows[0][0], L + 2, cy + 3.5);
+    doc.rect(L + colW[0], cy, colW[1], 5, 'F');
+    at(pricingRows[0][1], L + colW[0] + 2, cy + 3.5);
+    doc.rect(L + colW[0] + colW[1], cy, colW[2], 5, 'F');
+    at(pricingRows[0][2], L + colW[0] + colW[1] + 2, cy + 3.5);
+    cy += 5;
+
+    font('normal', 8, [50, 50, 80]);
+    pricingRows.slice(1).forEach((row, idx) => {
+        if (idx % 2 === 0) doc.setFillColor(245, 248, 255);
+        else doc.setFillColor(255, 255, 255);
+        doc.rect(L, cy, colW[0], 4, 'F');
+        doc.rect(L + colW[0], cy, colW[1], 4, 'F');
+        doc.rect(L + colW[0] + colW[1], cy, colW[2], 4, 'F');
+        at(row[0], L + 2, cy + 2.3);
+        at(row[1], L + colW[0] + 2, cy + 2.3);
+        at(row[2], L + colW[0] + colW[1] + 2, cy + 2.3, { align: 'right' });
+        cy += 4;
+    });
+    cy += 2;
+
+    // Total estimated mission cost
+    doc.setFillColor(30, 60, 130);
+    doc.rect(L, cy, CW, 5, 'F');
+    font('bold', 9.5, [255, 255, 255]);
+    at('Estimated Total Mission Cost (subject to change)', L + 2, cy + 3.5);
+    at(formatEuro(pricing.totalCost), R - 2, cy + 3.5, { align: 'right' });
+    cy += 7;
+
+    gap(2);
+
+    // RESERVATION FEE - PROMINENT
+    checkSpace(25);
+    doc.setFillColor(0, 212, 255);
+    doc.rect(L, cy, CW, 30, 'F');
+    
+    font('bold', 12, [10, 20, 60]);
+    at('MISSION SLOT RESERVATION FEE', L + CW/2, cy + 6, { align: 'center' });
+    
+    font('bold', 14, [10, 20, 60]);
+    at('EUR 5,000', L + CW/2, cy + 13, { align: 'center' });
+    
+    font('bold', 10, [10, 20, 60]);
+    at('Status: NON-REFUNDABLE', L + CW/2, cy + 20, { align: 'center' });
+    
+    font('normal', 8.5, [10, 20, 60]);
+    at('Purpose: To secure the Customer\'s position in the mission queue / waiting list', L + CW/2, cy + 26, { align: 'center' });
+    
+    cy += 32;
+    gap(2);
+
+    font('bold', 9.5, [30, 30, 80]);
+    at('3.2 Payment Terms:', L, cy); cy += 5;
+    font('normal', 8.5, [60, 60, 100]);
+    at('• EUR 5,000 reservation fee is due immediately upon signature of this document', L + 4, cy); cy += 4;
+    at('• Reservation fee is non-refundable and does not constitute payment for the full mission', L + 4, cy); cy += 4;
+    at('• In the event the Customer withdraws before execution of a definitive Mission Order,', L + 4, cy); cy += 3.5;
+    at('  the EUR 5,000 fee remains non-refundable and retains Atmos', L + 4, cy); cy += 4;
+
+    gap(4);
+
+    // ── ARTICLE 4: RESERVATION TERMS ──────────────────────────────────
+    checkSpace(60);
+    artTitle('ARTICLE 4', 'RESERVATION TERMS & CONDITIONS');
+    gap(2);
+
+    const terms = [
+        { num: '4.1', title: 'Nature of Reservation', text: 'This document reserves a position in the Phoenix mission queue/waiting list for the selected mission and mission parameters specified above. The Reservation confirms that Atmos will allocate a provisional slot to the Customer, contingent on successful technical and commercial review.' },
+        { num: '4.2', title: 'Non-Refundable Fee', text: 'The EUR 5,000 reservation fee is non-refundable under all circumstances, including but not limited to: voluntary withdrawal by the Customer, incompatibility discovered during technical review, failure to execute a definitive Mission Order, or force majeure events that prevent mission execution.' },
+        { num: '4.3', title: 'No Final Commitment', text: 'This reservation does NOT constitute a final Mission Order or final service contract. A separate, definitive Mission Order Agreement must be mutually executed in writing before any commitment to integrate, prepare, or launch the Customer\'s payload.' },
+        { num: '4.4', title: 'Technical Review', text: 'Atmos will conduct a comprehensive technical and compatibility review of the payload, including mass distribution analysis, power budget verification, thermal analysis, structural compatibility, and integration feasibility. This review may require additional information from the Customer.' },
+        { num: '4.5', title: 'Vehicle & Schedule Subject to Change', text: 'Final mission allocation is subject to flight vehicle availability, launch manifest constraints, schedule changes, and weather delays. Atmos makes no guarantees regarding specific launch dates or flight assignment.' },
+        { num: '4.6', title: 'Future Pricing & Terms', text: 'Final pricing, payment schedule, launch date, mission parameters, and commercial terms will be confirmed only in a separate written definitive Mission Order. The estimated pricing in this document is for budgeting purposes only and is subject to change based on final technical review and market conditions.' },
+    ];
+
+    terms.forEach(term => {
+        checkSpace(20);
+        font('bold', 9, [10, 30, 80]);
+        at(`${term.num} ${term.title}`, L, cy); cy += 4;
+        block(term.text, L + 2, CW - 2, 8.5, 'normal', [40, 40, 70]); gap(2);
+    });
+
+    // ── Additional Terms
+    checkSpace(30);
+    font('bold', 9, [10, 30, 80]);
+    at('4.7 No Guarantee of Execution', L, cy); cy += 4;
+    block('The payment of the EUR 5,000 reservation fee does NOT by itself guarantee technical acceptance, payload integration, launch execution, mission success, or any other outcome. Atmos retains full discretion to review, approve, delay, postpone, or decline the mission based on technical, operational, contractual, or regulatory grounds.', L + 2, CW - 2, 8.5, 'normal', [40, 40, 70]); gap(2);
+
+    checkSpace(25);
+    font('bold', 9, [10, 30, 80]);
+    at('4.8 Atmos Reservation of Rights', L, cy); cy += 4;
+    block('Atmos reserves the right to: (a) decline acceptance if technical review reveals incompatibility; (b) request additional information or modifications to the payload; (c) adjust mission allocation based on manifest optimization; (d) reschedule or cancel the mission for safety, operational, or regulatory reasons; (e) require separate agreements on insurance, liability, and indemnification before final acceptance.', L + 2, CW - 2, 8.5, 'normal', [40, 40, 70]); gap(2);
+
+    // ── ARTICLE 5: NEXT STEPS ─────────────────────────────────────────
+    checkSpace(25);
+    artTitle('ARTICLE 5', 'NEXT STEPS & PROCESS');
+    gap(2);
+    block('5.1 Upon payment of the EUR 5,000 reservation fee, Atmos will contact the Customer within 3–5 business days to initiate the technical review process.\n\n5.2 Atmos will provide a preliminary technical assessment within 10 business days and discuss any required modifications or clarifications.\n\n5.3 If technical review is successful and both Parties agree in principle on mission scope, Atmos will propose a definitive Mission Order for execution within 15 business days.', L, CW, 8.5, 'normal', [40, 40, 70]); gap(3);
+
+    // ── SIGNATURES ────────────────────────────────────────────────────
+    checkSpace(45);
+    rule([100, 150, 200], 1);
+    gap(8);
+
+    font('bold', 10, [10, 30, 80]);
+    at('SIGNATURES', L + CW/2, cy, { align: 'center' }); cy += 10;
+
+    font('normal', 9, [60, 60, 100]);
+    at('For Atmos Space Cargo GmbH', L, cy); cy += 8;
+    at('____________________________________', L, cy); cy += 5;
+    at('Signature', L, cy); cy += 3;
+    at('Date', L, cy); cy += 8;
+
+    at(`For ${customerCompany || customerName || 'Customer'}`, R - 70, cy - 16); 
+    at('____________________________________', R - 70, cy - 8);
+    at('Signature', R - 70, cy - 3);
+    at('Date', R - 70, cy + 2);
+
+    cy = PH - 13;
+    rule([100, 120, 150], 0.5);
+    font('italic', 7, [140, 140, 140]);
+    at('Mission Slot Reservation — CONFIDENTIAL', L, PH - 8);
+    at(`Page 1 of 1`, R, PH - 8, { align: 'right' });
+
+    doc.save(`mission-reservation-${reservationNo}.pdf`);
+    console.log(`✓ Reservation PDF generated: ${reservationNo}`);
 }
 

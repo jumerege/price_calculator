@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phoenix Pricing Calculator — ATMOS Space Cargo</title>
-    <link rel="stylesheet" href="style.css?v=20260418-8">
+    <link rel="stylesheet" href="style.css?v=20260418-9">
 </head>
 <body>
     <!-- Header -->
@@ -423,10 +423,15 @@
                 </div>
             </section>
 
-            <!-- Generate Button -->
-            <button id="generateMissionOrder" class="generate-btn" disabled>
-                📄 Generate Mission Order
-            </button>
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 12px;">
+                <button id="generateMissionOrder" class="generate-btn" disabled style="flex: 1;">
+                    📄 Generate Mission Order
+                </button>
+                <button id="joinWaitingListBtn" class="generate-btn waiting-list-btn" disabled style="flex: 1;">
+                    ⏳ Join Mission Waiting List
+                </button>
+            </div>
 
         </div>
 
@@ -598,6 +603,51 @@
         </div>
     </div>
 
+    <!-- Reservation Modal -->
+    <div class="modal-overlay" id="reservationModal">
+        <div class="modal-panel" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>🎫 Reserve Mission Slot</h2>
+                <button type="button" class="modal-close-btn" id="reservationModalCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>You're about to reserve a position in the Phoenix mission queue with a <strong>non-refundable EUR 5,000 reservation fee</strong>.</p>
+                
+                <div style="background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); border-radius: 8px; padding: 12px; margin: 16px 0; font-size: 0.9rem;">
+                    <strong style="color: #00d4ff;">Reservation Fee: €5,000</strong><br>
+                    Status: <strong>Non-refundable</strong><br>
+                    Purpose: Mission queue position security
+                </div>
+                
+                <div style="margin: 16px 0;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Company / Organization *</label>
+                    <input type="text" id="reservationCompany" placeholder="e.g., Exobiosphere Inc." style="width: 100%; padding: 8px; border: 1px solid var(--card-border); border-radius: 6px; background: rgba(255,255,255,0.05); color: #e0e0ff;">
+                </div>
+                
+                <div style="margin: 16px 0;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Contact Email *</label>
+                    <input type="email" id="reservationEmail" placeholder="contact@company.com" style="width: 100%; padding: 8px; border: 1px solid var(--card-border); border-radius: 6px; background: rgba(255,255,255,0.05); color: #e0e0ff;">
+                </div>
+                
+                <div style="margin: 16px 0;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Contact Phone</label>
+                    <input type="tel" id="reservationPhone" placeholder="+49 123 456789" style="width: 100%; padding: 8px; border: 1px solid var(--card-border); border-radius: 6px; background: rgba(255,255,255,0.05); color: #e0e0ff;">
+                </div>
+                
+                <div style="margin: 16px 0;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="reservationAgreement" style="cursor: pointer;">
+                        <span>I understand this is a non-refundable reservation fee and not a final mission contract</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 12px;">
+                <button type="button" class="modal-cancel-btn" id="reservationModalCancelBtn" style="flex: 1;">Cancel</button>
+                <button type="button" class="modal-action-btn" id="reservationConfirmBtn" style="flex: 1;">Generate Reservation PDF</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Right-side Typical Use Cases Drawer -->
     <div class="presets-drawer-wrapper" id="presetsDrawerWrapper">
         <div class="presets-drawer-overlay" id="presetsDrawerOverlay"></div>
@@ -639,6 +689,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <script src="app.js?v=20260418-8"></script>
+    <script src="app.js?v=20260418-9"></script>
 </body>
 </html>
