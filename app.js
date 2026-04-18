@@ -25,7 +25,7 @@ const TRANSLATIONS = {
     en: {
         // Header & Navigation
         'header.title': 'Phoenix Pricing Calculator',
-        'header.subtitle': 'Microgravity Experiment Cost Estimator',
+        'header.subtitle': 'Describe your experiment. Reserve your Phoenix flight slot instantly.',
         'header.settings': '⚙️ Pricing Settings',
         
         // Payload Wizard
@@ -146,7 +146,7 @@ const TRANSLATIONS = {
     fr: {
         // Header & Navigation
         'header.title': 'Calculatrice de Prix Phoenix',
-        'header.subtitle': 'Estimateur de Coûts des Expériences en Microgravité',
+        'header.subtitle': 'Décrivez votre expérience. Réservez votre créneau de vol Phoenix instantanément.',
         'header.settings': '⚙️ Paramètres de Prix',
         
         // Payload Wizard
@@ -267,7 +267,7 @@ const TRANSLATIONS = {
     de: {
         // Header & Navigation
         'header.title': 'Phoenix Preisrechner',
-        'header.subtitle': 'Kostenschätzer für Mikrogravitations-Experimente',
+        'header.subtitle': 'Beschreiben Sie Ihr Experiment. Reservieren Sie Ihren Phoenix-Flugplatz sofort.',
         'header.settings': '⚙️ Preisparameter',
         
         // Payload Wizard
