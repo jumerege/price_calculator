@@ -882,7 +882,7 @@ function setBar(barId, labelId, value, max, labelText) {
     const pct = Math.min(100, (value / max) * 100);
     const bar = document.getElementById(barId);
     bar.style.width = pct + '%';
-    bar.style.background = pct >= 90 ? '#ef4444' : pct >= 70 ? '#f59e0b' : '#22c55e';
+    bar.style.background = value > max ? '#ef4444' : pct >= 70 ? '#f59e0b' : '#22c55e';
     document.getElementById(labelId).textContent = labelText;
 }
 
