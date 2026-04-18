@@ -17,6 +17,324 @@ const DEFAULT_PRICING = {
 // CubeSat pricing: flat fee per U (45,000 × U)
 const CUBESAT_PRICE_PER_U = 45000;
 
+// ─────────────────────────────────────────────────────
+// TRANSLATIONS / LOCALIZATION
+// ─────────────────────────────────────────────────────
+
+const TRANSLATIONS = {
+    en: {
+        // Header & Navigation
+        'header.title': 'Phoenix Pricing Calculator',
+        'header.subtitle': 'Microgravity Experiment Cost Estimator',
+        'header.settings': '⚙️ Pricing Settings',
+        
+        // Payload Wizard
+        'wizard.step1.title': 'What type of payload are you flying?',
+        'wizard.step1.cubesat': 'CubeSat',
+        'wizard.step1.cubesat_desc': 'Standard 1U–6U format',
+        'wizard.step1.mdl': 'Mid Deck Locker',
+        'wizard.step1.mdl_desc': 'ISS MDL form factor',
+        'wizard.step1.other': 'Other / Custom',
+        'wizard.step1.other_desc': 'Define by mass & volume',
+        
+        'wizard.step2a.label': 'Step 2 of 2 — CubeSat Size',
+        'wizard.step2a.title': 'Select your CubeSat unit size',
+        'wizard.step2b.label': 'Step 2 of 2 — MDL Count',
+        'wizard.step2b.title': 'How many Mid Deck Lockers?',
+        
+        'wizard.back': '← Back',
+        'wizard.change': 'Change selection',
+        
+        // Experiment Parameters
+        'params.title': '🚀 Experiment Parameters',
+        'params.help': 'Help me choose',
+        'params.mass': 'Mass (kg)',
+        'params.volume': 'Volume (L)',
+        'params.mdl': 'Mid Deck Lockers (MDL)',
+        'params.power': 'Power (W)',
+        'params.customer': 'Customer Name',
+        'params.customer_placeholder': 'e.g., Dr. Jane Smith',
+        
+        // Mission Duration
+        'duration.title': '⏳ Mission Duration',
+        'duration.label': 'Mission duration:',
+        'duration.unit': 'weeks',
+        'duration.info': 'The mission duration affects resource allocation and crew scheduling. Standard missions range from 3 to 12 weeks on-orbit.',
+        
+        // Funding Source
+        'funding.title': '💰 Funding Source',
+        'funding.question': 'How do you expect to fund this mission?',
+        'funding.commercial': 'Commercial Budget',
+        'funding.commercial_desc': 'Privately funded mission (internal budget or private investment)',
+        'funding.esa': 'ESA-Funded Project',
+        'funding.esa_desc': 'Mission supported through a European Space Agency program',
+        'funding.national': 'National Grant or Public Funding',
+        'funding.national_desc': 'Funded by national agencies (e.g., CNES, DLR, ASI, etc.)',
+        'funding.undecided': 'Not Decided Yet',
+        'funding.undecided_desc': 'Funding source is still being defined',
+        
+        // Pricing Display
+        'pricing.title': '💵 Live Pricing',
+        'pricing.cost': 'Mission Cost:',
+        'pricing.status': 'Ready for quote',
+        'pricing.breakdown': 'Pricing breakdown:',
+        'pricing.base_cost': 'Base Cost',
+        'pricing.billable_mass': 'Billable Mass',
+        'pricing.mdl_premium': 'MDL Premium',
+        'pricing.power_surcharge': 'Power Surcharge',
+        'pricing.total': 'Total',
+        
+        // Buttons
+        'btn.generate_mission_order': '📄 Generate Mission Order',
+        'btn.join_waiting_list': '⏳ Join Mission Waiting List',
+        'btn.generate_reservation': 'Generate Reservation PDF',
+        'btn.cancel': 'Cancel',
+        'btn.generate': 'Generate',
+        
+        // Settings
+        'settings.title': 'Pricing Parameters (Advanced)',
+        'settings.base_price': 'Base Price (€ / kg)',
+        'settings.volumetric_factor': 'Volumetric Factor (L/kg)',
+        'settings.mdl_fee': 'MDL Fee (€ per locker)',
+        'settings.power_surcharge': 'Power Surcharge (% per W over 50W)',
+        'settings.payment_milestones': '💳 Payment Milestones (%)',
+        'settings.prepayment': 'Prepayment %',
+        'settings.advance': 'Advance %',
+        'settings.interim': 'Interim %',
+        'settings.final': 'Final %',
+        'settings.reset': 'Reset to Defaults',
+        
+        // Modals
+        'modal.details': '📋 Payload Integration Details',
+        'modal.volumetric_help': 'Volumetric Billing Explanation',
+        'modal.close': '×',
+        
+        // Reservation
+        'reservation.title': '🎫 Reserve Mission Slot',
+        'reservation.subtitle': 'You\'re about to reserve a position in the Phoenix mission queue with a EUR 5,000 Reservation Deposit (subject to refund and credit terms - see PDF for details).',
+        'reservation.deposit': 'Reservation Deposit: €5,000',
+        'reservation.status': 'Conditional (refundable/creditable)',
+        'reservation.purpose': 'Secure priority mission queue position',
+        'reservation.company': 'Company / Organization',
+        'reservation.company_placeholder': 'e.g., Exobiosphere Inc.',
+        'reservation.email': 'Contact Email',
+        'reservation.email_placeholder': 'contact@company.com',
+        'reservation.phone': 'Contact Phone',
+        'reservation.phone_placeholder': '+49 123 456789',
+        'reservation.agreement': 'I understand this is a Reservation Deposit with conditional refund and credit terms as outlined in the PDF',
+    },
+    fr: {
+        // Header & Navigation
+        'header.title': 'Calculatrice de Prix Phoenix',
+        'header.subtitle': 'Estimateur de Coûts des Expériences en Microgravité',
+        'header.settings': '⚙️ Paramètres de Prix',
+        
+        // Payload Wizard
+        'wizard.step1.title': 'Quel type de payload volez-vous?',
+        'wizard.step1.cubesat': 'CubeSat',
+        'wizard.step1.cubesat_desc': 'Format standard 1U–6U',
+        'wizard.step1.mdl': 'Mid Deck Locker',
+        'wizard.step1.mdl_desc': 'Facteur de forme ISS MDL',
+        'wizard.step1.other': 'Autre / Personnalisé',
+        'wizard.step1.other_desc': 'Définir par masse et volume',
+        
+        'wizard.step2a.label': 'Étape 2 sur 2 — Taille CubeSat',
+        'wizard.step2a.title': 'Sélectionnez la taille de votre CubeSat',
+        'wizard.step2b.label': 'Étape 2 sur 2 — Nombre de MDL',
+        'wizard.step2b.title': 'Combien de Mid Deck Lockers?',
+        
+        'wizard.back': '← Retour',
+        'wizard.change': 'Modifier la sélection',
+        
+        // Experiment Parameters
+        'params.title': '🚀 Paramètres de l\'Expérience',
+        'params.help': 'Aide pour choisir',
+        'params.mass': 'Masse (kg)',
+        'params.volume': 'Volume (L)',
+        'params.mdl': 'Mid Deck Lockers (MDL)',
+        'params.power': 'Puissance (W)',
+        'params.customer': 'Nom du Client',
+        'params.customer_placeholder': 'par ex., Dr. Jane Smith',
+        
+        // Mission Duration
+        'duration.title': '⏳ Durée de la Mission',
+        'duration.label': 'Durée de la mission :',
+        'duration.unit': 'semaines',
+        'duration.info': 'La durée de la mission affecte l\'allocation des ressources et la planification de l\'équipage. Les missions standard durent de 3 à 12 semaines en orbite.',
+        
+        // Funding Source
+        'funding.title': '💰 Source de Financement',
+        'funding.question': 'Comment prévoyez-vous de financer cette mission?',
+        'funding.commercial': 'Budget Commercial',
+        'funding.commercial_desc': 'Mission financée en privé (budget interne ou investissement privé)',
+        'funding.esa': 'Projet Financé par l\'ESA',
+        'funding.esa_desc': 'Mission soutenue par un programme de l\'Agence Spatiale Européenne',
+        'funding.national': 'Subvention Nationale ou Financement Public',
+        'funding.national_desc': 'Financé par des agences nationales (p. ex., CNES, DLR, ASI, etc.)',
+        'funding.undecided': 'Pas Encore Décidé',
+        'funding.undecided_desc': 'La source de financement est encore en cours de définition',
+        
+        // Pricing Display
+        'pricing.title': '💵 Prix en Direct',
+        'pricing.cost': 'Coût de la Mission :',
+        'pricing.status': 'Prêt pour devis',
+        'pricing.breakdown': 'Détail du prix :',
+        'pricing.base_cost': 'Coût de Base',
+        'pricing.billable_mass': 'Masse Facturable',
+        'pricing.mdl_premium': 'Supplément MDL',
+        'pricing.power_surcharge': 'Surcharge Puissance',
+        'pricing.total': 'Total',
+        
+        // Buttons
+        'btn.generate_mission_order': '📄 Générer Commande de Mission',
+        'btn.join_waiting_list': '⏳ Rejoindre la Liste d\'Attente',
+        'btn.generate_reservation': 'Générer PDF de Réservation',
+        'btn.cancel': 'Annuler',
+        'btn.generate': 'Générer',
+        
+        // Settings
+        'settings.title': 'Paramètres de Prix (Avancé)',
+        'settings.base_price': 'Prix de Base (€ / kg)',
+        'settings.volumetric_factor': 'Facteur Volumétrique (L/kg)',
+        'settings.mdl_fee': 'Frais MDL (€ par casier)',
+        'settings.power_surcharge': 'Surcharge Puissance (% par W au-delà de 50W)',
+        'settings.payment_milestones': '💳 Étapes de Paiement (%)',
+        'settings.prepayment': 'Prépaiement %',
+        'settings.advance': 'Acompte %',
+        'settings.interim': 'Intermédiaire %',
+        'settings.final': 'Final %',
+        'settings.reset': 'Réinitialiser aux Valeurs par Défaut',
+        
+        // Modals
+        'modal.details': '📋 Détails d\'Intégration du Payload',
+        'modal.volumetric_help': 'Explication de la Facturation Volumétrique',
+        'modal.close': '×',
+        
+        // Reservation
+        'reservation.title': '🎫 Réserver un Créneau de Mission',
+        'reservation.subtitle': 'Vous êtes sur le point de réserver une position dans la file d\'attente de mission Phoenix avec une Caution de Réservation de 5 000 €(sujette aux conditions de remboursement et de crédit - voir le PDF pour les détails).',
+        'reservation.deposit': 'Caution de Réservation : 5 000 €',
+        'reservation.status': 'Conditionnelle (remboursable/créditée)',
+        'reservation.purpose': 'Sécuriser une position prioritaire dans la file d\'attente de mission',
+        'reservation.company': 'Entreprise / Organisation',
+        'reservation.company_placeholder': 'par ex., Exobiosphere Inc.',
+        'reservation.email': 'E-mail de Contact',
+        'reservation.email_placeholder': 'contact@company.com',
+        'reservation.phone': 'Téléphone de Contact',
+        'reservation.phone_placeholder': '+49 123 456 789',
+        'reservation.agreement': 'Je comprends qu\'il s\'agit d\'une Caution de Réservation avec conditions de remboursement et de crédit conditionnelles telles que décrites dans le PDF',
+    },
+    de: {
+        // Header & Navigation
+        'header.title': 'Phoenix Preisrechner',
+        'header.subtitle': 'Kostenschätzer für Mikrogravitations-Experimente',
+        'header.settings': '⚙️ Preisparameter',
+        
+        // Payload Wizard
+        'wizard.step1.title': 'Welche Art von Payload fliegen Sie?',
+        'wizard.step1.cubesat': 'CubeSat',
+        'wizard.step1.cubesat_desc': 'Standard-Format 1U–6U',
+        'wizard.step1.mdl': 'Mid Deck Locker',
+        'wizard.step1.mdl_desc': 'ISS MDL Formfaktor',
+        'wizard.step1.other': 'Sonstiges / Benutzerdefiniert',
+        'wizard.step1.other_desc': 'Nach Masse und Volumen definieren',
+        
+        'wizard.step2a.label': 'Schritt 2 von 2 — CubeSat-Größe',
+        'wizard.step2a.title': 'Wählen Sie Ihre CubeSat-Einheitsgröße',
+        'wizard.step2b.label': 'Schritt 2 von 2 — MDL-Anzahl',
+        'wizard.step2b.title': 'Wie viele Mid Deck Lockers?',
+        
+        'wizard.back': '← Zurück',
+        'wizard.change': 'Auswahl ändern',
+        
+        // Experiment Parameters
+        'params.title': '🚀 Experiment-Parameter',
+        'params.help': 'Hilfe beim Auswählen',
+        'params.mass': 'Masse (kg)',
+        'params.volume': 'Volumen (L)',
+        'params.mdl': 'Mid Deck Lockers (MDL)',
+        'params.power': 'Leistung (W)',
+        'params.customer': 'Kundenname',
+        'params.customer_placeholder': 'z.B. Dr. Jane Smith',
+        
+        // Mission Duration
+        'duration.title': '⏳ Missionsdauer',
+        'duration.label': 'Missionsdauer:',
+        'duration.unit': 'Wochen',
+        'duration.info': 'Die Missionsdauer beeinflusst die Ressourcenallokation und Crew-Planung. Standardmissionen dauern 3 bis 12 Wochen im Orbit.',
+        
+        // Funding Source
+        'funding.title': '💰 Finanzierungsquelle',
+        'funding.question': 'Wie planen Sie diese Mission zu finanzieren?',
+        'funding.commercial': 'Kommerzielles Budget',
+        'funding.commercial_desc': 'Privat finanzierte Mission (internes Budget oder private Finanzierung)',
+        'funding.esa': 'ESA-finanziertes Projekt',
+        'funding.esa_desc': 'Mission unterstützt durch ein Programm der Europäischen Weltraumbehörde',
+        'funding.national': 'Nationale Förderung oder öffentliche Finanzierung',
+        'funding.national_desc': 'Finanziert durch nationale Behörden (z.B. CNES, DLR, ASI, etc.)',
+        'funding.undecided': 'Noch nicht Entschieden',
+        'funding.undecided_desc': 'Finanzierungsquelle wird noch definiert',
+        
+        // Pricing Display
+        'pricing.title': '💵 Live-Preisgestaltung',
+        'pricing.cost': 'Missionskosten:',
+        'pricing.status': 'Bereit für Angebot',
+        'pricing.breakdown': 'Preisaufschlüsselung:',
+        'pricing.base_cost': 'Grundkosten',
+        'pricing.billable_mass': 'Abrechenbare Masse',
+        'pricing.mdl_premium': 'MDL-Aufschlag',
+        'pricing.power_surcharge': 'Leistungszuschlag',
+        'pricing.total': 'Gesamt',
+        
+        // Buttons
+        'btn.generate_mission_order': '📄 Missionsauftrag Generieren',
+        'btn.join_waiting_list': '⏳ Auf Warteliste Beitreten',
+        'btn.generate_reservation': 'Reservierungs-PDF Generieren',
+        'btn.cancel': 'Abbrechen',
+        'btn.generate': 'Generieren',
+        
+        // Settings
+        'settings.title': 'Preisparameter (Erweitert)',
+        'settings.base_price': 'Grundpreis (€ / kg)',
+        'settings.volumetric_factor': 'Volumetrischer Faktor (L/kg)',
+        'settings.mdl_fee': 'MDL-Gebühr (€ pro Fach)',
+        'settings.power_surcharge': 'Leistungszuschlag (% pro W über 50W)',
+        'settings.payment_milestones': '💳 Zahlungsmeilensteine (%)',
+        'settings.prepayment': 'Vorauszahlung %',
+        'settings.advance': 'Anzahlung %',
+        'settings.interim': 'Zwischenfinanzierung %',
+        'settings.final': 'Abschließend %',
+        'settings.reset': 'Auf Standard Zurücksetzen',
+        
+        // Modals
+        'modal.details': '📋 Payload-Integrationsdetails',
+        'modal.volumetric_help': 'Erklärung zur Volumetrischen Abrechnung',
+        'modal.close': '×',
+        
+        // Reservation
+        'reservation.title': '🎫 Missionsplatz Reservieren',
+        'reservation.subtitle': 'Sie sind dabei, einen Platz in der Phoenix-Missionswarteschlange mit einer 5.000-€-Reservierungskaution zu reservieren (unterliegt Rückerstattungs- und Gutschriftbedingungen - siehe PDF für Details).',
+        'reservation.deposit': 'Reservierungskaution: 5.000 €',
+        'reservation.status': 'Bedingt (rückerstattbar/gutgeschrieben)',
+        'reservation.purpose': 'Vorrangige Missionsschlangposition sichern',
+        'reservation.company': 'Unternehmen / Organisation',
+        'reservation.company_placeholder': 'z.B. Exobiosphere Inc.',
+        'reservation.email': 'Kontakte-Mail',
+        'reservation.email_placeholder': 'contact@company.com',
+        'reservation.phone': 'Kontakttelefon',
+        'reservation.phone_placeholder': '+49 123 456 789',
+        'reservation.agreement': 'Ich verstehe, dass dies eine Reservierungskaution mit bedingten Rückerstattungs- und Gutschriftbedingungen ist, wie im PDF dargelegt',
+    }
+};
+
+// Current language
+let currentLanguage = localStorage.getItem('phoenix_language') || 'en';
+
+// Translation helper function
+function t(key) {
+    return TRANSLATIONS[currentLanguage]?.[key] || TRANSLATIONS['en']?.[key] || key;
+}
+
 // Wizard state
 let selectedPayloadType = null;  // 'cubesat' | 'mdl' | 'other'
 let selectedCubesatU = null;     // 1–6
@@ -36,8 +354,65 @@ let selectedMissionType = 'shared'; // Default: Shared Phoenix Flight
 // Global funding source variable
 let fundingSource = null; // Default: No selection
 
+// ─────────────────────────────────────────────────────
+// LANGUAGE SETUP
+// ─────────────────────────────────────────────────────
+
+function setupLanguageSelector() {
+    const langBtns = document.querySelectorAll('[data-lang]');
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.dataset.lang;
+            switchLanguage(lang);
+        });
+        
+        // Highlight active language
+        if (btn.dataset.lang === currentLanguage) {
+            btn.classList.add('active');
+        }
+    });
+}
+
+function switchLanguage(lang) {
+    if (!TRANSLATIONS[lang]) return;
+    
+    currentLanguage = lang;
+    localStorage.setItem('phoenix_language', lang);
+    
+    // Update active button
+    document.querySelectorAll('[data-lang]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    
+    // Update all translatable text
+    updatePageTranslations();
+}
+
+function updatePageTranslations() {
+    // Update header
+    document.querySelector('h1').textContent = t('header.title');
+    document.querySelector('header p').textContent = t('header.subtitle');
+    document.getElementById('settingsToggleBtn').textContent = t('header.settings');
+    
+    // Update wizard titles and buttons
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (el.tagName === 'INPUT' && el.type === 'button' || el.tagName === 'BUTTON') {
+            el.textContent = t(key);
+        } else if (el.tagName === 'INPUT' && (el.type === 'text' || el.type === 'email' || el.type === 'tel')) {
+            el.placeholder = t(key);
+        } else {
+            el.textContent = t(key);
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📋 DOMContentLoaded fired');
+    setupLanguageSelector();
+    console.log('✓ setupLanguageSelector');
+    updatePageTranslations();
+    console.log('✓ updatePageTranslations');
     loadPricingFromStorage();
     console.log('✓ loadPricingFromStorage');
     setupWizard();
