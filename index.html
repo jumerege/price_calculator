@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phoenix Pricing Calculator — ATMOS Space Cargo</title>
-    <link rel="stylesheet" href="style.css?v=20260418-20">
+    <link rel="stylesheet" href="style.css?v=20260418-21">
 </head>
 <body>
     <!-- Header -->
@@ -13,8 +13,8 @@
             <img src="atmos_logo.webp" alt="ATMOS Space Cargo" class="atmos-logo-img">
         </div>
         <div class="header-center">
-            <h1>Phoenix Pricing Calculator</h1>
-            <p>Microgravity Experiment Cost Estimator</p>
+            <h1 data-i18n="header.title">Phoenix Pricing Calculator</h1>
+            <p data-i18n="header.subtitle">Microgravity Experiment Cost Estimator</p>
         </div>
         <div class="header-right">
             <div class="language-selector">
@@ -22,7 +22,7 @@
                 <button data-lang="fr" class="lang-btn" title="Français">🇫🇷 FR</button>
                 <button data-lang="de" class="lang-btn" title="Deutsch">🇩🇪 DE</button>
             </div>
-            <button id="settingsToggleBtn" class="settings-gear-btn" title="Pricing Parameters">
+            <button id="settingsToggleBtn" class="settings-gear-btn" data-i18n="header.settings" title="Pricing Parameters">
                 ⚙️ Pricing Settings
             </button>
         </div>
@@ -34,30 +34,30 @@
 
             <!-- Step 1: Payload Type -->
             <div class="wizard-step" id="step1">
-                <h2 class="wizard-title">What type of payload are you flying?</h2>
+                <h2 class="wizard-title" data-i18n="wizard.step1.title">What type of payload are you flying?</h2>
                 <div class="wizard-options">
                     <button class="wizard-option" data-type="cubesat">
                         <span class="wizard-option-icon">📦</span>
-                        <span class="wizard-option-name">CubeSat</span>
-                        <span class="wizard-option-desc">Standard 1U–6U format</span>
+                        <span class="wizard-option-name" data-i18n="wizard.step1.cubesat">CubeSat</span>
+                        <span class="wizard-option-desc" data-i18n="wizard.step1.cubesat_desc">Standard 1U–6U format</span>
                     </button>
                     <button class="wizard-option" data-type="mdl">
                         <span class="wizard-option-icon">🗄️</span>
-                        <span class="wizard-option-name">Mid Deck Locker</span>
-                        <span class="wizard-option-desc">ISS MDL form factor</span>
+                        <span class="wizard-option-name" data-i18n="wizard.step1.mdl">Mid Deck Locker</span>
+                        <span class="wizard-option-desc" data-i18n="wizard.step1.mdl_desc">ISS MDL form factor</span>
                     </button>
                     <button class="wizard-option" data-type="other">
                         <span class="wizard-option-icon">⚗️</span>
-                        <span class="wizard-option-name">Other / Custom</span>
-                        <span class="wizard-option-desc">Define by mass & volume</span>
+                        <span class="wizard-option-name" data-i18n="wizard.step1.other">Other / Custom</span>
+                        <span class="wizard-option-desc" data-i18n="wizard.step1.other_desc">Define by mass & volume</span>
                     </button>
                 </div>
             </div>
 
             <!-- Step 2a: CubeSat Size -->
             <div class="wizard-step hidden" id="step2cubesat">
-                <div class="wizard-step-label">Step 2 of 2 — CubeSat Size</div>
-                <h2 class="wizard-title">Select your CubeSat unit size</h2>
+                <div class="wizard-step-label" data-i18n="wizard.step2a.label">Step 2 of 2 — CubeSat Size</div>
+                <h2 class="wizard-title" data-i18n="wizard.step2a.title">Select your CubeSat unit size</h2>
                 <div class="wizard-options cubesat-options">
                     <button class="wizard-option cubesat-btn" data-u="1" data-mass="1.33" data-volume="1">
                         <span class="wizard-option-icon">🟦</span>
@@ -90,13 +90,13 @@
                         <span class="wizard-option-desc">€270,000</span>
                     </button>
                 </div>
-                <button class="wizard-back-btn" id="backToStep1a">← Back</button>
+                <button class="wizard-back-btn" id="backToStep1a" data-i18n="wizard.back">← Back</button>
             </div>
 
             <!-- Step 2b: MDL Count -->
             <div class="wizard-step hidden" id="step2mdl">
-                <div class="wizard-step-label">Step 2 of 2 — MDL Count</div>
-                <h2 class="wizard-title">How many Mid Deck Lockers?</h2>
+                <div class="wizard-step-label" data-i18n="wizard.step2b.label">Step 2 of 2 — MDL Count</div>
+                <h2 class="wizard-title" data-i18n="wizard.step2b.title">How many Mid Deck Lockers?</h2>
                 <div class="wizard-options">
                     <button class="wizard-option mdl-btn" data-mdl="1" data-mass="30" data-volume="150">
                         <span class="wizard-option-icon">🗄️</span>
@@ -109,13 +109,13 @@
                         <span class="wizard-option-desc">€6,000,000 flat</span>
                     </button>
                 </div>
-                <button class="wizard-back-btn" id="backToStep1b">← Back</button>
+                <button class="wizard-back-btn" id="backToStep1b" data-i18n="wizard.back">← Back</button>
             </div>
 
             <!-- Selected badge -->
             <div class="wizard-selected hidden" id="wizardSelected">
                 <span id="wizardSelectedText">📦 1U CubeSat selected</span>
-                <button class="wizard-change-btn" id="wizardChangeBtn">Change selection</button>
+                <button class="wizard-change-btn" id="wizardChangeBtn" data-i18n="wizard.change">Change selection</button>
             </div>
 
         </div>
@@ -261,13 +261,13 @@
 
             <!-- Mission Duration -->
             <section class="card">
-                <h2 class="card-title">⏳ Mission Duration</h2>
+                <h2 class="card-title" data-i18n="duration.title">⏳ Mission Duration</h2>
                 
                 <!-- Duration Display -->
                 <div class="duration-display">
-                    <span class="duration-label">Mission duration:</span>
+                    <span class="duration-label" data-i18n="duration.label">Mission duration:</span>
                     <span class="duration-value" id="durationValue">3</span>
-                    <span class="duration-unit">weeks</span>
+                    <span class="duration-unit" data-i18n="duration.unit">weeks</span>
                 </div>
 
                 <!-- Duration Slider -->
@@ -326,15 +326,15 @@
             <!-- Experiment Parameters -->
             <section class="card" id="experimentParams">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h2 class="card-title" style="margin: 0;">🚀 Experiment Parameters</h2>
-                    <button type="button" id="helpChooseParamsBtn" class="help-choose-btn">Help me choose</button>
+                    <h2 class="card-title" style="margin: 0;" data-i18n="params.title">🚀 Experiment Parameters</h2>
+                    <button type="button" id="helpChooseParamsBtn" class="help-choose-btn" data-i18n="params.help">Help me choose</button>
                 </div>
                 <div class="form-grid-2">
 
                     <!-- Mass -->
                     <div class="form-group">
-                        <label>Mass (kg) * <span class="limit-label">max 100 kg</span></label>
-                        <input type="number" id="mass" placeholder="e.g., 30" min="0.1" max="100" step="0.1">
+                        <label><span data-i18n="params.mass">Mass (kg)</span> * <span class="limit-label">max 100 kg</span></label>
+                        <input type="number" id="mass" data-i18n="params.mass" placeholder="e.g., 30" min="0.1" max="100" step="0.1">
                         <div class="capacity-bar-wrap">
                             <div class="capacity-bar" id="massBar"></div>
                         </div>
@@ -343,8 +343,8 @@
 
                     <!-- Volume -->
                     <div class="form-group">
-                        <label>Volume (L) * <span class="limit-label">max 300 L</span></label>
-                        <input type="number" id="volume" placeholder="e.g., 50" min="0.1" max="300" step="0.1">
+                        <label><span data-i18n="params.volume">Volume (L)</span> * <span class="limit-label">max 300 L</span></label>
+                        <input type="number" id="volume" data-i18n="params.volume" placeholder="e.g., 50" min="0.1" max="300" step="0.1">
                         <div class="capacity-bar-wrap">
                             <div class="capacity-bar" id="volumeBar"></div>
                         </div>
@@ -353,7 +353,7 @@
 
                     <!-- MDL -->
                     <div class="form-group">
-                        <label>Mid Deck Lockers (MDL) <span class="limit-label">max 2</span></label>
+                        <label><span data-i18n="params.mdl">Mid Deck Lockers (MDL)</span> <span class="limit-label">max 2</span></label>
                         <input type="number" id="mdl" min="0" max="2" step="1" value="0">
                         <div class="capacity-bar-wrap">
                             <div class="capacity-bar" id="mdlBar"></div>
@@ -363,7 +363,7 @@
 
                     <!-- Power -->
                     <div class="form-group">
-                        <label>Power (W) <span class="limit-label">max 135 W</span></label>
+                        <label><span data-i18n="params.power">Power (W)</span> <span class="limit-label">max 135 W</span></label>
                         <input type="number" id="power" min="0" max="135" step="1" value="50">
                         <div class="capacity-bar-wrap">
                             <div class="capacity-bar" id="powerBar"></div>
@@ -376,16 +376,16 @@
 
             <!-- Funding Source -->
             <section class="card">
-                <h2 class="card-title">💰 Funding Source</h2>
-                <p class="section-helper-text">How do you expect to fund this mission?</p>
+                <h2 class="card-title" data-i18n="funding.title">💰 Funding Source</h2>
+                <p class="section-helper-text" data-i18n="funding.question">How do you expect to fund this mission?</p>
                 <div class="funding-source-container">
                     
                     <!-- Commercial -->
                     <label class="funding-card">
                         <input type="radio" name="fundingSource" value="commercial" class="funding-radio">
                         <div class="funding-content">
-                            <div class="funding-title">Commercial Budget</div>
-                            <div class="funding-desc">Privately funded mission (internal budget or private investment)</div>
+                            <div class="funding-title" data-i18n="funding.commercial">Commercial Budget</div>
+                            <div class="funding-desc" data-i18n="funding.commercial_desc">Privately funded mission (internal budget or private investment)</div>
                         </div>
                         <div class="funding-indicator">✓</div>
                     </label>
@@ -394,8 +394,8 @@
                     <label class="funding-card">
                         <input type="radio" name="fundingSource" value="esa" class="funding-radio">
                         <div class="funding-content">
-                            <div class="funding-title">ESA-Funded Project</div>
-                            <div class="funding-desc">Mission supported through a European Space Agency program</div>
+                            <div class="funding-title" data-i18n="funding.esa">ESA-Funded Project</div>
+                            <div class="funding-desc" data-i18n="funding.esa_desc">Mission supported through a European Space Agency program</div>
                         </div>
                         <div class="funding-indicator">✓</div>
                     </label>
@@ -404,8 +404,8 @@
                     <label class="funding-card">
                         <input type="radio" name="fundingSource" value="national" class="funding-radio">
                         <div class="funding-content">
-                            <div class="funding-title">National Grant or Public Funding</div>
-                            <div class="funding-desc">Funded by national agencies (e.g., CNES, DLR, ASI, etc.)</div>
+                            <div class="funding-title" data-i18n="funding.national">National Grant or Public Funding</div>
+                            <div class="funding-desc" data-i18n="funding.national_desc">Funded by national agencies (e.g., CNES, DLR, ASI, etc.)</div>
                         </div>
                         <div class="funding-indicator">✓</div>
                     </label>
@@ -414,8 +414,8 @@
                     <label class="funding-card">
                         <input type="radio" name="fundingSource" value="undecided" class="funding-radio">
                         <div class="funding-content">
-                            <div class="funding-title">Not Decided Yet</div>
-                            <div class="funding-desc">Funding source is still being defined</div>
+                            <div class="funding-title" data-i18n="funding.undecided">Not Decided Yet</div>
+                            <div class="funding-desc" data-i18n="funding.undecided_desc">Funding source is still being defined</div>
                         </div>
                         <div class="funding-indicator">✓</div>
                     </label>
@@ -430,10 +430,10 @@
 
             <!-- Action Buttons -->
             <div style="display: flex; gap: 12px;">
-                <button id="generateMissionOrder" class="generate-btn" disabled style="flex: 1;">
+                <button id="generateMissionOrder" class="generate-btn" disabled style="flex: 1;" data-i18n="btn.generate_mission_order">
                     📄 Generate Mission Order
                 </button>
-                <button id="joinWaitingListBtn" class="generate-btn waiting-list-btn" disabled style="flex: 1;">
+                <button id="joinWaitingListBtn" class="generate-btn waiting-list-btn" disabled style="flex: 1;" data-i18n="btn.join_waiting_list">
                     ⏳ Join Mission Waiting List
                 </button>
             </div>
@@ -446,9 +446,9 @@
 
                 <!-- Live Total -->
                 <div class="total-display">
-                    <div class="total-label">ESTIMATED MISSION COST</div>
+                    <div class="total-label" data-i18n="pricing.estimated_cost">ESTIMATED MISSION COST</div>
                     <div class="total-amount" id="liveTotalCost">€ 0</div>
-                    <div class="total-sublabel" id="readinessLabel">Fill in the form to calculate</div>
+                    <div class="total-sublabel" id="readinessLabel" data-i18n="pricing.fill_form">Fill in the form to calculate</div>
                 </div>
 
                 <!-- Breakdown -->
@@ -456,7 +456,7 @@
                     <div class="breakdown-row">
                         <div class="breakdown-icon">⚖️</div>
                         <div class="breakdown-desc">
-                            <div class="breakdown-name">Base Cost</div>
+                            <div class="breakdown-name" data-i18n="pricing.base_cost">Base Cost</div>
                             <div class="breakdown-sub" id="baseCostSub">-- kg (billable) × €45,000/kg</div>
                         </div>
                         <div class="breakdown-value" id="baseCost">€ 0</div>
@@ -464,7 +464,7 @@
                     <div class="breakdown-row">
                         <div class="breakdown-icon">📦</div>
                         <div class="breakdown-desc">
-                            <div class="breakdown-name">Billable Mass</div>
+                            <div class="breakdown-name" data-i18n="pricing.billable_mass">Billable Mass</div>
                             <div class="breakdown-sub" id="billableMassSub">Actual: -- kg | Volumetric: -- kg</div>
                         </div>
                         <div class="breakdown-value" id="billableMassValue">€ 0</div>
@@ -472,7 +472,7 @@
                     <div class="breakdown-row">
                         <div class="breakdown-icon">🗄️</div>
                         <div class="breakdown-desc">
-                            <div class="breakdown-name">MDL Premium</div>
+                            <div class="breakdown-name" data-i18n="pricing.mdl_premium">MDL Premium</div>
                             <div class="breakdown-sub" id="mdlCostSub">0 lockers × €3M</div>
                         </div>
                         <div class="breakdown-value" id="mdlCost">€ 0</div>
@@ -480,7 +480,7 @@
                     <div class="breakdown-row">
                         <div class="breakdown-icon">⚡</div>
                         <div class="breakdown-desc">
-                            <div class="breakdown-name">Power Surcharge</div>
+                            <div class="breakdown-name" data-i18n="pricing.power_surcharge">Power Surcharge</div>
                             <div class="breakdown-sub" id="powerCostSub">≤50W — no surcharge</div>
                         </div>
                         <div class="breakdown-value" id="powerCost">€ 0</div>
@@ -491,26 +491,26 @@
                 <div class="metrics-grid">
                     <div class="metric">
                         <div class="metric-val" id="metricDensity">—</div>
-                        <div class="metric-name">kg/L density</div>
+                        <div class="metric-name" data-i18n="pricing.density">kg/L density</div>
                     </div>
                     <div class="metric">
                         <div class="metric-val" id="metricPerKg">—</div>
-                        <div class="metric-name">€ per kg</div>
+                        <div class="metric-name" data-i18n="pricing.per_kg">€ per kg</div>
                     </div>
                     <div class="metric">
                         <div class="metric-val" id="metricPerL">—</div>
-                        <div class="metric-name">€ per L</div>
+                        <div class="metric-name" data-i18n="pricing.per_liter">€ per L</div>
                     </div>
                 </div>
 
                 <!-- Phoenix Capsule Limits Info -->
                 <div class="capsule-info">
-                    <div class="capsule-info-title">🛰️ Phoenix Capsule Limits</div>
+                    <div class="capsule-info-title" data-i18n="capsule.limits">🛰️ Phoenix Capsule Limits</div>
                     <div class="capsule-limits">
-                        <span>Max payload: <strong>100 kg</strong></span>
-                        <span>Max volume: <strong>300 L</strong></span>
-                        <span>Max MDL: <strong>2</strong></span>
-                        <span>Orbit: <strong>LEO 550 km</strong></span>
+                        <span data-i18n="capsule.max_payload">Max payload: <strong>100 kg</strong></span>
+                        <span data-i18n="capsule.max_volume">Max volume: <strong>300 L</strong></span>
+                        <span data-i18n="capsule.max_mdl">Max MDL: <strong>2</strong></span>
+                        <span data-i18n="capsule.orbit">Orbit: <strong>LEO 550 km</strong></span>
                     </div>
                 </div>
 
@@ -526,7 +526,7 @@
     <div id="payloadModal" class="modal-overlay">
         <div class="modal-panel">
             <div class="modal-header">
-                <h3>📋 Payload Integration Details</h3>
+                <h3 data-i18n="modal.payload_title">📋 Payload Integration Details</h3>
                 <button type="button" class="modal-close-btn" id="modalCloseBtn">&times;</button>
             </div>
             <div class="modal-body">
@@ -542,7 +542,7 @@
     <div id="volumetricFactorModal" class="modal-overlay">
         <div class="modal-panel modal-panel-wide">
             <div class="modal-header">
-                <h3>💡 Understanding Volumetric Billing</h3>
+                <h3 data-i18n="modal.volumetric_title">💡 Understanding Volumetric Billing</h3>
                 <button type="button" class="modal-close-btn" id="volumetricFactorCloseBtn">&times;</button>
             </div>
             <div class="modal-body">
@@ -612,7 +612,7 @@
     <div class="modal-overlay" id="reservationModal">
         <div class="modal-panel" style="max-width: 500px;">
             <div class="modal-header">
-                <h2>🎫 Reserve Mission Slot</h2>
+                <h2 data-i18n="modal.reservation_title">🎫 Reserve Mission Slot</h2>
                 <button type="button" class="modal-close-btn" id="reservationModalCloseBtn">&times;</button>
             </div>
             <div class="modal-body">
@@ -694,6 +694,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <script src="app.js?v=20260418-20"></script>
+    <script src="app.js?v=20260418-21"></script>
 </body>
 </html>

@@ -76,13 +76,19 @@ const TRANSLATIONS = {
         // Pricing Display
         'pricing.title': '💵 Live Pricing',
         'pricing.cost': 'Mission Cost:',
+        'pricing.estimated_cost': 'ESTIMATED MISSION COST',
+        'pricing.fill_form': 'Fill in the form to calculate',
         'pricing.status': 'Ready for quote',
         'pricing.breakdown': 'Pricing breakdown:',
         'pricing.base_cost': 'Base Cost',
         'pricing.billable_mass': 'Billable Mass',
         'pricing.mdl_premium': 'MDL Premium',
         'pricing.power_surcharge': 'Power Surcharge',
+        'pricing.density': 'kg/L density',
+        'pricing.per_kg': '€ per kg',
+        'pricing.per_liter': '€ per L',
         'pricing.total': 'Total',
+        'pricing.note': '* Prices exclude applicable taxes and are in EUR (€)',
         
         // Buttons
         'btn.generate_mission_order': '📄 Generate Mission Order',
@@ -95,6 +101,9 @@ const TRANSLATIONS = {
         'settings.title': 'Pricing Parameters (Advanced)',
         'settings.base_price': 'Base Price (€ / kg)',
         'settings.volumetric_factor': 'Volumetric Factor (L/kg)',
+        'settings.volumetric_factor_desc': 'If volume/mass ratio exceeds this threshold, you pay based on volume. Default: 2 L/kg (industry standard).',
+        'settings.volumetric_factor_range': 'Range: 1–4 L/kg',
+        'settings.show_examples': 'Show Examples',
         'settings.mdl_fee': 'MDL Fee (€ per locker)',
         'settings.power_surcharge': 'Power Surcharge (% per W over 50W)',
         'settings.payment_milestones': '💳 Payment Milestones (%)',
@@ -104,10 +113,21 @@ const TRANSLATIONS = {
         'settings.final': 'Final %',
         'settings.reset': 'Reset to Defaults',
         
+        // Capsule Info
+        'capsule.limits': '🛰️ Phoenix Capsule Limits',
+        'capsule.max_payload': 'Max payload: 100 kg',
+        'capsule.max_volume': 'Max volume: 300 L',
+        'capsule.max_mdl': 'Max MDL: 2',
+        'capsule.orbit': 'Orbit: LEO 550 km',
+        
         // Modals
+        'modal.payload_title': '📋 Payload Integration Details',
+        'modal.volumetric_title': '💡 Understanding Volumetric Billing',
+        'modal.reservation_title': '🎫 Reserve Mission Slot',
         'modal.details': '📋 Payload Integration Details',
         'modal.volumetric_help': 'Volumetric Billing Explanation',
         'modal.close': '×',
+        'btn.close': 'Close',
         
         // Reservation
         'reservation.title': '🎫 Reserve Mission Slot',
@@ -177,13 +197,19 @@ const TRANSLATIONS = {
         // Pricing Display
         'pricing.title': '💵 Prix en Direct',
         'pricing.cost': 'Coût de la Mission :',
+        'pricing.estimated_cost': 'COÛT ESTIMÉ DE LA MISSION',
+        'pricing.fill_form': 'Remplissez le formulaire pour calculer',
         'pricing.status': 'Prêt pour devis',
         'pricing.breakdown': 'Détail du prix :',
         'pricing.base_cost': 'Coût de Base',
         'pricing.billable_mass': 'Masse Facturable',
         'pricing.mdl_premium': 'Supplément MDL',
         'pricing.power_surcharge': 'Surcharge Puissance',
+        'pricing.density': 'densité kg/L',
+        'pricing.per_kg': '€ par kg',
+        'pricing.per_liter': '€ par L',
         'pricing.total': 'Total',
+        'pricing.note': '* Les prix n\'incluent pas les taxes applicables et sont en EUR (€)',
         
         // Buttons
         'btn.generate_mission_order': '📄 Générer Commande de Mission',
@@ -196,6 +222,9 @@ const TRANSLATIONS = {
         'settings.title': 'Paramètres de Prix (Avancé)',
         'settings.base_price': 'Prix de Base (€ / kg)',
         'settings.volumetric_factor': 'Facteur Volumétrique (L/kg)',
+        'settings.volumetric_factor_desc': 'Si le rapport volume/masse dépasse ce seuil, vous payez en fonction du volume. Par défaut : 2 L/kg (norme industrielle).',
+        'settings.volumetric_factor_range': 'Plage : 1-4 L/kg',
+        'settings.show_examples': 'Afficher les Exemples',
         'settings.mdl_fee': 'Frais MDL (€ par casier)',
         'settings.power_surcharge': 'Surcharge Puissance (% par W au-delà de 50W)',
         'settings.payment_milestones': '💳 Étapes de Paiement (%)',
@@ -205,14 +234,25 @@ const TRANSLATIONS = {
         'settings.final': 'Final %',
         'settings.reset': 'Réinitialiser aux Valeurs par Défaut',
         
+        // Capsule Info
+        'capsule.limits': '🛰️ Limites de la Capsule Phoenix',
+        'capsule.max_payload': 'Charge maximale : 100 kg',
+        'capsule.max_volume': 'Volume max : 300 L',
+        'capsule.max_mdl': 'MDL max : 2',
+        'capsule.orbit': 'Orbite : LEO 550 km',
+        
         // Modals
+        'modal.payload_title': '📋 Détails d\'Intégration du Payload',
+        'modal.volumetric_title': '💡 Comprendre la Facturation Volumétrique',
+        'modal.reservation_title': '🎫 Réserver un Créneau de Mission',
         'modal.details': '📋 Détails d\'Intégration du Payload',
         'modal.volumetric_help': 'Explication de la Facturation Volumétrique',
         'modal.close': '×',
+        'btn.close': 'Fermer',
         
         // Reservation
         'reservation.title': '🎫 Réserver un Créneau de Mission',
-        'reservation.subtitle': 'Vous êtes sur le point de réserver une position dans la file d\'attente de mission Phoenix avec une Caution de Réservation de 5 000 €(sujette aux conditions de remboursement et de crédit - voir le PDF pour les détails).',
+        'reservation.subtitle': 'Vous êtes sur le point de réserver une position dans la file d\'attente de mission Phoenix avec une Caution de Réservation de 5 000 € (sujette aux conditions de remboursement et de crédit - voir le PDF pour les détails).',
         'reservation.deposit': 'Caution de Réservation : 5 000 €',
         'reservation.status': 'Conditionnelle (remboursable/créditée)',
         'reservation.purpose': 'Sécuriser une position prioritaire dans la file d\'attente de mission',
@@ -221,7 +261,7 @@ const TRANSLATIONS = {
         'reservation.email': 'E-mail de Contact',
         'reservation.email_placeholder': 'contact@company.com',
         'reservation.phone': 'Téléphone de Contact',
-        'reservation.phone_placeholder': '+49 123 456 789',
+        'reservation.phone_placeholder': '+33 123 456 789',
         'reservation.agreement': 'Je comprends qu\'il s\'agit d\'une Caution de Réservation avec conditions de remboursement et de crédit conditionnelles telles que décrites dans le PDF',
     },
     de: {
@@ -278,13 +318,19 @@ const TRANSLATIONS = {
         // Pricing Display
         'pricing.title': '💵 Live-Preisgestaltung',
         'pricing.cost': 'Missionskosten:',
+        'pricing.estimated_cost': 'GESCHÄTZTE MISSIONSKOSTEN',
+        'pricing.fill_form': 'Füllen Sie das Formular aus zum Berechnen',
         'pricing.status': 'Bereit für Angebot',
         'pricing.breakdown': 'Preisaufschlüsselung:',
         'pricing.base_cost': 'Grundkosten',
         'pricing.billable_mass': 'Abrechenbare Masse',
         'pricing.mdl_premium': 'MDL-Aufschlag',
         'pricing.power_surcharge': 'Leistungszuschlag',
+        'pricing.density': 'kg/L Dichte',
+        'pricing.per_kg': '€ pro kg',
+        'pricing.per_liter': '€ pro L',
         'pricing.total': 'Gesamt',
+        'pricing.note': '* Preise ohne Steuern und in EUR (€)',
         
         // Buttons
         'btn.generate_mission_order': '📄 Missionsauftrag Generieren',
@@ -297,6 +343,9 @@ const TRANSLATIONS = {
         'settings.title': 'Preisparameter (Erweitert)',
         'settings.base_price': 'Grundpreis (€ / kg)',
         'settings.volumetric_factor': 'Volumetrischer Faktor (L/kg)',
+        'settings.volumetric_factor_desc': 'Wenn das Verhältnis Volumen/Masse diese Schwelle überschreitet, zahlen Sie basierend auf dem Volumen. Standard: 2 L/kg (Industriestandard).',
+        'settings.volumetric_factor_range': 'Bereich: 1–4 L/kg',
+        'settings.show_examples': 'Beispiele Anzeigen',
         'settings.mdl_fee': 'MDL-Gebühr (€ pro Fach)',
         'settings.power_surcharge': 'Leistungszuschlag (% pro W über 50W)',
         'settings.payment_milestones': '💳 Zahlungsmeilensteine (%)',
@@ -306,10 +355,21 @@ const TRANSLATIONS = {
         'settings.final': 'Abschließend %',
         'settings.reset': 'Auf Standard Zurücksetzen',
         
+        // Capsule Info
+        'capsule.limits': '🛰️ Phoenix-Kapsel-Grenzen',
+        'capsule.max_payload': 'Max. Nutzlast: 100 kg',
+        'capsule.max_volume': 'Max. Volumen: 300 L',
+        'capsule.max_mdl': 'Max. MDL: 2',
+        'capsule.orbit': 'Umlaufbahn: LEO 550 km',
+        
         // Modals
+        'modal.payload_title': '📋 Payload-Integrationsdetails',
+        'modal.volumetric_title': '💡 Erklärung zur Volumetrischen Abrechnung',
+        'modal.reservation_title': '🎫 Missionsplatz Reservieren',
         'modal.details': '📋 Payload-Integrationsdetails',
-        'modal.volumetric_help': 'Erklärung zur Volumetrischen Abrechnung',
+        'modal.volumetric_help': 'Erklärung der Volumetrischen Abrechnung',
         'modal.close': '×',
+        'btn.close': 'Schließen',
         
         // Reservation
         'reservation.title': '🎫 Missionsplatz Reservieren',
