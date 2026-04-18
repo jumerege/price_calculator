@@ -434,6 +434,21 @@ function setupModalHandlers() {
             }
         });
     }
+    
+    // ─── HELP CHOOSE PARAMETERS BUTTON ───────────────────────────
+    console.log('🆘 Setting up help choose parameters button');
+    const helpChooseBtn = document.getElementById('helpChooseParamsBtn');
+    if (helpChooseBtn) {
+        helpChooseBtn.addEventListener('click', () => {
+            console.log('   🆘 Help choose button clicked');
+            const presetsSection = document.getElementById('experimentPresetsSection');
+            if (presetsSection) {
+                presetsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                console.log('   ✓ Scrolled to experiment presets');
+            }
+        });
+        console.log('   ✓ Help choose button listener attached');
+    }
 }
 
 function openPayloadModal() {

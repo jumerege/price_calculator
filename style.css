@@ -1515,6 +1515,30 @@ header {
     transform: scale(0.95);
 }
 
+/* ── Help Choose Params Button ────────────────────────── */
+.help-choose-btn {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.help-choose-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-dark);
+    transform: translateY(-2px);
+}
+
+.help-choose-btn:active {
+    transform: translateY(0);
+}
+
 /* ── Wide Modal Panel ───────────────────────────────── */
 .modal-panel-wide {
     max-width: 600px;

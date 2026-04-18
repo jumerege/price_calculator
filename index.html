@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phoenix Pricing Calculator — ATMOS Space Cargo</title>
-    <link rel="stylesheet" href="style.css?v=20260418-3">
+    <link rel="stylesheet" href="style.css?v=20260418-4">
 </head>
 <body>
     <!-- Header -->
@@ -172,7 +172,7 @@
         <div class="form-column">
 
             <!-- Experiment Presets -->
-            <section class="card">
+            <section class="card" id="experimentPresetsSection">
                 <h2 class="card-title">🧪 Experiment Presets</h2>
                 <div class="presets-grid">
                     <button class="preset-btn" data-mass="2.5" data-volume="5" data-mdl="0" data-power="30" data-name="Protein Crystallization">
@@ -351,7 +351,10 @@
 
             <!-- Experiment Parameters -->
             <section class="card">
-                <h2 class="card-title">🚀 Experiment Parameters</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2 class="card-title" style="margin: 0;">🚀 Experiment Parameters</h2>
+                    <button type="button" id="helpChooseParamsBtn" class="help-choose-btn">?  Help me choose</button>
+                </div>
                 <div class="form-grid-2">
 
                     <!-- Mass -->
@@ -628,6 +631,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <script src="app.js?v=20260418-3"></script>
+    <script src="app.js?v=20260418-4"></script>
 </body>
 </html>
