@@ -712,9 +712,8 @@ function updateBreakdown(pricing, mass, volume, mdl, power) {
     } else {
         const volumetricMassStr = pricing.volumetricMass.toFixed(2);
         const billableMassStr = pricing.billableMass.toFixed(2);
-        const indicator = pricing.usesVolumetricMass ? ' ⚠️ volumetric' : '';
         
-        document.getElementById('billableMassValue').textContent = `${billableMassStr} kg${indicator}`;
+        document.getElementById('billableMassValue').textContent = `${billableMassStr} kg`;
         document.getElementById('billableMassSub').textContent = 
             `Actual: ${pricing.actualMass.toFixed(2)} kg | Volumetric: ${volumetricMassStr} kg (${pricing.volume.toFixed(1)} L ÷ ${pricing.volumetricFactor} L/kg)`;
     }
