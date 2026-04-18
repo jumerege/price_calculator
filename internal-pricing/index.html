@@ -1,11 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Phoenix Internal Pricing</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phoenix Internal Pricing Engine</title>
+    <link rel="stylesheet" href="../style.css?v=20260418-30">
+    <link rel="stylesheet" href="internal-pricing.css">
 </head>
 <body>
-  <h1>Phoenix Internal Pricing Tool</h1>
-  <p>This page will calculate recommended €/kg.</p>
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <img src="../atmos_logo.webp" alt="ATMOS Space Cargo" class="atmos-logo-img">
+        </div>
+        <div class="header-center">
+            <h1>Internal Pricing Engine</h1>
+            <p>For use of finance and business development team only.</p>
+        </div>
+        <div class="header-right">
+            <a href="../index.html" class="back-link">← Back to Public Calculator</a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <main>
+            <!-- Scenario Presets -->
+            <section class="pricing-card">
+                <div class="card-header">
+                    <h2>Scenario Presets</h2>
+                    <p class="card-subtitle">Load a predefined scenario or customize all parameters manually.</p>
+                </div>
+                <div class="scenario-buttons">
+                    <button class="scenario-btn" data-scenario="conservative">
+                        <span class="scenario-name">Conservative</span>
+                        <span class="scenario-desc">Lower fill rate, higher margins</span>
+                    </button>
+                    <button class="scenario-btn" data-scenario="base">
+                        <span class="scenario-name">Base Case</span>
+                        <span class="scenario-desc">Realistic assumptions</span>
+                    </button>
+                    <button class="scenario-btn" data-scenario="aggressive">
+                        <span class="scenario-name">Aggressive</span>
+                        <span class="scenario-desc">High utilization, competitive pricing</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Development Costs Section -->
+            <section class="pricing-card">
+                <div class="card-header">
+                    <h2>A. Development Costs (Non-Recurring)</h2>
+                    <p class="card-subtitle">Non-recurring costs amortized across the expected Phoenix mission portfolio.</p>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="phaseA">Phase A – Feasibility (€)</label>
+                        <input type="number" id="phaseA" class="calc-input" value="500000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="phaseB">Phase B – Preliminary Design (€)</label>
+                        <input type="number" id="phaseB" class="calc-input" value="1500000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="phaseC">Phase C – Detailed Design (€)</label>
+                        <input type="number" id="phaseC" class="calc-input" value="4000000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="phaseD">Phase D – Qualification & Manufacturing (€)</label>
+                        <input type="number" id="phaseD" class="calc-input" value="12000000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="missionCount">Total Number of Missions for Amortization</label>
+                        <input type="number" id="missionCount" class="calc-input" value="20" min="1" step="1">
+                    </div>
+                </div>
+                <div class="calc-output">
+                    <div class="output-item">
+                        <span class="output-label">Total Development Cost:</span>
+                        <span class="output-value" id="totalDevCost">€18,500,000</span>
+                    </div>
+                    <div class="output-item">
+                        <span class="output-label">Development Cost per Mission:</span>
+                        <span class="output-value" id="devCostPerMission">€925,000</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recurring Mission Costs Section -->
+            <section class="pricing-card">
+                <div class="card-header">
+                    <h2>B. Recurring Mission Costs</h2>
+                    <p class="card-subtitle">Direct and indirect costs required to execute one Phoenix mission.</p>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="launchCost">Launch Cost (€)</label>
+                        <input type="number" id="launchCost" class="calc-input" value="3500000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="operationsCost">Mission Operations Cost (€)</label>
+                        <input type="number" id="operationsCost" class="calc-input" value="750000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="recoveryCost">Recovery Cost (€)</label>
+                        <input type="number" id="recoveryCost" class="calc-input" value="600000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="logisticsCost">Logistics & Transport Cost (€)</label>
+                        <input type="number" id="logisticsCost" class="calc-input" value="250000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="groundSegmentCost">Ground Segment Cost (€)</label>
+                        <input type="number" id="groundSegmentCost" class="calc-input" value="300000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="teamCost">Mission Team Cost (€)</label>
+                        <input type="number" id="teamCost" class="calc-input" value="450000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="insuranceCost">Insurance / Contingency Cost (€)</label>
+                        <input type="number" id="insuranceCost" class="calc-input" value="400000" min="0" step="10000">
+                    </div>
+                </div>
+                <div class="calc-output">
+                    <div class="output-item highlight">
+                        <span class="output-label">Total Mission OPEX:</span>
+                        <span class="output-value" id="totalOpex">€6,250,000</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Capacity & Utilization Section -->
+            <section class="pricing-card">
+                <div class="card-header">
+                    <h2>C. Capacity & Utilization</h2>
+                    <p class="card-subtitle">Commercially sellable capacity after operational losses and expected fill rate.</p>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="maxMass">Maximum Sellable Mass per Mission (kg)</label>
+                        <input type="number" id="maxMass" class="calc-input" value="100" min="0" step="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="maxVolume">Maximum Sellable Volume per Mission (L)</label>
+                        <input type="number" id="maxVolume" class="calc-input" value="500" min="0" step="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="maxMdl">Maximum MDL Capacity</label>
+                        <input type="number" id="maxMdl" class="calc-input" value="10" min="0" step="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="fillRate">Expected Fill Rate (%)</label>
+                        <input type="number" id="fillRate" class="calc-input" value="70" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="capacityLoss">Operational Capacity Loss (%)</label>
+                        <input type="number" id="capacityLoss" class="calc-input" value="10" min="0" max="100" step="0.1">
+                    </div>
+                </div>
+                <div class="calc-output">
+                    <div class="output-item">
+                        <span class="output-label">Net Sellable Mass (before fill rate):</span>
+                        <span class="output-value" id="netSellableMass">90 kg</span>
+                    </div>
+                    <div class="output-item highlight">
+                        <span class="output-label">Effective Sold Mass (at fill rate):</span>
+                        <span class="output-value" id="effectiveSoldMass">63 kg</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Commercial Assumptions Section -->
+            <section class="pricing-card">
+                <div class="card-header">
+                    <h2>D. Commercial Assumptions</h2>
+                    <p class="card-subtitle">Margin and pricing protection factors used to derive the recommended commercial base price.</p>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="marginTarget">Target Operational Margin (%)</label>
+                        <input type="number" id="marginTarget" class="calc-input" value="35" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="pricingBuffer">Strategic Pricing Buffer (%)</label>
+                        <input type="number" id="pricingBuffer" class="calc-input" value="10" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="riskPremium">Risk Premium (%)</label>
+                        <input type="number" id="riskPremium" class="calc-input" value="8" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="discountReserve">Discount Reserve (%)</label>
+                        <input type="number" id="discountReserve" class="calc-input" value="5" min="0" max="100" step="0.1">
+                    </div>
+                </div>
+                <div class="calc-output">
+                    <div class="output-item">
+                        <span class="output-label">Combined Commercial Uplift Factor:</span>
+                        <span class="output-value" id="liftFactor">1.58x</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRIMARY PRICING OUTPUT -->
+            <section class="pricing-card pricing-output-primary">
+                <div class="card-header">
+                    <h2>Recommended Base Price</h2>
+                </div>
+                <div class="primary-output">
+                    <div class="primary-value-box">
+                        <div class="primary-label">Recommended Base Price per kg</div>
+                        <div class="primary-value" id="recommendedPrice">€ 185,000</div>
+                        <div class="primary-sub">All-in commercial rate for customer</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MARGIN FRAMEWORK -->
+            <section class="pricing-card">
+                <div class="card-header">
+                    <h2>Operational Margin Framework</h2>
+                    <p class="card-subtitle">Detailed margin analysis at both unit (€/kg) and mission levels.</p>
+                </div>
+
+                <!-- Per-kg Margins -->
+                <div class="margin-section">
+                    <h3 class="margin-section-title">Per-Kilogram Analysis</h3>
+                    <div class="margin-grid">
+                        <div class="margin-item">
+                            <span class="margin-label">Base Cost per kg</span>
+                            <span class="margin-value" id="baseCostPerKg">€ 117,460</span>
+                        </div>
+                        <div class="margin-item">
+                            <span class="margin-label">Loaded Price per kg</span>
+                            <span class="margin-value" id="loadedPricePerKg">€ 185,000</span>
+                        </div>
+                        <div class="margin-item">
+                            <span class="margin-label">Absolute Margin per kg</span>
+                            <span class="margin-value highlight-green" id="marginPerKg">€ 67,540</span>
+                        </div>
+                        <div class="margin-item">
+                            <span class="margin-label">Operational Margin (%)</span>
+                            <span class="margin-value highlight-green" id="marginPercent">36.5%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission-Level Margins -->
+                <div class="margin-section">
+                    <h3 class="margin-section-title">Mission-Level Analysis</h3>
+                    <div class="margin-grid">
+                        <div class="margin-item">
+                            <span class="margin-label">Mission Cost</span>
+                            <span class="margin-value" id="missionCost">€ 7,410,000</span>
+                        </div>
+                        <div class="margin-item">
+                            <span class="margin-label">Mission Revenue (at recommended price)</span>
+                            <span class="margin-value" id="missionRevenue">€ 11,655,000</span>
+                        </div>
+                        <div class="margin-item">
+                            <span class="margin-label">Mission Absolute Margin</span>
+                            <span class="margin-value highlight-green" id="missionMarginAbs">€ 4,245,000</span>
+                        </div>
+                        <div class="margin-item">
+                            <span class="margin-label">Mission Margin (%)</span>
+                            <span class="margin-value highlight-green" id="missionMarginPercent">36.5%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SENSITIVITY ANALYSIS -->
+            <section class="pricing-card">
+                <div class="card-header">
+                    <h2>Sensitivity Analysis</h2>
+                    <p class="card-subtitle">How the recommended base price varies with key assumptions.</p>
+                </div>
+                <div class="sensitivity-grid">
+                    <div class="sensitivity-item">
+                        <h3>Fill Rate Sensitivity</h3>
+                        <div class="sensitivity-table">
+                            <div class="sensitivity-row">
+                                <span class="sens-label">50% Fill Rate</span>
+                                <span class="sens-value" id="sens-fillrate-50">€ 239,000</span>
+                            </div>
+                            <div class="sensitivity-row">
+                                <span class="sens-label">70% Fill Rate</span>
+                                <span class="sens-value highlight-primary" id="sens-fillrate-70">€ 185,000</span>
+                            </div>
+                            <div class="sensitivity-row">
+                                <span class="sens-label">90% Fill Rate</span>
+                                <span class="sens-value" id="sens-fillrate-90">€ 156,000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sensitivity-item">
+                        <h3>Mission Count Sensitivity</h3>
+                        <div class="sensitivity-table">
+                            <div class="sensitivity-row">
+                                <span class="sens-label">10 Missions</span>
+                                <span class="sens-value" id="sens-missions-10">€ 251,000</span>
+                            </div>
+                            <div class="sensitivity-row">
+                                <span class="sens-label">20 Missions</span>
+                                <span class="sens-value highlight-primary" id="sens-missions-20">€ 185,000</span>
+                            </div>
+                            <div class="sensitivity-row">
+                                <span class="sens-label">50 Missions</span>
+                                <span class="sens-value" id="sens-missions-50">€ 142,000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sensitivity-item">
+                        <h3>Mission Cost Sensitivity</h3>
+                        <div class="sensitivity-table">
+                            <div class="sensitivity-row">
+                                <span class="sens-label">-10% Total Mission Cost</span>
+                                <span class="sens-value" id="sens-cost-minus">€ 167,000</span>
+                            </div>
+                            <div class="sensitivity-row">
+                                <span class="sens-label">Base Total Mission Cost</span>
+                                <span class="sens-value highlight-primary" id="sens-cost-base">€ 185,000</span>
+                            </div>
+                            <div class="sensitivity-row">
+                                <span class="sens-label">+10% Total Mission Cost</span>
+                                <span class="sens-value" id="sens-cost-plus">€ 203,000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="action-buttons">
+                <button id="resetBtn" class="btn-secondary">Reset to Defaults</button>
+                <button id="exportBtn" class="btn-primary">Export Analysis</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="internal-pricing.js"></script>
 </body>
 </html>
