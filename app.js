@@ -392,6 +392,48 @@ function setupModalHandlers() {
         });
         console.log('   ✓ Outside click listener attached');
     }
+    
+    // ─── VOLUMETRIC FACTOR HELP MODAL ───────────────────────────
+    console.log('💡 Setting up volumetric factor help modal');
+    const volumetricFactorModal = document.getElementById('volumetricFactorModal');
+    const volumetricFactorHelpBtn = document.getElementById('volumetricFactorHelpBtn');
+    const volumetricFactorCloseBtn = document.getElementById('volumetricFactorCloseBtn');
+    const volumetricFactorConfirmBtn = document.getElementById('volumetricFactorConfirmBtn');
+    
+    if (volumetricFactorHelpBtn) {
+        volumetricFactorHelpBtn.addEventListener('click', () => {
+            console.log('   💡 Help button clicked');
+            volumetricFactorModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        console.log('   ✓ Help button listener attached');
+    }
+    
+    if (volumetricFactorCloseBtn) {
+        volumetricFactorCloseBtn.addEventListener('click', () => {
+            console.log('   ✓ Help close button clicked');
+            volumetricFactorModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    }
+    
+    if (volumetricFactorConfirmBtn) {
+        volumetricFactorConfirmBtn.addEventListener('click', () => {
+            console.log('   ✓ Help confirm button clicked');
+            volumetricFactorModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    }
+    
+    if (volumetricFactorModal) {
+        volumetricFactorModal.addEventListener('click', (e) => {
+            if (e.target === volumetricFactorModal) {
+                console.log('   ✓ Clicked outside help modal');
+                volumetricFactorModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
 }
 
 function openPayloadModal() {

@@ -126,7 +126,10 @@
                     <input type="number" id="basePricePerKg" value="45000" min="0" step="100">
                 </div>
                 <div class="setting-item">
-                    <label>Volumetric Factor (L/kg)</label>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <label>Volumetric Factor (L/kg)</label>
+                        <button type="button" class="info-help-btn" id="volumetricFactorHelpBtn" title="Learn more">?</button>
+                    </div>
                     <input type="number" id="volumetricFactor" value="2" min="0.1" step="0.1">
                     <small style="display: block; margin-top: 2px; color: #888; font-size: 0.75rem;">Billing based on max(actual mass, volume ÷ factor)</small>
                 </div>
@@ -549,6 +552,76 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="modal-action-btn" id="modalConfirmBtn">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Volumetric Factor Help Modal -->
+    <div id="volumetricFactorModal" class="modal-overlay">
+        <div class="modal-panel modal-panel-wide">
+            <div class="modal-header">
+                <h3>💡 Understanding Volumetric Billing</h3>
+                <button type="button" class="modal-close-btn" id="volumetricFactorCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4 style="color: #0A3966; margin-bottom: 10px;">What is Volumetric Billing?</h4>
+                <p>Think of it like shipping a very light but very large package. If you ship a huge pillow that weighs only 1 kg but takes up 100 liters of space, the shipping company might charge you based on the SPACE it takes, not just the weight.</p>
+
+                <h4 style="color: #0A3966; margin-top: 15px; margin-bottom: 10px;">How Does It Work?</h4>
+                <p><strong>The calculator checks two things:</strong></p>
+                <ol style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>Actual Weight:</strong> How much your payload actually weighs</li>
+                    <li><strong>Space Charge:</strong> What the space it occupies is worth in weight</li>
+                </ol>
+                <p style="margin-top: 10px;"><strong>Then we charge you for whichever is HIGHER.</strong></p>
+
+                <h4 style="color: #0A3966; margin-top: 15px; margin-bottom: 10px;">What is the "Volumetric Factor"?</h4>
+                <p>The <strong>Volumetric Factor</strong> is how we convert space into weight equivalent.</p>
+                <p style="margin-top: 8px;"><strong>Default value: 2 (L/kg)</strong></p>
+                <p>This means: <strong>2 liters of space = 1 kg of billable weight</strong></p>
+
+                <h4 style="color: #0A3966; margin-top: 15px; margin-bottom: 10px;">Real Example 🎯</h4>
+                <div style="background: #f0f5ff; padding: 12px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #0A3966;">
+                    <p><strong>Scenario:</strong> You send a balloon full of sensors</p>
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li>🎈 <strong>Actual weight:</strong> 2 kg</li>
+                        <li>📦 <strong>Space it takes:</strong> 100 liters</li>
+                        <li>⚙️ <strong>Volumetric Factor:</strong> 2 L/kg</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Calculation:</strong></p>
+                    <p style="margin-left: 20px; font-family: monospace; font-weight: bold;">
+                        Space Charge = 100 liters ÷ 2 = <span style="color: #00d4ff;">50 kg equivalent</span><br>
+                        You pay for = max(2 kg actual, 50 kg equivalent) = <span style="color: #00d4ff;">50 kg</span> ✈️
+                    </p>
+                    <p style="margin-top: 10px;"><strong>Result:</strong> You get charged like if your balloon weighed 50 kg!</p>
+                </div>
+
+                <h4 style="color: #0A3966; margin-top: 15px; margin-bottom: 10px;">Another Example: Heavy Object 🏋️</h4>
+                <div style="background: #f0f5ff; padding: 12px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #0A3966;">
+                    <p><strong>Scenario:</strong> You send a small dense instrument</p>
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li>🔧 <strong>Actual weight:</strong> 60 kg</li>
+                        <li>📦 <strong>Space it takes:</strong> 50 liters</li>
+                        <li>⚙️ <strong>Volumetric Factor:</strong> 2 L/kg</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Calculation:</strong></p>
+                    <p style="margin-left: 20px; font-family: monospace; font-weight: bold;">
+                        Space Charge = 50 liters ÷ 2 = <span style="color: #00d4ff;">25 kg equivalent</span><br>
+                        You pay for = max(60 kg actual, 25 kg equivalent) = <span style="color: #00d4ff;">60 kg</span> ✈️
+                    </p>
+                    <p style="margin-top: 10px;"><strong>Result:</strong> You get charged for actual weight (60 kg) because it's heavier!</p>
+                </div>
+
+                <h4 style="color: #0A3966; margin-top: 15px; margin-bottom: 10px;">Can I Change It?</h4>
+                <p><strong>Yes!</strong> Higher Volumetric Factor = cheaper for bulky items</p>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li>Factor 2 (default): More space-efficient</li>
+                    <li>Factor 3: Bulkier items get charged less</li>
+                    <li>Factor 4: Very bulky items are even cheaper</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-action-btn" id="volumetricFactorConfirmBtn">Got it!</button>
             </div>
         </div>
     </div>

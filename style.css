@@ -1486,6 +1486,60 @@ header {
     color: var(--text-secondary);
 }
 
+/* ── Info Help Button ───────────────────────────────── */
+.info-help-btn {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.info-help-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-dark);
+    transform: scale(1.1);
+}
+
+.info-help-btn:active {
+    transform: scale(0.95);
+}
+
+/* ── Wide Modal Panel ───────────────────────────────── */
+.modal-panel-wide {
+    max-width: 600px;
+}
+
+.modal-body h4 {
+    margin: 0 0 8px 0;
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.modal-body ol {
+    margin: 0;
+}
+
+.modal-body ul {
+    margin: 0;
+    list-style-position: inside;
+}
+
+.modal-body li {
+    margin: 4px 0;
+}
+
 /* ── Breakdown List ─────────────────────────────────── */
 .breakdown-list {
     display: flex;
