@@ -1,0 +1,4 @@
+---
+static_site:
+  root: /
+  branch: main
