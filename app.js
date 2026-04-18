@@ -4,7 +4,7 @@
 // Default Pricing Configuration
 const DEFAULT_PRICING = {
     basePricePerKg: 45000,
-    volumeSurchargePercent: 15,
+    volumetricFactor: 2,           // L/kg - converts volume to equivalent billable mass
     mdlFeePerLocker: 3000000,
     powerSurchargePercent: 3,
     powerThreshold: 50,
@@ -254,7 +254,7 @@ function setupSettings() {
 
     if (resetSettingsBtn) resetSettingsBtn.addEventListener('click', resetSettings);
 
-    ['basePricePerKg','volumeSurchargePercent','mdlFeePerLocker','powerSurchargePercent',
+    ['basePricePerKg','volumetricFactor','mdlFeePerLocker','powerSurchargePercent',
      'payPrepayment','payAdvance','payInterim','payFinal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', () => { updatePricing(); recalculate(); });
@@ -264,8 +264,8 @@ function setupSettings() {
 function updatePricing() {
     currentPricing = {
         basePricePerKg: parseFloat(document.getElementById('basePricePerKg').value) || DEFAULT_PRICING.basePricePerKg,
-        volumeSurchargePercent: parseFloat(document.getElementById('volumeSurchargePercent').value) || 0,
-        mdlFeePerLocker: parseFloat(document.getElementById('mdlFeePerLocker').value) || 0,
+        volumetricFactor: parseFloat(document.getElementById('volumetricFactor').value) || DEFAULT_PRICING.volumetricFactor,
+        mdlFeePerLocker: parseFloat(document.getElementById('mdlFeePerLocker').value) ||0,
         powerSurchargePercent: parseFloat(document.getElementById('powerSurchargePercent').value) || 0,
         powerThreshold: DEFAULT_PRICING.powerThreshold,
         payPrepayment: parseFloat(document.getElementById('payPrepayment').value) ?? DEFAULT_PRICING.payPrepayment,
@@ -279,7 +279,7 @@ function updatePricing() {
 function resetSettings() {
     currentPricing = { ...DEFAULT_PRICING };
     document.getElementById('basePricePerKg').value = DEFAULT_PRICING.basePricePerKg;
-    document.getElementById('volumeSurchargePercent').value = DEFAULT_PRICING.volumeSurchargePercent;
+    document.getElementById('volumetricFactor').value = DEFAULT_PRICING.volumetricFactor;
     document.getElementById('mdlFeePerLocker').value = DEFAULT_PRICING.mdlFeePerLocker;
     document.getElementById('powerSurchargePercent').value = DEFAULT_PRICING.powerSurchargePercent;
     document.getElementById('payPrepayment').value = DEFAULT_PRICING.payPrepayment;
@@ -305,7 +305,7 @@ function loadPricingFromStorage() {
             const p = JSON.parse(stored);
             currentPricing = { ...DEFAULT_PRICING, ...p };
             document.getElementById('basePricePerKg').value = currentPricing.basePricePerKg;
-            document.getElementById('volumeSurchargePercent').value = currentPricing.volumeSurchargePercent;
+            document.getElementById('volumetricFactor').value = currentPricing.volumetricFactor;
             document.getElementById('mdlFeePerLocker').value = currentPricing.mdlFeePerLocker;
             document.getElementById('powerSurchargePercent').value = currentPricing.powerSurchargePercent;
         } catch (e) { /* ignore corrupt storage */ }
@@ -535,10 +535,15 @@ function applyPreset(btn) {
 function calculatePricing(mass, volume, mdl, power, payloadType) {
     const isMDL = payloadType === 'mdl';
 
-    // MDL: flat fee only — no mass or volume cost
-    const baseCost       = isMDL ? 0 : mass * currentPricing.basePricePerKg;
-    const volumeSurcharge = isMDL ? 0 : baseCost * (volume * (currentPricing.volumeSurchargePercent / 100));
-    const mdlCost        = mdl * currentPricing.mdlFeePerLocker;
+    // ─── VOLUMETRIC BILLING MODEL ───────────────────────────────
+    // Calculate billable mass based on volumetric factor
+    const volumetricMass = volume / currentPricing.volumetricFactor;
+    const billableMass = Math.max(mass, volumetricMass);
+    const usesVolumetricMass = billableMass === volumetricMass && billableMass > mass;
+
+    // Base cost calculation using billable mass
+    const baseCost = isMDL ? 0 : billableMass * currentPricing.basePricePerKg;
+    const mdlCost  = mdl * currentPricing.mdlFeePerLocker;
 
     // Power surcharge base: MDL fee when MDL, otherwise mass-based cost
     const powerBase = isMDL ? mdlCost : baseCost;
@@ -548,14 +553,29 @@ function calculatePricing(mass, volume, mdl, power, payloadType) {
         powerCost = powerBase * (excess * (currentPricing.powerSurchargePercent / 100));
     }
 
-    const totalCost = baseCost + volumeSurcharge + mdlCost + powerCost;
+    const totalCost = baseCost + mdlCost + powerCost;
+    
     return {
-        baseCost,
-        volumeSurcharge,
-        mdlCost,
-        powerCost,
-        totalCost,
-        isMDL,
+        // Original inputs
+        actualMass: mass,
+        volume: volume,
+        mdl: mdl,
+        power: power,
+        
+        // Volumetric calculations
+        volumetricFactor: currentPricing.volumetricFactor,
+        volumetricMass: volumetricMass,
+        billableMass: billableMass,
+        usesVolumetricMass: usesVolumetricMass,
+        
+        // Costs
+        baseCost: baseCost,
+        mdlCost: mdlCost,
+        powerCost: powerCost,
+        totalCost: totalCost,
+        
+        // Metrics
+        isMDL: isMDL,
         density: volume > 0 ? mass / volume : 0,
         costPerLiter: volume > 0 ? totalCost / volume : 0
     };
@@ -628,27 +648,45 @@ function recalculate() {
 
 function updateBreakdown(pricing, mass, volume, mdl, power) {
     if (!pricing) {
-        ['baseCost','volumeCost','mdlCost','powerCost'].forEach(id => {
+        ['baseCost','billableMassValue','mdlCost','powerCost'].forEach(id => {
             document.getElementById(id).textContent = '€ 0';
         });
-        document.getElementById('baseCostSub').textContent   = '-- kg × €/kg';
-        document.getElementById('volumeCostSub').textContent = '-- L × 15%';
-        document.getElementById('mdlCostSub').textContent    = '0 lockers × €3M';
-        document.getElementById('powerCostSub').textContent  = '≤50W — no surcharge';
+        document.getElementById('baseCostSub').textContent      = '-- kg (billable) × €45,000/kg';
+        document.getElementById('billableMassSub').textContent  = 'Actual: -- kg | Volumetric: -- kg';
+        document.getElementById('mdlCostSub').textContent       = '0 lockers × €3M';
+        document.getElementById('powerCostSub').textContent     = '≤50W — no surcharge';
         return;
     }
 
     const isMDL = pricing.isMDL;
 
-    document.getElementById('baseCost').textContent   = isMDL ? 'N/A' : formatEuro(pricing.baseCost);
-    document.getElementById('volumeCost').textContent = isMDL ? 'N/A' : formatEuro(pricing.volumeSurcharge);
-    document.getElementById('mdlCost').textContent    = formatEuro(pricing.mdlCost);
-    document.getElementById('powerCost').textContent  = formatEuro(pricing.powerCost);
+    // Display base cost using billable mass
+    document.getElementById('baseCost').textContent = isMDL ? 'N/A' : formatEuro(pricing.baseCost);
+    
+    // Display billable mass calculation
+    if (isMDL) {
+        document.getElementById('billableMassValue').textContent = 'N/A';
+        document.getElementById('billableMassSub').textContent = 'Included in MDL flat fee';
+    } else {
+        const volumetricMassStr = pricing.volumetricMass.toFixed(2);
+        const billableMassStr = pricing.billableMass.toFixed(2);
+        const indicator = pricing.usesVolumetricMass ? ' ⚠️ volumetric' : '';
+        
+        document.getElementById('billableMassValue').textContent = `${billableMassStr} kg${indicator}`;
+        document.getElementById('billableMassSub').textContent = 
+            `Actual: ${pricing.actualMass.toFixed(2)} kg | Volumetric: ${volumetricMassStr} kg (${pricing.volume.toFixed(1)} L ÷ ${pricing.volumetricFactor} L/kg)`;
+    }
+    
+    // MDL and Power costs unchanged
+    document.getElementById('mdlCost').textContent = formatEuro(pricing.mdlCost);
+    document.getElementById('powerCost').textContent = formatEuro(pricing.powerCost);
 
-    document.getElementById('baseCostSub').textContent   = isMDL ? 'Included in MDL flat fee' : `${mass} kg × ${formatEuro(currentPricing.basePricePerKg)}/kg`;
-    document.getElementById('volumeCostSub').textContent = isMDL ? 'Included in MDL flat fee' : `${volume} L × ${currentPricing.volumeSurchargePercent}%`;
-    document.getElementById('mdlCostSub').textContent    = `${mdl} locker(s) × ${formatEuro(currentPricing.mdlFeePerLocker)} flat`;
-    document.getElementById('powerCostSub').textContent  = power > currentPricing.powerThreshold
+    document.getElementById('baseCostSub').textContent = isMDL ? 'Included in MDL flat fee' : 
+        `${pricing.billableMass.toFixed(2)} kg (billable) × ${formatEuro(currentPricing.basePricePerKg)}/kg`;
+    
+    document.getElementById('mdlCostSub').textContent = `${mdl} locker(s) × ${formatEuro(currentPricing.mdlFeePerLocker)} flat`;
+    
+    document.getElementById('powerCostSub').textContent = power > currentPricing.powerThreshold
         ? `${power - currentPricing.powerThreshold}W excess × ${currentPricing.powerSurchargePercent}%`
         : `≤${currentPricing.powerThreshold}W — no surcharge`;
 }
@@ -832,11 +870,11 @@ function generateMissionOrderFile() {
         head: [['Cost Component', 'Calculation', 'Amount (EUR)']],
         body: [
             ['Base Cost',
-             `${mass} kg \u00d7 ${formatEuro(pricingConfig.basePricePerKg)}/kg`,
+             `${pricing.billableMass.toFixed(2)} kg (billable) \u00d7 ${formatEuro(pricingConfig.basePricePerKg)}/kg`,
              formatEuro(pricing.baseCost)],
-            ['Volume Surcharge',
-             `${volume} L \u00d7 ${pricingConfig.volumeSurchargePercent}% on base`,
-             formatEuro(pricing.volumeSurcharge)],
+            ['Billable Mass',
+             `max(${mass} kg, ${pricing.volumetricMass.toFixed(2)} kg volumetric)`,
+             `${pricing.billableMass.toFixed(2)} kg`],
             ['MDL Premium',
              `${mdl} locker(s) \u00d7 ${formatEuro(pricingConfig.mdlFeePerLocker)}`,
              formatEuro(pricing.mdlCost)],

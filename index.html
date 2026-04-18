@@ -126,8 +126,9 @@
                     <input type="number" id="basePricePerKg" value="45000" min="0" step="100">
                 </div>
                 <div class="setting-item">
-                    <label>Volume Surcharge (% per L)</label>
-                    <input type="number" id="volumeSurchargePercent" value="15" min="0" step="0.1">
+                    <label>Volumetric Factor (L/kg)</label>
+                    <input type="number" id="volumetricFactor" value="2" min="0.1" step="0.1">
+                    <small style="display: block; margin-top: 2px; color: #888; font-size: 0.75rem;">Billing based on max(actual mass, volume ÷ factor)</small>
                 </div>
                 <div class="setting-item">
                     <label>MDL Fee (€ per locker)</label>
@@ -471,17 +472,17 @@
                         <div class="breakdown-icon">⚖️</div>
                         <div class="breakdown-desc">
                             <div class="breakdown-name">Base Cost</div>
-                            <div class="breakdown-sub" id="baseCostSub">-- kg × €45,000/kg</div>
+                            <div class="breakdown-sub" id="baseCostSub">-- kg (billable) × €45,000/kg</div>
                         </div>
                         <div class="breakdown-value" id="baseCost">€ 0</div>
                     </div>
                     <div class="breakdown-row">
                         <div class="breakdown-icon">📦</div>
                         <div class="breakdown-desc">
-                            <div class="breakdown-name">Volume Surcharge</div>
-                            <div class="breakdown-sub" id="volumeCostSub">-- L × 15%</div>
+                            <div class="breakdown-name">Billable Mass</div>
+                            <div class="breakdown-sub" id="billableMassSub">Actual: -- kg | Volumetric: -- kg</div>
                         </div>
-                        <div class="breakdown-value" id="volumeCost">€ 0</div>
+                        <div class="breakdown-value" id="billableMassValue">€ 0</div>
                     </div>
                     <div class="breakdown-row">
                         <div class="breakdown-icon">🗄️</div>
