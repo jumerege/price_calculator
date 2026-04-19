@@ -73,6 +73,30 @@ const TOOLTIP_CONTENT = {
     reusabilityFactor: {
         title: "Reusability Factor (flights per vehicle)",
         content: "This represents how many times a single Phoenix vehicle can be reused. This improves cost efficiency, but may increase refurbishment needs and operational complexity over time. It is reasonable to presume 1 to 3, but not higher than this."
+    },
+    launchCost: {
+        title: "Launch Cost (rideshare)",
+        content: "This represents the cost of launching Phoenix as a rideshare payload on a commercial rocket. It includes integration with the launcher and access to orbit. This is typically the largest cost component and depends on market pricing, launch provider, and mission profile."
+    },
+    integrationCost: {
+        title: "Payload Integration & AIT",
+        content: "This covers the cost of integrating the customer payload into Phoenix and performing Assembly, Integration, and Testing (AIT). It includes mechanical mounting, electrical connections, validation, and pre-flight testing to ensure compatibility and mission readiness."
+    },
+    operationsCost: {
+        title: "Mission Operations",
+        content: "This includes the cost of operating the mission once in flight. It covers telemetry, command, monitoring, ground segment usage, and mission control activities. These costs depend on mission duration, complexity, and required level of operational support."
+    },
+    recoveryCost: {
+        title: "Recovery Operations",
+        content: "This represents the cost of locating and recovering the Phoenix vehicle after splashdown. It includes ships, aircraft support, coordination, and logistics required to safely retrieve the capsule from the ocean and secure it for transport."
+    },
+    refurbishmentCost: {
+        title: "Refurbishment Cost",
+        content: "This covers the cost of inspecting, repairing, and preparing the Phoenix vehicle for reuse after a mission. It includes component replacement, system checks, and validation. Higher reuse rates may increase refurbishment complexity and cost."
+    },
+    logisticsCost: {
+        title: "Logistics & Transport",
+        content: "This includes the cost of transporting the vehicle and payload before and after the mission. It covers shipping to the launch site, return transport after recovery, handling, and coordination between facilities."
     }
 };
 
