@@ -22,6 +22,7 @@ const DEFAULTS = {
     integrationCost: 150000,  
     refurbishmentCost: 200000,
     logisticsCost: 100000,
+    insuranceCost: 0,
     
     // Section C - Payload & Revenue
     maxPayloadMass: 100,
@@ -60,6 +61,10 @@ const TOOLTIP_CONTENT = {
     F: {
         title: "Phase F — Disposal",
         content: "Final mission phase covering splashdown, recovery, and post-flight handling. Includes ocean landing stabilization, telemetry transmission for localization, and coordinated recovery using boat and aircraft. Payload is secured, transported to port, and returned to Lichtenau facilities. Includes post-mission inspection, data retrieval, refurbishment assessment, and preparation for reuse or disposal of subsystems."
+    },
+    insurance: {
+        title: "Insurance / Risk Coverage",
+        content: "This cost represents mission-level risk protection. It is modeled separately because it is not a development cost, but a recurring mission cost that may vary depending on launch conditions, payload value, mission profile, and customer risk allocation.\n\nA percentage-based approach is useful because insurance often scales with the economic value at risk during a mission, rather than remaining strictly fixed.\n\nSuggested formula: Insurance = 10% × (Launch + Ops + Recovery + Payload value)\n\nThis formula is only a recommended modeling approach for internal pricing purposes. This field remains manually adjustable—you may enter any value based on your risk assessment and customer requirements."
     }
 };
 
@@ -173,8 +178,9 @@ function calculate() {
     const integrationCost = parseFloat(document.getElementById('integrationCost').value) || DEFAULTS.integrationCost;
     const refurbishmentCost = parseFloat(document.getElementById('refurbishmentCost').value) || DEFAULTS.refurbishmentCost;
     const logisticsCost = parseFloat(document.getElementById('logisticsCost').value) || DEFAULTS.logisticsCost;
+    const insuranceCost = parseFloat(document.getElementById('insuranceCost').value) || DEFAULTS.insuranceCost;
 
-    const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost;
+    const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost + insuranceCost;
 
     // Update Section B outputs
     document.getElementById('totalRecurringCost').textContent = formatEuro(totalRecurringCost);
@@ -275,6 +281,7 @@ function reset() {
     document.getElementById('integrationCost').value = DEFAULTS.integrationCost;
     document.getElementById('refurbishmentCost').value = DEFAULTS.refurbishmentCost;
     document.getElementById('logisticsCost').value = DEFAULTS.logisticsCost;
+    document.getElementById('insuranceCost').value = DEFAULTS.insuranceCost;
 
     document.getElementById('maxPayloadMass').value = DEFAULTS.maxPayloadMass;
     document.getElementById('maxVolume').value = DEFAULTS.maxVolume;
@@ -305,6 +312,7 @@ function exportAnalysis() {
     const integrationCost = parseFloat(document.getElementById('integrationCost').value) || DEFAULTS.integrationCost;
     const refurbishmentCost = parseFloat(document.getElementById('refurbishmentCost').value) || DEFAULTS.refurbishmentCost;
     const logisticsCost = parseFloat(document.getElementById('logisticsCost').value) || DEFAULTS.logisticsCost;
+    const insuranceCost = parseFloat(document.getElementById('insuranceCost').value) || DEFAULTS.insuranceCost;
     
     const maxPayloadMass = Math.max(0.1, parseFloat(document.getElementById('maxPayloadMass').value) || DEFAULTS.maxPayloadMass);
     const utilization = Math.max(1, Math.min(100, parseFloat(document.getElementById('utilization').value) || DEFAULTS.utilization));
@@ -313,7 +321,7 @@ function exportAnalysis() {
     // Perform calculations
     const totalNrc = phaseA + phaseB + phaseC + phaseD + phaseE + phaseF;
     const devCostPerMission = totalNrc / missionCount;
-    const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost;
+    const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost + insuranceCost;
     const avgSoldMass = Math.max(0.1, maxPayloadMass * (utilization / 100));
     const totalCostPerMission = devCostPerMission + totalRecurringCost;
     const breakEvenPricePerKg = totalCostPerMission / avgSoldMass;
@@ -331,7 +339,7 @@ function exportAnalysis() {
         reader.onloadend = function() {
             const logoBase64 = reader.result;
             createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE, phaseF, missionCount, 
-                                launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost,
+                                launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost, insuranceCost,
                                 maxPayloadMass, utilization, targetMargin, totalNrc, devCostPerMission, totalRecurringCost,
                                 avgSoldMass, totalCostPerMission, breakEvenPricePerKg, recommendedPricePerKg, revenuePerMission,
                                 operationalMarginAmount, operationalMarginPercent);
@@ -341,7 +349,7 @@ function exportAnalysis() {
     xhr.onerror = function() {
         // Fallback if logo fails to load
         createAndDownloadPDF('', phaseA, phaseB, phaseC, phaseD, phaseE, phaseF, missionCount, 
-                            launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost,
+                            launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost, insuranceCost,
                             maxPayloadMass, utilization, targetMargin, totalNrc, devCostPerMission, totalRecurringCost,
                             avgSoldMass, totalCostPerMission, breakEvenPricePerKg, recommendedPricePerKg, revenuePerMission,
                             operationalMarginAmount, operationalMarginPercent);
@@ -354,7 +362,7 @@ function exportAnalysis() {
  * Create and download PDF with all parameters
  */
 function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE, phaseF, missionCount,
-                               launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost,
+                               launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost, insuranceCost,
                                maxPayloadMass, utilization, targetMargin, totalNrc, devCostPerMission, totalRecurringCost,
                                avgSoldMass, totalCostPerMission, breakEvenPricePerKg, recommendedPricePerKg, revenuePerMission,
                                operationalMarginAmount, operationalMarginPercent) {
@@ -591,6 +599,10 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
                 <tr>
                     <td>Logistics & Transport</td>
                     <td>${numberToEuro(logisticsCost)}</td>
+                </tr>
+                <tr>
+                    <td>Insurance / Risk Coverage</td>
+                    <td>${numberToEuro(insuranceCost)}</td>
                 </tr>
                 <tr class="highlight">
                     <td><strong>Total Recurring Cost</strong></td>
