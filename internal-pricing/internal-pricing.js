@@ -40,15 +40,15 @@ const DEFAULTS = {
 const TOOLTIP_CONTENT = {
     A: {
         title: "Phase A — Feasibility",
-        content: "Feasibility assessment of payload integration within Phoenix architecture. Includes compatibility checks with mechanical interfaces (payload plate, mounting grid), electrical interfaces (24–33V unregulated or regulated lines), and data protocols (Ethernet, CAN). Preliminary evaluation of environmental constraints such as vibration, quasi-static loads, and thermal conditions. Early assessment of reentry survivability and IAD compatibility for mission concept validation."
+        content: "Feasibility assessment of payload integration within Phoenix architecture. It includes:\n\n• Compatibility checks with mechanical interfaces (payload plate, mounting grid)\n• Electrical interfaces (24–33V unregulated or regulated lines)\n• Data protocols (Ethernet, CAN)\n• Preliminary evaluation of environmental constraints such as vibration, quasi-static loads, and thermal conditions\n• Early assessment of reentry survivability and IAD compatibility for mission concept validation"
     },
     B: {
         title: "Phase B — Preliminary Definition",
-        content: "Definition of system architecture and payload integration concept. Includes Interface Control Document (ICD) development, payload layout within pressurized bay, and definition of thermal, electrical, and communication interfaces. Preliminary sizing of propulsion (de-orbit), avionics (OBC, GPS, IMU), and power subsystems. Mission timeline definition including launch, orbital operations, and recovery concept in coordination with ground segment."
+        content: "Definition of system architecture and payload integration concept. It includes:\n\n• Interface Control Document (ICD) development\n• Payload layout within pressurized bay\n• Definition of thermal, electrical, and communication interfaces\n• Preliminary sizing of propulsion (de-orbit), avionics (OBC, GPS, IMU), and power subsystems\n• Mission timeline definition: launch, orbital operations, and recovery concept in coordination with ground segment"
     },
     C: {
         title: "Phase C — Detailed Definition",
-        content: "Detailed engineering design and subsystem validation. Includes structural analysis (CFRP payload bay), thermal modeling, vibration and shock verification, and avionics integration (redundant OBC, sensors, communication systems). Finalization of GNC algorithms for reentry trajectory control and IAD deployment. Payload verification requirements defined, including EMC, vibration, and pressure testing prior to integration."
+        content: "Detailed engineering design and subsystem validation. It includes:\n\n• Structural analysis of payload bay\n• Thermal modeling\n• Vibration and shock verification\n• Avionics integration (redundant OBC, sensors, communication systems)\n• Finalization of GNC algorithms for reentry trajectory control and IAD deployment\n• Payload verification requirements, including EMC, vibration, and pressure testing prior to integration"
     },
     D: {
         title: "Phase D — Qualification and Production",
@@ -60,7 +60,7 @@ const TOOLTIP_CONTENT = {
     },
     F: {
         title: "Phase F — Disposal",
-        content: "Final mission phase covering splashdown, recovery, and post-flight handling. Includes ocean landing stabilization, telemetry transmission for localization, and coordinated recovery using boat and aircraft. Payload is secured, transported to port, and returned to Lichtenau facilities. Includes post-mission inspection, data retrieval, refurbishment assessment, and preparation for reuse or disposal of subsystems."
+        content: "Final mission phase covering:\n\n• Splashdown\n• Recovery\n• Transportation to Lichtenau\n• Post-mission inspection, data retrieval, refurbishment assessment, and preparation for reuse or disposal of subsystems\n• Transportation from Lichtenau to customer's address (if applicable)\n\nMore specifically, it requires ocean landing stabilization, telemetry transmission for localization, and coordinated recovery using boat and aircraft."
     },
     insurance: {
         title: "Insurance",
@@ -257,6 +257,16 @@ function setupEventListeners() {
         }
     });
 
+    // Close tooltip with ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('phaseTooltipModal');
+            if (modal && modal.classList.contains('active')) {
+                closePhaseTooltip();
+            }
+        }
+    });
+
     // Calculation Engine Modal
     const modal = document.getElementById('calcEngineModal');
     const calcEngineBtn = document.getElementById('calcEngineBtn');
@@ -285,7 +295,12 @@ function showPhaseTooltip(phase) {
     if (!content) return;
     
     document.getElementById('tooltipTitle').textContent = content.title;
-    document.getElementById('tooltipBody').textContent = content.content;
+    // Use innerHTML to preserve line breaks and formatting
+    const bodyDiv = document.getElementById('tooltipBody');
+    bodyDiv.innerHTML = content.content
+        .split('\n')
+        .map(line => line.trim() ? `<p>${line}</p>` : '<br>')
+        .join('');
     document.getElementById('phaseTooltipModal').classList.add('active');
 }
 

@@ -513,10 +513,28 @@
 
         .tooltip-body {
             color: var(--text-primary);
-            line-height: 1.7;
+            line-height: 1.8;
             font-size: 0.95rem;
-            white-space: pre-wrap;
             word-wrap: break-word;
+        }
+
+        .tooltip-body p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .tooltip-body p:first-child {
+            margin-top: 0;
+        }
+
+        .tooltip-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .tooltip-body br {
+            display: block;
+            height: 8px;
+            content: "";
         }
 
         @media (max-width: 768px) {
