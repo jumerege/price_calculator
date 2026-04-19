@@ -73,6 +73,8 @@ header {
     justify-content: space-between;
     gap: 30px;
     flex-wrap: wrap;
+    overflow: visible;
+    position: relative;
 }
 
 .header-left {
@@ -92,6 +94,8 @@ header {
     gap: 12px;
     flex-wrap: wrap;
     justify-content: flex-end;
+    position: relative;
+    overflow: visible;
 }
 
 header h1 {
@@ -667,6 +671,8 @@ header {
     z-index: 1000;
     backdrop-filter: blur(10px);
     pointer-events: none;
+    display: block;
+    padding: 8px 0;
 }
 
 .nav-menu-dropdown.active {
