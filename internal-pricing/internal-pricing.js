@@ -40,27 +40,27 @@ const DEFAULTS = {
 const TOOLTIP_CONTENT = {
     A: {
         title: "Phase A — Feasibility",
-        content: "Feasibility assessment of payload integration within Phoenix architecture. It includes:\n\n• Compatibility checks with mechanical interfaces (payload plate, mounting grid)\n• Electrical interfaces (24–33V unregulated or regulated lines)\n• Data protocols (Ethernet, CAN)\n• Preliminary evaluation of environmental constraints such as vibration, quasi-static loads, and thermal conditions\n• Early assessment of reentry survivability and IAD compatibility for mission concept validation"
+        content: "Feasibility assessment of payload integration within Phoenix architecture.\n\nIt includes:\n\n✅ Compatibility checks with mechanical interfaces (payload plate, mounting grid)\n✅ Electrical interfaces (24–33V unregulated or regulated lines)\n✅ Data protocols (Ethernet, CAN)\n✅ Preliminary evaluation of environmental constraints such as vibration, quasi-static loads, and thermal conditions\n✅ Early assessment of reentry survivability and IAD compatibility for mission concept validation"
     },
     B: {
         title: "Phase B — Preliminary Definition",
-        content: "Definition of system architecture and payload integration concept. It includes:\n\n• Interface Control Document (ICD) development\n• Payload layout within pressurized bay\n• Definition of thermal, electrical, and communication interfaces\n• Preliminary sizing of propulsion (de-orbit), avionics (OBC, GPS, IMU), and power subsystems\n• Mission timeline definition: launch, orbital operations, and recovery concept in coordination with ground segment"
+        content: "Definition of system architecture and payload integration concept.\n\nIt includes:\n\n✅ Interface Control Document (ICD) development\n✅ Payload layout within pressurized bay\n✅ Definition of thermal, electrical, and communication interfaces\n✅ Preliminary sizing of propulsion (de-orbit), avionics (OBC, GPS, IMU), and power subsystems\n✅ Mission timeline definition: launch, orbital operations, and recovery concept in coordination with ground segment"
     },
     C: {
         title: "Phase C — Detailed Definition",
-        content: "Detailed engineering design and subsystem validation. It includes:\n\n• Structural analysis of payload bay\n• Thermal modeling\n• Vibration and shock verification\n• Avionics integration (redundant OBC, sensors, communication systems)\n• Finalization of GNC algorithms for reentry trajectory control and IAD deployment\n• Payload verification requirements, including EMC, vibration, and pressure testing prior to integration"
+        content: "Detailed engineering design and subsystem validation.\n\nIt includes:\n\n✅ Structural analysis of payload bay\n✅ Thermal modeling\n✅ Vibration and shock verification\n✅ Avionics integration (redundant OBC, sensors, communication systems)\n✅ Finalization of GNC algorithms for reentry trajectory control and IAD deployment\n✅ Payload verification requirements, including EMC, vibration, and pressure testing prior to integration"
     },
     D: {
         title: "Phase D — Qualification and Production",
-        content: "Manufacturing, Assembly, Integration, and Testing (AIT) of Phoenix and payload. Includes cleanroom payload integration, mechanical mating to rideshare adapter, electrical connections, and system-level validation. Qualification campaigns cover vibration, thermal, and functional testing. Final launch readiness reviews, documentation sign-off, and transport to launch site. Includes late access procedures and coordination with launcher providers (e.g., Falcon 9, RFA One)."
+        content: "Manufacturing, Assembly, Integration, and Testing (AIT) of Phoenix and payload.\n\nIt includes:\n\n✅ Cleanroom payload integration\n✅ Mechanical mating to rideshare adapter\n✅ Electrical connections and system-level validation\n✅ Qualification campaigns covering vibration, thermal, and functional testing\n✅ Final launch readiness reviews and documentation sign-off\n✅ Transport to launch site with late access procedures\n✅ Coordination with launcher providers (e.g., Falcon 9, RFA One)"
     },
     E: {
         title: "Phase E — Utilisation",
-        content: "Operational mission phase from launch to payload data acquisition. Includes launch, separation, orbital flight (3 hours to 3 months), payload operation, telemetry, and command via Iridium/UHF/S-band. Execution of de-orbit maneuver, IAD deployment, and controlled reentry. Covers hypersonic to subsonic descent phases, real-time navigation, and payload environmental control throughout mission execution."
+        content: "Operational mission phase from launch to payload data acquisition.\n\nIt includes:\n\n✅ Launch and separation\n✅ Orbital flight (3 hours to 3 months)\n✅ Payload operation with telemetry and command via Iridium/UHF/S-band\n✅ De-orbit maneuver execution and IAD deployment\n✅ Controlled reentry covering hypersonic to subsonic descent phases\n✅ Real-time navigation and payload environmental control throughout mission execution"
     },
     F: {
         title: "Phase F — Disposal",
-        content: "Final mission phase covering:\n\n• Splashdown\n• Recovery\n• Transportation to Lichtenau\n• Post-mission inspection, data retrieval, refurbishment assessment, and preparation for reuse or disposal of subsystems\n• Transportation from Lichtenau to customer's address (if applicable)\n\nMore specifically, it requires ocean landing stabilization, telemetry transmission for localization, and coordinated recovery using boat and aircraft."
+        content: "Final mission phase covering recovery, transportation, and refurbishment assessment.\n\nIt includes:\n\n✅ Ocean landing stabilization\n✅ Telemetry transmission for localization\n✅ Coordinated recovery using boat and aircraft\n✅ Splashdown and recovery\n✅ Transportation to Lichtenau\n✅ Post-mission inspection and data retrieval\n✅ Refurbishment assessment and preparation for reuse or disposal of subsystems\n✅ Transportation from Lichtenau to customer's address (if applicable)"
     },
     insurance: {
         title: "Insurance",
