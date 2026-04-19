@@ -1,0 +1,123 @@
+/* FAQ Page Styles */
+
+.faq-main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+.faq-back-link {
+    display: inline-block;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+    transition: opacity 0.2s;
+}
+
+.faq-back-link:hover {
+    opacity: 0.75;
+}
+
+/* Section */
+.faq-section {
+    margin-bottom: 48px;
+}
+
+.faq-category-title {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+/* Accordion item */
+.faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.faq-item.open {
+    border-color: rgba(0, 212, 255, 0.4);
+}
+
+.faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 18px 20px;
+    text-align: left;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s;
+}
+
+.faq-question:hover {
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.faq-chevron {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    transition: transform 0.25s ease;
+}
+
+.faq-item.open .faq-chevron {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.2s ease;
+    padding: 0 20px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.faq-item.open .faq-answer {
+    max-height: 500px;
+    padding: 0 20px 18px;
+}
+
+/* Footer note */
+.faq-footer-note {
+    margin-top: 48px;
+    padding: 20px 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    text-align: center;
+}
+
+.faq-footer-note a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.faq-footer-note a:hover {
+    text-decoration: underline;
+}
+
+/* Page footer */
+.page-footer {
+    text-align: center;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.78rem;
+}

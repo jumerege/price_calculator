@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ — Phoenix Pricing Calculator — ATMOS Space Cargo</title>
+    <link rel="stylesheet" href="style.css?v=20260419-05">
+    <link rel="stylesheet" href="faq.css?v=20260419-01">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <img src="atmos_logo.webp" alt="ATMOS Space Cargo" class="atmos-logo-img">
+        </div>
+        <div class="header-center">
+            <h1 id="faq-title">Frequently Asked Questions</h1>
+            <p id="faq-subtitle">Everything you need to know about Phoenix mission pricing and capabilities.</p>
+        </div>
+        <div class="header-right">
+            <div class="language-selector">
+                <button data-lang="en" class="lang-btn active" title="English">
+                    <img src="flags/flag-gb.svg" alt="UK" class="flag-emoji">
+                </button>
+                <button data-lang="fr" class="lang-btn" title="Français">
+                    <img src="flags/flag-fr.svg" alt="France" class="flag-emoji">
+                </button>
+                <button data-lang="de" class="lang-btn" title="Deutsch">
+                    <img src="flags/flag-de.svg" alt="Germany" class="flag-emoji">
+                </button>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="nav-menu-container">
+                <button id="navMenuBtn" class="nav-menu-btn" title="Navigation Menu">☰</button>
+                <div id="navMenuDropdown" class="nav-menu-dropdown">
+                    <a href="index.html" class="nav-menu-item">
+                        <span class="nav-menu-icon">🧮</span>
+                        <span class="nav-menu-text">Pricing Calculator</span>
+                    </a>
+                    <a href="https://atmos-space-cargo.com/" target="_blank" class="nav-menu-item">
+                        <span class="nav-menu-icon">🌐</span>
+                        <span class="nav-menu-text">ATMOS Website</span>
+                    </a>
+                    <a href="value-proposition.html" class="nav-menu-item">
+                        <span class="nav-menu-icon">✨</span>
+                        <span class="nav-menu-text">Why ATMOS?</span>
+                    </a>
+                    <a href="internal-pricing/" class="nav-menu-item">
+                        <span class="nav-menu-icon">📊</span>
+                        <span class="nav-menu-text">Internal Pricing Page</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="faq-main">
+
+        <!-- Back link -->
+        <a href="index.html" class="faq-back-link">← <span id="back-label">Back to Calculator</span></a>
+
+        <!-- Category: Pricing & Costs -->
+        <section class="faq-section">
+            <h2 class="faq-category-title" id="cat-pricing">💰 Pricing &amp; Costs</h2>
+            <div class="faq-list" id="faq-pricing"></div>
+        </section>
+
+        <!-- Category: Phoenix Capsule & Technical -->
+        <section class="faq-section">
+            <h2 class="faq-category-title" id="cat-technical">🛰️ Phoenix Capsule &amp; Technical</h2>
+            <div class="faq-list" id="faq-technical"></div>
+        </section>
+
+        <!-- Footer note -->
+        <div class="faq-footer-note">
+            <p id="faq-footer-note">Still have questions? Contact ATMOS Space Cargo at <a href="mailto:info@atmos-space-cargo.com">info@atmos-space-cargo.com</a></p>
+        </div>
+
+    </main>
+
+    <footer class="page-footer">
+        <p>Phoenix Experiment Pricing Calculator v2.0 · ATMOS Space Cargo GmbH · Lichtenau, Germany</p>
+    </footer>
+
+    <script src="faq.js?v=20260419-01"></script>
+</body>
+</html>
