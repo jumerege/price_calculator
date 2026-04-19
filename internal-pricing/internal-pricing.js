@@ -64,7 +64,7 @@ const TOOLTIP_CONTENT = {
     },
     insurance: {
         title: "Insurance",
-        content: "This cost represents mission-level risk protection. It is modeled separately because it is not a development cost, but a recurring mission cost that may vary depending on launch conditions, payload value, mission profile, and customer risk allocation.\n\nA percentage-based approach is useful because insurance often scales with the economic value at risk during a mission, rather than remaining strictly fixed.\n\nSuggested formula: Insurance = 10% × (Launch + Ops + Recovery + Payload value)\n\nThis formula is only a recommended modeling approach for internal pricing purposes. This field remains manually adjustable—you may enter any value based on your risk assessment and customer requirements."
+        content: "This represents the cost of insuring the mission against potential failure or loss. It is typically calculated as a percentage of mission value. Insurance helps mitigate financial risk but increases total mission cost. The value depends on risk profile, reliability assumptions, and coverage level."
     },
     missionCount: {
         title: "Number of Missions for Amortization",
