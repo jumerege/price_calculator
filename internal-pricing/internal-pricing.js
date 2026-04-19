@@ -969,6 +969,11 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
     };
     
     try {
+        console.log('PDF Export initiated');
+        console.log('Phase E:', phaseE);
+        console.log('Phase F:', phaseF);
+        console.log('Total Recurring:', totalRecurringCost);
+        
         // Create a temporary container
         const tempContainer = document.createElement('div');
         tempContainer.innerHTML = pdfContent;
@@ -980,13 +985,22 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
             .set(opt)
             .from(tempContainer)
             .save()
+            .then(() => {
+                console.log('PDF export successful');
+            })
+            .catch((error) => {
+                console.error('PDF export error:', error);
+                alert('Error generating PDF: ' + error.message);
+            })
             .finally(() => {
                 // Clean up temporary container
-                document.body.removeChild(tempContainer);
+                if (document.body.contains(tempContainer)) {
+                    document.body.removeChild(tempContainer);
+                }
             });
     } catch (error) {
         console.error('PDF export error:', error);
-        alert('Error generating PDF. Please try again.');
+        alert('Error generating PDF. Please check browser console for details.');
     }
 }
 
