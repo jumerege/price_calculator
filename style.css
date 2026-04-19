@@ -1243,6 +1243,14 @@ header {
     line-height: 1.4;
 }
 
+.mission-type-note {
+    font-size: 0.78rem;
+    color: var(--warning-color);
+    margin-top: 5px;
+    line-height: 1.4;
+    font-style: italic;
+}
+
 .mission-type-indicator {
     width: 24px;
     height: 24px;
