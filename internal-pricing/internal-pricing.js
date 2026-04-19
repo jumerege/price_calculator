@@ -560,6 +560,7 @@ function reset() {
     document.getElementById('refurbishmentCost').value = Math.round(convertFromEuro(DEFAULTS.refurbishmentCost));
     document.getElementById('logisticsCost').value = Math.round(convertFromEuro(DEFAULTS.logisticsCost));
     document.getElementById('insuranceCost').value = Math.round(convertFromEuro(DEFAULTS.insuranceCost));
+    document.getElementById('corporateOverheadCost').value = Math.round(convertFromEuro(DEFAULTS.corporateOverheadCost));
 
     document.getElementById('maxPayloadMass').value = DEFAULTS.maxPayloadMass;
     document.getElementById('maxVolume').value = DEFAULTS.maxVolume;
@@ -589,6 +590,7 @@ function exportAnalysis() {
     const refurbishmentCost = convertToEuro(parseFloat(document.getElementById('refurbishmentCost').value)) || DEFAULTS.refurbishmentCost;
     const logisticsCost = convertToEuro(parseFloat(document.getElementById('logisticsCost').value)) || DEFAULTS.logisticsCost;
     const insuranceCost = convertToEuro(parseFloat(document.getElementById('insuranceCost').value)) || DEFAULTS.insuranceCost;
+    const corporateOverheadCost = convertToEuro(parseFloat(document.getElementById('corporateOverheadCost').value)) || DEFAULTS.corporateOverheadCost;
     
     const maxPayloadMass = Math.max(0.1, parseFloat(document.getElementById('maxPayloadMass').value) || DEFAULTS.maxPayloadMass);
     const utilization = Math.max(1, Math.min(100, parseFloat(document.getElementById('utilization').value) || DEFAULTS.utilization));
@@ -601,7 +603,7 @@ function exportAnalysis() {
     // Calculate Phase E and Phase F (automatic subtotals)
     const phaseE = launchCost + insuranceCost + integrationCost + operationsCost;
     const phaseF = recoveryCost + refurbishmentCost + logisticsCost;
-    const totalRecurringCost = phaseE + phaseF;
+    const totalRecurringCost = phaseE + phaseF + corporateOverheadCost;
     
     const avgSoldMass = Math.max(0.1, maxPayloadMass * (utilization / 100));
     const totalCostPerMission = devCostPerMission + totalRecurringCost;
