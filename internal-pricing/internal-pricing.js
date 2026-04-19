@@ -84,6 +84,16 @@ const monetaryFieldIds = [
     'refurbishmentCost', 'logisticsCost', 'insuranceCost'
 ];
 
+// Map field IDs to tooltip phase keys
+const fieldIdToPhase = {
+    'phaseA': 'A',
+    'phaseB': 'B',
+    'phaseC': 'C',
+    'phaseD': 'D',
+    'phaseE': 'E',
+    'phaseF': 'F'
+};
+
 // Label map for dynamic field labels
 const fieldLabelMap = {
     'phaseA': 'Phase A – Feasibility',
@@ -204,9 +214,11 @@ function updateFieldLabelsAndValues() {
         const label = document.querySelector(`label[for="${fieldId}"]`);
         if (label) {
             const baseName = fieldLabelMap[fieldId] || fieldId;
+            // Get the correct tooltip phase (convert phaseA -> A, or keep as-is for recurring costs)
+            const tooltipPhase = fieldIdToPhase[fieldId] || fieldId;
+            
             // Update label with unit symbol, preserving tooltip icon
-            label.innerHTML = `${baseName} (${unitSymbol})<span class="tooltip-icon" data-phase="${fieldId}">?</span>`;
-            // Event listeners are now attached via event delegation, so no need to re-attach
+            label.innerHTML = `${baseName} (${unitSymbol})<span class="tooltip-icon" data-phase="${tooltipPhase}">?</span>`;
         }
     });
 }
