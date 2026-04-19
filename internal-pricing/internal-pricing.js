@@ -522,8 +522,6 @@ function exportAnalysis() {
     const phaseB = parseFloat(document.getElementById('phaseB').value) || DEFAULTS.phaseB;
     const phaseC = parseFloat(document.getElementById('phaseC').value) || DEFAULTS.phaseC;
     const phaseD = parseFloat(document.getElementById('phaseD').value) || DEFAULTS.phaseD;
-    const phaseE = parseFloat(document.getElementById('phaseE').value) || DEFAULTS.phaseE;
-    const phaseF = parseFloat(document.getElementById('phaseF').value) || DEFAULTS.phaseF;
     const missionCount = Math.max(1, parseInt(document.getElementById('missionCount').value) || DEFAULTS.missionCount);
     
     const launchCost = parseFloat(document.getElementById('launchCost').value) || DEFAULTS.launchCost;
@@ -541,7 +539,12 @@ function exportAnalysis() {
     // Perform calculations
     const totalNrc = phaseA + phaseB + phaseC + phaseD;
     const devCostPerMission = totalNrc / missionCount;
-    const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost + insuranceCost;
+    
+    // Calculate Phase E and Phase F (automatic subtotals)
+    const phaseE = launchCost + insuranceCost + integrationCost + operationsCost;
+    const phaseF = recoveryCost + refurbishmentCost + logisticsCost;
+    const totalRecurringCost = phaseE + phaseF;
+    
     const avgSoldMass = Math.max(0.1, maxPayloadMass * (utilization / 100));
     const totalCostPerMission = devCostPerMission + totalRecurringCost;
     const breakEvenPricePerKg = totalCostPerMission / avgSoldMass;
