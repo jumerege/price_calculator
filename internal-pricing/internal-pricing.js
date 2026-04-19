@@ -63,7 +63,7 @@ const TOOLTIP_CONTENT = {
         content: "Final mission phase covering splashdown, recovery, and post-flight handling. Includes ocean landing stabilization, telemetry transmission for localization, and coordinated recovery using boat and aircraft. Payload is secured, transported to port, and returned to Lichtenau facilities. Includes post-mission inspection, data retrieval, refurbishment assessment, and preparation for reuse or disposal of subsystems."
     },
     insurance: {
-        title: "Insurance / Risk Coverage",
+        title: "Insurance",
         content: "This cost represents mission-level risk protection. It is modeled separately because it is not a development cost, but a recurring mission cost that may vary depending on launch conditions, payload value, mission profile, and customer risk allocation.\n\nA percentage-based approach is useful because insurance often scales with the economic value at risk during a mission, rather than remaining strictly fixed.\n\nSuggested formula: Insurance = 10% × (Launch + Ops + Recovery + Payload value)\n\nThis formula is only a recommended modeling approach for internal pricing purposes. This field remains manually adjustable—you may enter any value based on your risk assessment and customer requirements."
     }
 };
@@ -601,7 +601,7 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
                     <td>${numberToEuro(logisticsCost)}</td>
                 </tr>
                 <tr>
-                    <td>Insurance / Risk Coverage</td>
+                    <td>Insurance</td>
                     <td>${numberToEuro(insuranceCost)}</td>
                 </tr>
                 <tr class="highlight">
