@@ -7,8 +7,8 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="expires" content="0">
     <title>Phoenix Internal Pricing Engine</title>
-    <link rel="stylesheet" href="../style.css?v=20260419-06">
-    <link rel="stylesheet" href="internal-pricing.css?v=20260419-06">
+    <link rel="stylesheet" href="../style.css?v=20260419-07">
+    <link rel="stylesheet" href="internal-pricing.css?v=20260419-07">
     <!-- PDF Export Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -599,18 +599,20 @@
                 <button class="modal-close" id="calcEngineClose">&times;</button>
             </div>
             <div class="modal-formulas">
-                <p><strong>Total NRC</strong> = Phase A + B + C + D</p>
-                <p><strong>Dev Cost per Mission</strong> = Total NRC / Mission Count</p>
-                <p><strong>Total Recurring</strong> = Launch + Ops + Recovery + Integration + Refurbishment + Logistics</p>
-                <p><strong>Total Cost per Mission</strong> = Dev Cost + Recurring</p>
-                <p><strong>Break-even €/kg</strong> = Total Cost / Sold Mass</p>
+                <p><strong>Total NRC</strong> = Phase A + Phase B + Phase C + Phase D</p>
+                <p><strong>Dev Cost per Mission</strong> = Total NRC / Number of Missions for Amortization</p>
+                <p><strong>Phase E — Utilisation</strong> = Launch Cost + Insurance + Mission Operations + Payload Integration & AIT</p>
+                <p><strong>Phase F — Disposal</strong> = Recovery Operations + Refurbishment Cost + Logistics & Transport</p>
+                <p><strong>Total Recurring Cost per Mission</strong> = Phase E + Phase F</p>
+                <p><strong>Total Cost per Mission</strong> = Dev Cost per Mission + Total Recurring Cost per Mission</p>
+                <p><strong>Break-even €/kg</strong> = Total Cost per Mission / Sold Mass</p>
                 <p><strong>Recommended €/kg</strong> = Break-even × (1 + Target Margin %)</p>
                 <p><strong>Revenue per Mission</strong> = Recommended Price × Sold Mass</p>
-                <p><strong>Operational Margin %</strong> = (Revenue - Cost) / Revenue × 100</p>
+                <p><strong>Operational Margin %</strong> = (Revenue − Cost) / Revenue × 100</p>
             </div>
         </div>
     </div>
 
-    <script src="internal-pricing.js?v=20260419-06"></script>
+    <script src="internal-pricing.js?v=20260419-07"></script>
 </body>
 </html>
