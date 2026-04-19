@@ -747,7 +747,7 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
             
             <!-- SECTION A: NON-RECURRING COSTS -->
             <div class="section-title">SECTION A: NON-RECURRING COSTS (NRC)</div>
-            <p style="font-size: 11px; margin: 10px 0;">Phases A–F development costs amortized across mission portfolio</p>
+            <p style="font-size: 11px; margin: 10px 0;">Phases A–D development costs amortized across mission portfolio</p>
             
             <table>
                 <tr>
@@ -770,16 +770,8 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
                     <td>Phase D – Qualification & Manufacturing</td>
                     <td>${numberToEuro(phaseD)}</td>
                 </tr>
-                <tr>
-                    <td>Phase E – Utilisation</td>
-                    <td>${numberToEuro(phaseE)}</td>
-                </tr>
-                <tr>
-                    <td>Phase F – Disposal</td>
-                    <td>${numberToEuro(phaseF)}</td>
-                </tr>
                 <tr class="highlight">
-                    <td><strong>Total NRC (Phases A–F)</strong></td>
+                    <td><strong>Total NRC (Phases A–D)</strong></td>
                     <td>${numberToEuro(totalNrc)}</td>
                 </tr>
             </table>
@@ -792,11 +784,13 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
             
             <!-- SECTION B: RECURRING COST PER MISSION -->
             <div class="section-title">SECTION B: RECURRING COST PER MISSION</div>
-            <p style="font-size: 11px; margin: 10px 0;">Direct and indirect operational costs for one Phoenix flight</p>
+            <p style="font-size: 11px; margin: 10px 0;">Mission execution and recovery costs organized into operational phases</p>
             
-            <table>
+            <!-- Phase E – Utilisation Subsection -->
+            <p style="font-size: 11px; font-weight: bold; margin: 15px 0 8px 0; color: #1a3a52;">Phase E – Utilisation</p>
+            <table style="margin-bottom: 8px;">
                 <tr>
-                    <th>Cost Category</th>
+                    <th>Cost Component</th>
                     <th>Amount (€)</th>
                 </tr>
                 <tr>
@@ -804,32 +798,53 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
                     <td>${numberToEuro(launchCost)}</td>
                 </tr>
                 <tr>
-                    <td>Mission Operations</td>
-                    <td>${numberToEuro(operationsCost)}</td>
-                </tr>
-                <tr>
-                    <td>Recovery Operations</td>
-                    <td>${numberToEuro(recoveryCost)}</td>
+                    <td>Insurance</td>
+                    <td>${numberToEuro(insuranceCost)}</td>
                 </tr>
                 <tr>
                     <td>Payload Integration & AIT</td>
                     <td>${numberToEuro(integrationCost)}</td>
                 </tr>
                 <tr>
-                    <td>Refurbishment</td>
+                    <td>Mission Operations</td>
+                    <td>${numberToEuro(operationsCost)}</td>
+                </tr>
+                <tr class="highlight">
+                    <td><strong>Phase E Subtotal</strong></td>
+                    <td><strong>${numberToEuro(phaseE)}</strong></td>
+                </tr>
+            </table>
+            
+            <!-- Phase F – Disposal Subsection -->
+            <p style="font-size: 11px; font-weight: bold; margin: 15px 0 8px 0; color: #1a3a52;">Phase F – Disposal</p>
+            <table style="margin-bottom: 12px;">
+                <tr>
+                    <th>Cost Component</th>
+                    <th>Amount (€)</th>
+                </tr>
+                <tr>
+                    <td>Recovery Operations</td>
+                    <td>${numberToEuro(recoveryCost)}</td>
+                </tr>
+                <tr>
+                    <td>Refurbishment Cost</td>
                     <td>${numberToEuro(refurbishmentCost)}</td>
                 </tr>
                 <tr>
                     <td>Logistics & Transport</td>
                     <td>${numberToEuro(logisticsCost)}</td>
                 </tr>
-                <tr>
-                    <td>Insurance</td>
-                    <td>${numberToEuro(insuranceCost)}</td>
-                </tr>
                 <tr class="highlight">
-                    <td><strong>Total Recurring Cost</strong></td>
-                    <td>${numberToEuro(totalRecurringCost)}</td>
+                    <td><strong>Phase F Subtotal</strong></td>
+                    <td><strong>${numberToEuro(phaseF)}</strong></td>
+                </tr>
+            </table>
+            
+            <!-- Total Recurring Cost -->
+            <table style="background: #f0f8ff; border: 2px solid #1a3a52;">
+                <tr class="highlight">
+                    <td><strong>Total Recurring Cost per Mission (Phase E + Phase F)</strong></td>
+                    <td><strong>${numberToEuro(totalRecurringCost)}</strong></td>
                 </tr>
             </table>
             
