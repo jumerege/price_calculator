@@ -372,8 +372,8 @@ function calculate() {
     const missionCount = Math.max(1, parseInt(document.getElementById('missionCount').value) || DEFAULTS.missionCount);
     const reusabilityFactor = Math.max(1, parseFloat(document.getElementById('reusabilityFactor').value) || DEFAULTS.reusabilityFactor);
 
-    // Calculate total NRC
-    const totalNrc = phaseA + phaseB + phaseC + phaseD + phaseE + phaseF;
+    // Calculate total NRC (Phases A-D only - development costs)
+    const totalNrc = phaseA + phaseB + phaseC + phaseD;
     const devCostPerMission = totalNrc / missionCount;
 
     // Update Section A outputs
@@ -532,7 +532,7 @@ function exportAnalysis() {
     const targetMargin = Math.max(0, Math.min(100, parseFloat(document.getElementById('targetMargin').value) || DEFAULTS.targetMargin));
     
     // Perform calculations
-    const totalNrc = phaseA + phaseB + phaseC + phaseD + phaseE + phaseF;
+    const totalNrc = phaseA + phaseB + phaseC + phaseD;
     const devCostPerMission = totalNrc / missionCount;
     const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost + insuranceCost;
     const avgSoldMass = Math.max(0.1, maxPayloadMass * (utilization / 100));
