@@ -960,18 +960,34 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
     `;
     
     // Generate PDF
-    const element = document.createElement('div');
-    element.innerHTML = pdfContent;
-    
     const opt = {
-        margin: 10,
+        margin: [10, 10, 10, 10],
         filename: `Base-Price-Definition-${new Date().toISOString().split('T')[0]}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 2, useCORS: true },
         jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
     };
     
-    html2pdf().set(opt).from(element).save();
+    try {
+        // Create a temporary container
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = pdfContent;
+        tempContainer.style.display = 'none';
+        document.body.appendChild(tempContainer);
+        
+        // Use html2pdf to generate and download
+        html2pdf()
+            .set(opt)
+            .from(tempContainer)
+            .save()
+            .finally(() => {
+                // Clean up temporary container
+                document.body.removeChild(tempContainer);
+            });
+    } catch (error) {
+        console.error('PDF export error:', error);
+        alert('Error generating PDF. Please try again.');
+    }
 }
 
 /**
