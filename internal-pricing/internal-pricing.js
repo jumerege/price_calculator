@@ -72,7 +72,7 @@ const TOOLTIP_CONTENT = {
     },
     reusabilityFactor: {
         title: "Reusability Factor (flights per vehicle)",
-        content: "This represents how many times a single Phoenix vehicle can be reused. A higher value means the same vehicle flies multiple missions, reducing the need to build new hardware. This improves cost efficiency, but may increase refurbishment needs and operational complexity over time."
+        content: "This represents how many times a single Phoenix vehicle can be reused. This improves cost efficiency, but may increase refurbishment needs and operational complexity over time. It is reasonable to presume 1 to 3, but not higher than this."
     }
 };
 
