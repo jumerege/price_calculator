@@ -865,111 +865,129 @@ function updateSensitivityAnalysis() {
  */
 function drawSensitivityChart(data, currentMissionCount) {
     const canvas = document.getElementById('sensitivityChart');
-    if (!canvas) return;
+    if (!canvas) {
+        console.error('Canvas element not found');
+        return;
+    }
     
-    // Set fixed canvas size
+    // Set canvas size
     canvas.width = 400;
     canvas.height = 300;
-    canvas.style.width = '100%';
-    canvas.style.height = 'auto';
     
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Could not get canvas context');
+        return;
+    }
     
-    // Clear canvas
-    ctx.fillStyle = 'rgba(10, 14, 39, 0.5)';
+    // Clear canvas with background
+    ctx.fillStyle = '#0a0e27';
     ctx.fillRect(0, 0, 400, 300);
     
     // Chart dimensions
     const padding = 50;
-    const chartWidth = 400 - padding * 2;
-    const chartHeight = 300 - padding * 2;
+    const chartWidth = 350;
+    const chartHeight = 200;
+    const startX = padding;
+    const startY = padding;
     
-    // Find min/max prices for scale
+    // Find price range
     const prices = data.map(d => d.pricePerKg);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
-    const priceRange = maxPrice - minPrice;
-    const priceBuffer = priceRange * 0.1;
-    const scaledMin = minPrice - priceBuffer;
-    const scaledMax = maxPrice + priceBuffer;
-    const scaledRange = scaledMax - scaledMin;
+    const priceRange = maxPrice - minPrice || 1;
     
-    // Draw grid and axes
-    ctx.strokeStyle = 'rgba(0, 212, 255, 0.2)';
+    // Draw axes
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(startX, startY + chartHeight);
+    ctx.lineTo(startX + chartWidth, startY + chartHeight);
+    ctx.stroke();
+    
+    // Draw grid lines (Y axis)
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
     ctx.lineWidth = 1;
-    ctx.font = '11px Arial';
-    ctx.fillStyle = 'rgba(0, 212, 255, 0.6)';
+    ctx.font = '10px Arial';
+    ctx.fillStyle = 'rgba(0, 212, 255, 0.7)';
     
-    // Y-axis labels (prices)
-    for (let i = 0; i <= 5; i++) {
-        const y = padding + (chartHeight / 5) * i;
-        const price = scaledMax - (scaledRange / 5) * i;
-        ctx.fillText(`€${price.toFixed(0)}k`, 5, y + 4);
+    for (let i = 0; i <= 4; i++) {
+        const y = startY + (chartHeight / 4) * i;
+        const price = maxPrice - (priceRange / 4) * i;
+        
+        // Grid line
         ctx.beginPath();
-        ctx.moveTo(padding - 5, y);
-        ctx.lineTo(400 - padding, y);
+        ctx.moveTo(startX, y);
+        ctx.lineTo(startX + chartWidth, y);
         ctx.stroke();
+        
+        // Price label
+        ctx.fillText(`€${Math.round(price)}k`, 5, y + 3);
     }
     
-    // X-axis labels (missions)
+    // Draw X-axis labels (missions)
     for (let i = 0; i < data.length; i++) {
-        const x = padding + (chartWidth / (data.length - 1)) * i;
         if (i % 2 === 0) {
-            ctx.fillText(data[i].missions, x - 10, 300 - 30);
+            const x = startX + (chartWidth / (data.length - 1)) * i;
+            ctx.fillText(data[i].missions, x - 8, startY + chartHeight + 20);
         }
-        ctx.beginPath();
-        ctx.moveTo(x, 300 - padding + 5);
-        ctx.lineTo(x, 300 - padding);
-        ctx.stroke();
     }
     
-    // Axis labels
-    ctx.font = 'bold 12px Arial';
-    ctx.fillStyle = 'rgba(0, 212, 255, 0.8)';
-    ctx.fillText('€/kg', 15, 20);
-    ctx.fillText('Number of Missions', 220, 292);
-    
-    // Plot line
+    // Draw the line chart
     ctx.strokeStyle = 'rgba(0, 212, 255, 0.8)';
     ctx.lineWidth = 2;
     ctx.beginPath();
     
-    data.forEach((point, index) => {
-        const x = padding + (chartWidth / (data.length - 1)) * index;
-        const yNorm = (point.pricePerKg - scaledMin) / scaledRange;
-        const y = padding + chartHeight - yNorm * chartHeight;
+    // Plot points on the line
+    for (let i = 0; i < data.length; i++) {
+        const x = startX + (chartWidth / (data.length - 1)) * i;
+        const yPercent = (maxPrice - data[i].pricePerKg) / priceRange;
+        const y = startY + yPercent * chartHeight;
         
-        if (index === 0) {
+        if (i === 0) {
             ctx.moveTo(x, y);
         } else {
             ctx.lineTo(x, y);
         }
-    });
+    }
     ctx.stroke();
     
-    // Plot points
-    data.forEach((point, index) => {
-        const x = padding + (chartWidth / (data.length - 1)) * index;
-        const yNorm = (point.pricePerKg - scaledMin) / scaledRange;
-        const y = padding + chartHeight - yNorm * chartHeight;
+    // Draw data points
+    for (let i = 0; i < data.length; i++) {
+        const x = startX + (chartWidth / (data.length - 1)) * i;
+        const yPercent = (maxPrice - data[i].pricePerKg) / priceRange;
+        const y = startY + yPercent * chartHeight;
         
-        if (point.missions === currentMissionCount) {
-            // Highlight current point (gold/yellow star)
+        if (data[i].missions === currentMissionCount) {
+            // Current point - gold/yellow
             ctx.fillStyle = 'rgba(255, 215, 0, 0.9)';
             ctx.beginPath();
             ctx.arc(x, y, 6, 0, Math.PI * 2);
             ctx.fill();
-            ctx.strokeStyle = 'rgba(0, 212, 255, 1)';
+            
+            // Circle outline
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.9)';
             ctx.lineWidth = 2;
             ctx.stroke();
         } else {
-            // Regular point
-            ctx.fillStyle = 'rgba(0, 212, 255, 0.6)';
+            // Regular point - cyan
+            ctx.fillStyle = 'rgba(0, 212, 255, 0.5)';
             ctx.beginPath();
             ctx.arc(x, y, 4, 0, Math.PI * 2);
             ctx.fill();
         }
-    });
+    }
+    
+    // Labels
+    ctx.font = 'bold 11px Arial';
+    ctx.fillStyle = 'rgba(0, 212, 255, 0.8)';
+    ctx.fillText('Missions', 220, 290);
+    ctx.save();
+    ctx.translate(15, 150);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Recommended €/kg', 0, 0);
+    ctx.restore();
 }
 
 /**
