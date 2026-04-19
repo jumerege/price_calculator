@@ -579,9 +579,14 @@ td:first-child { text-align: left; }
 .result { background: #d4edda; border: 2px solid #28a745; padding: 12px; margin: 15px 0; text-align: center; }
 .result-label { font-size: 12px; font-weight: bold; color: #155724; margin-bottom: 6px; }
 .result-value { font-size: 16px; font-weight: bold; color: #28a745; }
+.header-logo { position: absolute; top: 15px; right: 20px; width: 100px; height: auto; }
+.page-header { position: relative; margin-bottom: 20px; }
 </style>
 </head>
 <body>
+<div class="page-header">
+  <img src="../atmos_logo.webp" class="header-logo" alt="ATMOS Logo">
+</div>
 <h1>Base Price Definition</h1>
 <p>ESA-Aligned Financial Model — Calculation Breakdown</p>
 <p style="background: #fff3cd; padding: 8px; margin: 10px 0; border-left: 3px solid #ffc107;">INTERNAL USE ONLY — For Finance and Business Development Team</p>
