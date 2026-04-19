@@ -68,11 +68,159 @@ const TOOLTIP_CONTENT = {
     }
 };
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    setupEventListeners();
+/**
+ * ============ UNIT CONVERSION SYSTEM ============
+ * Allows users to enter values in € or k€
+ * Internal calculations always use € (euros)
+ */
+
+// Current unit state: 'eur' or 'keur'
+let currentInputUnit = 'keur'; // Default: thousands of euros
+
+// List of all monetary field IDs
+const monetaryFieldIds = [
+    'phaseA', 'phaseB', 'phaseC', 'phaseD', 'phaseE', 'phaseF',
+    'launchCost', 'operationsCost', 'recoveryCost', 'integrationCost',
+    'refurbishmentCost', 'logisticsCost', 'insuranceCost'
+];
+
+// Label map for dynamic field labels
+const fieldLabelMap = {
+    'phaseA': 'Phase A – Feasibility',
+    'phaseB': 'Phase B – Preliminary Design',
+    'phaseC': 'Phase C – Detailed Design',
+    'phaseD': 'Phase D – Qualification & Manufacturing',
+    'phaseE': 'Phase E – Utilisation',
+    'phaseF': 'Phase F – Disposal',
+    'launchCost': 'Launch Cost (rideshare)',
+    'operationsCost': 'Mission Operations',
+    'recoveryCost': 'Recovery Operations',
+    'integrationCost': 'Payload Integration & AIT',
+    'refurbishmentCost': 'Refurbishment Cost',
+    'logisticsCost': 'Logistics & Transport',
+    'insuranceCost': 'Insurance'
+};
+
+/**
+ * Convert a display value to euros
+ * @param {number} displayValue - The value displayed in the current unit
+ * @param {string} unit - The unit ('eur' or 'keur')
+ * @returns {number} Value in euros
+ */
+function convertToEuro(displayValue, unit = currentInputUnit) {
+    if (unit === 'keur') {
+        return displayValue * 1000;
+    }
+    return displayValue;
+}
+
+/**
+ * Convert euros to display value
+ * @param {number} euroValue - The value in euros
+ * @param {string} unit - The unit ('eur' or 'keur')
+ * @returns {number} Value in the target unit
+ */
+function convertFromEuro(euroValue, unit = currentInputUnit) {
+    if (unit === 'keur') {
+        return euroValue / 1000;
+    }
+    return euroValue;
+}
+
+/**
+ * Setup unit selector functionality
+ */
+function setupUnitSelector() {
+    const unitBtns = document.querySelectorAll('.unit-btn');
+    
+    unitBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const newUnit = this.getAttribute('data-unit');
+            if (newUnit !== currentInputUnit) {
+                switchInputUnit(newUnit);
+            }
+        });
+    });
+
+    // Initialize based on default unit
+    updateUnitSelectorUI();
+    updateFieldLabelsAndValues();
+}
+
+/**
+ * Switch the input unit and convert all fields
+ * @param {string} newUnit - 'eur' or 'keur'
+ */
+function switchInputUnit(newUnit) {
+    if (newUnit === currentInputUnit) return;
+
+    const oldUnit = currentInputUnit;
+    currentInputUnit = newUnit;
+
+    // Convert all monetary fields from old unit to new unit
+    monetaryFieldIds.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            // Get value in euros first
+            const euroValue = convertToEuro(parseFloat(field.value) || 0, oldUnit);
+            // Convert to new unit
+            const displayValue = convertFromEuro(euroValue, newUnit);
+            // Update step attribute based on unit
+            field.step = newUnit === 'keur' ? '1' : '10000';
+            // Set new value (will be rounded appropriately)
+            field.value = Math.round(displayValue);
+        }
+    });
+
+    // Update UI
+    updateUnitSelectorUI();
+    updateFieldLabelsAndValues();
+
+    // Recalculate with new values
     calculate();
-});
+}
+
+/**
+ * Update the unit selector button UI
+ */
+function updateUnitSelectorUI() {
+    document.querySelectorAll('.unit-btn').forEach(btn => {
+        const unit = btn.getAttribute('data-unit');
+        if (unit === currentInputUnit) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
+
+/**
+ * Update all field labels and values to reflect current unit
+ */
+function updateFieldLabelsAndValues() {
+    const unitSymbol = currentInputUnit === 'keur' ? 'k€' : '€';
+
+    monetaryFieldIds.forEach(fieldId => {
+        const label = document.querySelector(`label[for="${fieldId}"]`);
+        if (label) {
+            const baseName = fieldLabelMap[fieldId] || fieldId;
+            // Update label with unit symbol
+            label.innerHTML = `${baseName} (${unitSymbol})<span class="tooltip-icon" data-phase="${fieldId}">?</span>`;
+            
+            // Re-attach tooltip event listener
+            const tooltipIcon = label.querySelector('.tooltip-icon');
+            if (tooltipIcon) {
+                tooltipIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const phase = this.getAttribute('data-phase');
+                    if (TOOLTIP_CONTENT[phase]) {
+                        showPhaseTooltip(phase);
+                    }
+                });
+            }
+        }
+    });
+}
 
 /**
  * Setup all event listeners
@@ -148,17 +296,27 @@ function closePhaseTooltip() {
 }
 
 /**
+ * Initialize on page load
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    setupEventListeners();
+    setupUnitSelector();
+    calculate();
+});
+
+/**
  * Main calculation engine - ESA-aligned
  */
 function calculate() {
     // ============ SECTION A: NON-RECURRING COSTS (NRC) ============
     
-    const phaseA = parseFloat(document.getElementById('phaseA').value) || DEFAULTS.phaseA;
-    const phaseB = parseFloat(document.getElementById('phaseB').value) || DEFAULTS.phaseB;
-    const phaseC = parseFloat(document.getElementById('phaseC').value) || DEFAULTS.phaseC;
-    const phaseD = parseFloat(document.getElementById('phaseD').value) || DEFAULTS.phaseD;
-    const phaseE = parseFloat(document.getElementById('phaseE').value) || DEFAULTS.phaseE;
-    const phaseF = parseFloat(document.getElementById('phaseF').value) || DEFAULTS.phaseF;
+    // Read display values and convert to euros for calculation
+    const phaseA = convertToEuro(parseFloat(document.getElementById('phaseA').value) || convertFromEuro(DEFAULTS.phaseA));
+    const phaseB = convertToEuro(parseFloat(document.getElementById('phaseB').value) || convertFromEuro(DEFAULTS.phaseB));
+    const phaseC = convertToEuro(parseFloat(document.getElementById('phaseC').value) || convertFromEuro(DEFAULTS.phaseC));
+    const phaseD = convertToEuro(parseFloat(document.getElementById('phaseD').value) || convertFromEuro(DEFAULTS.phaseD));
+    const phaseE = convertToEuro(parseFloat(document.getElementById('phaseE').value) || convertFromEuro(DEFAULTS.phaseE));
+    const phaseF = convertToEuro(parseFloat(document.getElementById('phaseF').value) || convertFromEuro(DEFAULTS.phaseF));
     const missionCount = Math.max(1, parseInt(document.getElementById('missionCount').value) || DEFAULTS.missionCount);
     const reusabilityFactor = Math.max(1, parseFloat(document.getElementById('reusabilityFactor').value) || DEFAULTS.reusabilityFactor);
 
@@ -172,13 +330,14 @@ function calculate() {
 
     // ============ SECTION B: RECURRING COST PER MISSION ============
     
-    const launchCost = parseFloat(document.getElementById('launchCost').value) || DEFAULTS.launchCost;
-    const operationsCost = parseFloat(document.getElementById('operationsCost').value) || DEFAULTS.operationsCost;
-    const recoveryCost = parseFloat(document.getElementById('recoveryCost').value) || DEFAULTS.recoveryCost;
-    const integrationCost = parseFloat(document.getElementById('integrationCost').value) || DEFAULTS.integrationCost;
-    const refurbishmentCost = parseFloat(document.getElementById('refurbishmentCost').value) || DEFAULTS.refurbishmentCost;
-    const logisticsCost = parseFloat(document.getElementById('logisticsCost').value) || DEFAULTS.logisticsCost;
-    const insuranceCost = parseFloat(document.getElementById('insuranceCost').value) || DEFAULTS.insuranceCost;
+    // Read display values and convert to euros for calculation
+    const launchCost = convertToEuro(parseFloat(document.getElementById('launchCost').value) || convertFromEuro(DEFAULTS.launchCost));
+    const operationsCost = convertToEuro(parseFloat(document.getElementById('operationsCost').value) || convertFromEuro(DEFAULTS.operationsCost));
+    const recoveryCost = convertToEuro(parseFloat(document.getElementById('recoveryCost').value) || convertFromEuro(DEFAULTS.recoveryCost));
+    const integrationCost = convertToEuro(parseFloat(document.getElementById('integrationCost').value) || convertFromEuro(DEFAULTS.integrationCost));
+    const refurbishmentCost = convertToEuro(parseFloat(document.getElementById('refurbishmentCost').value) || convertFromEuro(DEFAULTS.refurbishmentCost));
+    const logisticsCost = convertToEuro(parseFloat(document.getElementById('logisticsCost').value) || convertFromEuro(DEFAULTS.logisticsCost));
+    const insuranceCost = convertToEuro(parseFloat(document.getElementById('insuranceCost').value) || convertFromEuro(DEFAULTS.insuranceCost));
 
     const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost + insuranceCost;
 
@@ -266,22 +425,24 @@ function updateLegacySections(devCost, recurringCost, totalCost, soldMass, recom
  * Reset to default values
  */
 function reset() {
-    document.getElementById('phaseA').value = DEFAULTS.phaseA;
-    document.getElementById('phaseB').value = DEFAULTS.phaseB;
-    document.getElementById('phaseC').value = DEFAULTS.phaseC;
-    document.getElementById('phaseD').value = DEFAULTS.phaseD;
-    document.getElementById('phaseE').value = DEFAULTS.phaseE;
-    document.getElementById('phaseF').value = DEFAULTS.phaseF;
+    // Reset monetary fields to defaults in current display unit
+    document.getElementById('phaseA').value = Math.round(convertFromEuro(DEFAULTS.phaseA));
+    document.getElementById('phaseB').value = Math.round(convertFromEuro(DEFAULTS.phaseB));
+    document.getElementById('phaseC').value = Math.round(convertFromEuro(DEFAULTS.phaseC));
+    document.getElementById('phaseD').value = Math.round(convertFromEuro(DEFAULTS.phaseD));
+    document.getElementById('phaseE').value = Math.round(convertFromEuro(DEFAULTS.phaseE));
+    document.getElementById('phaseF').value = Math.round(convertFromEuro(DEFAULTS.phaseF));
     document.getElementById('missionCount').value = DEFAULTS.missionCount;
     document.getElementById('reusabilityFactor').value = DEFAULTS.reusabilityFactor;
 
-    document.getElementById('launchCost').value = DEFAULTS.launchCost;
-    document.getElementById('operationsCost').value = DEFAULTS.operationsCost;
-    document.getElementById('recoveryCost').value = DEFAULTS.recoveryCost;
-    document.getElementById('integrationCost').value = DEFAULTS.integrationCost;
-    document.getElementById('refurbishmentCost').value = DEFAULTS.refurbishmentCost;
-    document.getElementById('logisticsCost').value = DEFAULTS.logisticsCost;
-    document.getElementById('insuranceCost').value = DEFAULTS.insuranceCost;
+    // Recurring costs in current display unit
+    document.getElementById('launchCost').value = Math.round(convertFromEuro(DEFAULTS.launchCost));
+    document.getElementById('operationsCost').value = Math.round(convertFromEuro(DEFAULTS.operationsCost));
+    document.getElementById('recoveryCost').value = Math.round(convertFromEuro(DEFAULTS.recoveryCost));
+    document.getElementById('integrationCost').value = Math.round(convertFromEuro(DEFAULTS.integrationCost));
+    document.getElementById('refurbishmentCost').value = Math.round(convertFromEuro(DEFAULTS.refurbishmentCost));
+    document.getElementById('logisticsCost').value = Math.round(convertFromEuro(DEFAULTS.logisticsCost));
+    document.getElementById('insuranceCost').value = Math.round(convertFromEuro(DEFAULTS.insuranceCost));
 
     document.getElementById('maxPayloadMass').value = DEFAULTS.maxPayloadMass;
     document.getElementById('maxVolume').value = DEFAULTS.maxVolume;
