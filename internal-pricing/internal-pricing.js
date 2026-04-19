@@ -234,6 +234,29 @@ function setupEventListeners() {
         input.addEventListener('input', calculate);
     });
 
+    // Reusability Factor validation (clamp to 1-3)
+    const reusabilityField = document.getElementById('reusabilityFactor');
+    if (reusabilityField) {
+        reusabilityField.addEventListener('change', function() {
+            let value = parseInt(this.value);
+            if (isNaN(value)) value = 3; // default
+            if (value < 1) value = 1;
+            if (value > 3) value = 3;
+            this.value = value;
+            calculate(); // recalculate with valid value
+        });
+        
+        // Also validate on blur
+        reusabilityField.addEventListener('blur', function() {
+            let value = parseInt(this.value);
+            if (isNaN(value)) value = 3;
+            if (value < 1) value = 1;
+            if (value > 3) value = 3;
+            this.value = value;
+            calculate();
+        });
+    }
+
     // Action buttons
     document.getElementById('resetBtn').addEventListener('click', reset);
     document.getElementById('exportBtn').addEventListener('click', exportAnalysis);
