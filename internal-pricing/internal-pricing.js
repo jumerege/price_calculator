@@ -884,12 +884,12 @@ function drawSensitivityChart(data, currentMissionCount) {
     ctx.fillStyle = '#0a0e27';
     ctx.fillRect(0, 0, 400, 300);
     
-    // Chart dimensions
-    const padding = 50;
-    const chartWidth = 350;
-    const chartHeight = 200;
+    // Chart dimensions - reframed to use more space
+    const padding = 40;
+    const chartWidth = 330;
+    const chartHeight = 220;
     const startX = padding;
-    const startY = padding;
+    const startY = 15;
     
     // Find price range
     const prices = data.map(d => d.pricePerKg);
@@ -912,9 +912,9 @@ function drawSensitivityChart(data, currentMissionCount) {
     ctx.font = '10px Arial';
     ctx.fillStyle = 'rgba(0, 212, 255, 0.7)';
     
-    for (let i = 0; i <= 4; i++) {
-        const y = startY + (chartHeight / 4) * i;
-        const price = maxPrice - (priceRange / 4) * i;
+    for (let i = 0; i <= 5; i++) {
+        const y = startY + (chartHeight / 5) * i;
+        const price = maxPrice - (priceRange / 5) * i;
         
         // Grid line
         ctx.beginPath();
@@ -922,15 +922,16 @@ function drawSensitivityChart(data, currentMissionCount) {
         ctx.lineTo(startX + chartWidth, y);
         ctx.stroke();
         
-        // Price label
-        ctx.fillText(`€${Math.round(price)}k`, 5, y + 3);
+        // Price label - formatted as plain number with comma separator
+        const priceLabel = Math.round(price).toLocaleString('en-US');
+        ctx.fillText(priceLabel, 3, y + 3);
     }
     
     // Draw X-axis labels (missions)
     for (let i = 0; i < data.length; i++) {
         if (i % 2 === 0) {
             const x = startX + (chartWidth / (data.length - 1)) * i;
-            ctx.fillText(data[i].missions, x - 8, startY + chartHeight + 20);
+            ctx.fillText(data[i].missions, x - 8, startY + chartHeight + 18);
         }
     }
     
@@ -982,11 +983,11 @@ function drawSensitivityChart(data, currentMissionCount) {
     // Labels
     ctx.font = 'bold 11px Arial';
     ctx.fillStyle = 'rgba(0, 212, 255, 0.8)';
-    ctx.fillText('Missions', 220, 290);
+    ctx.fillText('Number of Missions', 200, 295);
     ctx.save();
-    ctx.translate(15, 150);
+    ctx.translate(10, 120);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Recommended €/kg', 0, 0);
+    ctx.fillText('€/kg', 0, 0);
     ctx.restore();
 }
 
