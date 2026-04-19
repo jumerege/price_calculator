@@ -163,6 +163,48 @@ body::before {
     margin-bottom: 16px;
 }
 
+/* Additional Corporate Overhead Container */
+.overhead-container {
+    background: rgba(202, 138, 4, 0.08);
+    border: 2px solid rgba(202, 138, 4, 0.3);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.overhead-container:hover {
+    border-color: rgba(202, 138, 4, 0.5);
+    background: rgba(202, 138, 4, 0.12);
+}
+
+.overhead-title {
+    margin-bottom: 18px;
+}
+
+.overhead-title h3 {
+    font-size: 1.1rem;
+    color: #ca8a04;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+}
+
+.overhead-subtitle {
+    color: rgba(202, 138, 4, 0.8);
+    font-size: 0.8rem;
+    margin: 0;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.helper-text {
+    color: rgba(102, 153, 255, 0.6);
+    font-size: 0.75rem;
+    margin-top: 4px;
+    font-style: italic;
+}
+
 .phase-subtotal-output {
     display: flex;
     justify-content: space-between;

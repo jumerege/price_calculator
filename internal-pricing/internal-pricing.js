@@ -23,6 +23,7 @@ const DEFAULTS = {
     refurbishmentCost: 200000,
     logisticsCost: 100000,
     insuranceCost: 100000,
+    corporateOverheadCost: 0,
     
     // Section C - Payload & Revenue
     maxPayloadMass: 100,
@@ -97,6 +98,10 @@ const TOOLTIP_CONTENT = {
     logisticsCost: {
         title: "Logistics & Transport",
         content: "This includes the cost of transporting the vehicle and payload before and after the mission. It covers shipping to the launch site, return transport after recovery, handling, and coordination between facilities."
+    },
+    corporateOverheadCost: {
+        title: "Additional Corporate Overhead per Mission",
+        content: "Cost of all non-mission-specific resources required to keep the company operating during the mission cycle (typically 9 months). Considers HR, finance, marketing, business development, facilities, interests, C-level, among others. This is allocated per mission to understand the true full cost."
     }
 };
 
@@ -113,7 +118,7 @@ let currentInputUnit = 'keur'; // Default: thousands of euros
 const monetaryFieldIds = [
     'phaseA', 'phaseB', 'phaseC', 'phaseD',
     'launchCost', 'operationsCost', 'recoveryCost', 'integrationCost',
-    'refurbishmentCost', 'logisticsCost', 'insuranceCost'
+    'refurbishmentCost', 'logisticsCost', 'insuranceCost', 'corporateOverheadCost'
 ];
 
 // Map field IDs to tooltip phase keys
@@ -423,6 +428,7 @@ function calculate() {
     const refurbishmentCost = convertToEuro(parseFloat(document.getElementById('refurbishmentCost').value) || convertFromEuro(DEFAULTS.refurbishmentCost));
     const logisticsCost = convertToEuro(parseFloat(document.getElementById('logisticsCost').value) || convertFromEuro(DEFAULTS.logisticsCost));
     const insuranceCost = convertToEuro(parseFloat(document.getElementById('insuranceCost').value) || convertFromEuro(DEFAULTS.insuranceCost));
+    const corporateOverheadCost = convertToEuro(parseFloat(document.getElementById('corporateOverheadCost').value) || convertFromEuro(DEFAULTS.corporateOverheadCost));
 
     // Calculate Phase E (Utilisation) = Launch + Insurance + Integration + Operations
     const phaseE = launchCost + insuranceCost + integrationCost + operationsCost;
@@ -430,8 +436,8 @@ function calculate() {
     // Calculate Phase F (Disposal) = Recovery + Refurbishment + Logistics
     const phaseF = recoveryCost + refurbishmentCost + logisticsCost;
     
-    // Calculate Total Recurring Cost = Phase E + Phase F
-    const totalRecurringCost = phaseE + phaseF;
+    // Calculate Total Recurring Cost = Phase E + Phase F + Corporate Overhead
+    const totalRecurringCost = phaseE + phaseF + corporateOverheadCost;
 
     // Update Section B outputs: Phase subtotals (display only, not editable)
     document.getElementById('phaseESubtotal').textContent = formatEuro(phaseE);
@@ -669,8 +675,14 @@ td:first-child { text-align: left; }
 <tr style="background: #d4edda;"><td class="label">Phase F Subtotal</td><td class="value">${numberToEuro(phaseF)}</td></tr>
 </table>
 
+<h3>Additional Corporate Overhead</h3>
+<table>
+<tr><th>Cost Component</th><th>Amount (€)</th></tr>
+<tr><td>Corporate Overhead per Mission</td><td>${numberToEuro(corporateOverheadCost)}</td></tr>
+</table>
+
 <table style="background: #e8f4f8;">
-<tr><td class="label" style="font-size: 13px;">Total Recurring Cost per Mission (Phase E + Phase F)</td><td class="value" style="font-size: 13px;">${numberToEuro(totalRecurringCost)}</td></tr>
+<tr><td class="label" style="font-size: 13px;">Total Recurring Cost per Mission (Phase E + Phase F + Corporate Overhead)</td><td class="value" style="font-size: 13px;">${numberToEuro(totalRecurringCost)}</td></tr>
 </table>
 
 <div style="height: 150px;"></div>
