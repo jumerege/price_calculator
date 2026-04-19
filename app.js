@@ -86,7 +86,7 @@ const TRANSLATIONS = {
         'pricing.mdl_premium': 'MDL',
         'pricing.power_surcharge': 'Power Surcharge',
         'pricing.exclusive_discount': 'Exclusive Flight Discount',
-        'pricing.duration_multiplier': 'Duration Factor',
+        'pricing.duration_multiplier': 'Mission Duration Multiplier',
         'pricing.duration_multiplier_helper': 'Longer missions require extended operational support, telemetry throughput, and onboard resource usage.',
         'pricing.density': 'kg/L density',
         'pricing.per_kg': '€ per kg',
@@ -212,7 +212,7 @@ const TRANSLATIONS = {
         'pricing.mdl_premium': 'MDL',
         'pricing.power_surcharge': 'Surcharge Puissance',
         'pricing.exclusive_discount': 'Remise Vol Exclusif',
-        'pricing.duration_multiplier': 'Facteur de Durée',
+        'pricing.duration_multiplier': 'Multiplicateur de Durée de Mission',
         'pricing.duration_multiplier_helper': 'Les missions plus longues nécessitent un soutien opérationnel étendu, un débit de télémétrie et une utilisation accrue des ressources.',
         'pricing.density': 'densité kg/L',
         'pricing.per_kg': '€ par kg',
@@ -338,7 +338,7 @@ const TRANSLATIONS = {
         'pricing.mdl_premium': 'MDL',
         'pricing.power_surcharge': 'Leistungszuschlag',
         'pricing.exclusive_discount': 'Rabatt Exklusivflug',
-        'pricing.duration_multiplier': 'Dauer-Faktor',
+        'pricing.duration_multiplier': 'Missionsdauer-Multiplikator',
         'pricing.duration_multiplier_helper': 'Längere Missionen erfordern erweiterte Betriebsunterstützung, Telemetrie-Durchsatz und verstärkte Ressourcennutzung.',
         'pricing.density': 'kg/L Dichte',
         'pricing.per_kg': '€ pro kg',
@@ -1201,9 +1201,11 @@ function applyPreset(btn) {
 // ─────────────────────────────────────────────────────
 
 function calculateDurationMultiplier(missionDurationWeeks) {
-    // Calculate pricing multiplier based on mission duration
-    // Longer missions require extended operational support, telemetry throughput,
-    // and sustained use of onboard resources
+    // Longer missions create moderate additional operations demand:
+    // - more telemetry/downlink over time
+    // - longer payload support in orbit
+    // - sustained onboard resource and battery/power management
+    // - increased operational monitoring
     
     if (missionDurationWeeks >= 3 && missionDurationWeeks <= 4) {
         return 1.00;  // Short missions: no multiplier
@@ -1373,12 +1375,11 @@ function updateBreakdown(pricing, mass, volume, mdl, power) {
         document.getElementById('billableMassSub').textContent  = 'Actual: -- kg | Volumetric: -- kg';
         document.getElementById('mdlCostSub').textContent       = '0 lockers × €3M';
         document.getElementById('powerCostSub').textContent     = '≤50W — no surcharge';
+        document.getElementById('durationMultiplierSub').textContent = `€ 0.00 × 1.00× (3 weeks)`;
+        document.getElementById('durationMultiplierSub').title = t('pricing.duration_multiplier_helper');
         // Hide discount row if exists
         const discountRow = document.getElementById('discountRow');
         if (discountRow) discountRow.style.display = 'none';
-        // Hide duration multiplier row if exists
-        const durationRow = document.getElementById('durationRow');
-        if (durationRow) durationRow.style.display = 'none';
         return;
     }
 
@@ -1426,14 +1427,16 @@ function updateBreakdown(pricing, mass, volume, mdl, power) {
         if (discountRow) discountRow.style.display = 'none';
     }
 
-    // ─── MISSION DURATION FACTOR ───────────────────────────────
-    // Always display duration factor: shows multiplier percentage and adjustment cost
+    // ─── MISSION DURATION MULTIPLIER ───────────────────────────────
+    // Always display multiplier and monetary impact.
     const durationRow = document.getElementById('durationRow');
     if (durationRow) {
         document.getElementById('durationMultiplierCost').textContent = pricing.durationAdjustment > 0 
             ? '+' + formatEuro(pricing.durationAdjustment) 
             : formatEuro(pricing.durationAdjustment);
-        document.getElementById('durationMultiplierSub').textContent = `${(pricing.durationMultiplier * 100).toFixed(0)}% for ${pricing.missionDuration} weeks`;
+        document.getElementById('durationMultiplierSub').textContent =
+            `${formatEuro(pricing.priceAfterDiscount)} × ${pricing.durationMultiplier.toFixed(2)}× (${pricing.missionDuration} weeks)`;
+        document.getElementById('durationMultiplierSub').title = t('pricing.duration_multiplier_helper');
     }
 }
 
