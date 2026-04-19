@@ -714,29 +714,41 @@ function setupNavigationMenu() {
     const navMenuDropdown = document.getElementById('navMenuDropdown');
     const settingsMenuItem = document.getElementById('settingsMenuItem');
 
+    console.log('📌 setupNavigationMenu - navMenuBtn:', navMenuBtn);
+    console.log('📌 setupNavigationMenu - navMenuDropdown:', navMenuDropdown);
+    console.log('📌 setupNavigationMenu - settingsMenuItem:', settingsMenuItem);
+
     // Toggle menu on button click
-    if (navMenuBtn) {
-        navMenuBtn.addEventListener('click', (e) => {
+    if (navMenuBtn && navMenuDropdown) {
+        navMenuBtn.addEventListener('click', function(e) {
+            console.log('🔔 Menu button clicked');
             e.stopPropagation();
             navMenuDropdown.classList.toggle('active');
+            console.log('🔔 Active class toggled. Current state:', navMenuDropdown.classList.contains('active'));
         });
+    } else {
+        console.warn('⚠️ navMenuBtn or navMenuDropdown not found');
     }
 
     // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', function(e) {
         if (navMenuDropdown && !navMenuDropdown.contains(e.target) && e.target !== navMenuBtn) {
             navMenuDropdown.classList.remove('active');
         }
     });
 
     // Settings menu item opens settings drawer
-    if (settingsMenuItem) {
-        settingsMenuItem.addEventListener('click', (e) => {
+    if (settingsMenuItem && navMenuDropdown) {
+        settingsMenuItem.addEventListener('click', function(e) {
+            console.log('⚙️ Settings menu item clicked');
             e.preventDefault();
             e.stopPropagation();
             const settingsDrawer = document.getElementById('settingsDrawer');
-            navMenuDropdown.classList.remove('active');
-            settingsDrawer.classList.add('open');
+            if (settingsDrawer) {
+                navMenuDropdown.classList.remove('active');
+                settingsDrawer.classList.add('open');
+                console.log('⚙️ Settings drawer opened');
+            }
         });
     }
 }
