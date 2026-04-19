@@ -583,14 +583,14 @@ function exportAnalysis() {
     const phaseD = convertToEuro(parseFloat(document.getElementById('phaseD').value)) || DEFAULTS.phaseD;
     const missionCount = Math.max(1, parseInt(document.getElementById('missionCount').value) || DEFAULTS.missionCount);
     
-    const launchCost = convertToEuro(parseFloat(document.getElementById('launchCost').value)) || DEFAULTS.launchCost;
-    const operationsCost = convertToEuro(parseFloat(document.getElementById('operationsCost').value)) || DEFAULTS.operationsCost;
-    const recoveryCost = convertToEuro(parseFloat(document.getElementById('recoveryCost').value)) || DEFAULTS.recoveryCost;
-    const integrationCost = convertToEuro(parseFloat(document.getElementById('integrationCost').value)) || DEFAULTS.integrationCost;
-    const refurbishmentCost = convertToEuro(parseFloat(document.getElementById('refurbishmentCost').value)) || DEFAULTS.refurbishmentCost;
-    const logisticsCost = convertToEuro(parseFloat(document.getElementById('logisticsCost').value)) || DEFAULTS.logisticsCost;
-    const insuranceCost = convertToEuro(parseFloat(document.getElementById('insuranceCost').value)) || DEFAULTS.insuranceCost;
-    const corporateOverheadCost = convertToEuro(parseFloat(document.getElementById('corporateOverheadCost').value)) || DEFAULTS.corporateOverheadCost;
+    const launchCost = convertToEuro(parseFloat(document.getElementById('launchCost').value) || convertFromEuro(DEFAULTS.launchCost));
+    const operationsCost = convertToEuro(parseFloat(document.getElementById('operationsCost').value) || convertFromEuro(DEFAULTS.operationsCost));
+    const recoveryCost = convertToEuro(parseFloat(document.getElementById('recoveryCost').value) || convertFromEuro(DEFAULTS.recoveryCost));
+    const integrationCost = convertToEuro(parseFloat(document.getElementById('integrationCost').value) || convertFromEuro(DEFAULTS.integrationCost));
+    const refurbishmentCost = convertToEuro(parseFloat(document.getElementById('refurbishmentCost').value) || convertFromEuro(DEFAULTS.refurbishmentCost));
+    const logisticsCost = convertToEuro(parseFloat(document.getElementById('logisticsCost').value) || convertFromEuro(DEFAULTS.logisticsCost));
+    const insuranceCost = convertToEuro(parseFloat(document.getElementById('insuranceCost').value) || convertFromEuro(DEFAULTS.insuranceCost));
+    const corporateOverheadCost = convertToEuro(parseFloat(document.getElementById('corporateOverheadCost').value) || convertFromEuro(DEFAULTS.corporateOverheadCost));
     
     const maxPayloadMass = Math.max(0.1, parseFloat(document.getElementById('maxPayloadMass').value) || DEFAULTS.maxPayloadMass);
     const utilization = Math.max(1, Math.min(100, parseFloat(document.getElementById('utilization').value) || DEFAULTS.utilization));
