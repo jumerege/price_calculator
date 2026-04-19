@@ -339,17 +339,26 @@
                     </h2>
                 </div>
                 <div class="sensitivity-content">
-                    <table class="sensitivity-table">
-                        <thead>
-                            <tr>
-                                <th>Number of Missions</th>
-                                <th>Recommended €/kg</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sensitivityTableBody">
-                            <!-- Dynamically populated -->
-                        </tbody>
-                    </table>
+                    <div class="sensitivity-layout">
+                        <!-- Chart -->
+                        <div class="sensitivity-chart-container">
+                            <canvas id="sensitivityChart" width="400" height="300"></canvas>
+                        </div>
+                        <!-- Table -->
+                        <div class="sensitivity-table-container">
+                            <table class="sensitivity-table">
+                                <thead>
+                                    <tr>
+                                        <th>Missions</th>
+                                        <th>Recommended €/kg</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sensitivityTableBody">
+                                    <!-- Dynamically populated -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </section>
 

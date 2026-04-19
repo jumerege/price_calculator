@@ -855,6 +855,124 @@ function updateSensitivityAnalysis() {
         `;
         tbody.appendChild(tr);
     });
+    
+    // Draw chart
+    drawSensitivityChart(result.data, result.currentMissionCount);
+}
+
+/**
+ * Draw sensitivity analysis chart using Canvas
+ */
+function drawSensitivityChart(data, currentMissionCount) {
+    const canvas = document.getElementById('sensitivityChart');
+    if (!canvas) return;
+    
+    // Set canvas size based on container (handle DPI scaling)
+    const container = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    
+    canvas.width = 400 * dpr;
+    canvas.height = 300 * dpr;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    
+    // Clear canvas
+    ctx.fillStyle = 'rgba(10, 14, 39, 0.5)';
+    ctx.fillRect(0, 0, 400, 300);
+    
+    // Chart dimensions
+    const padding = 50;
+    const chartWidth = 400 - padding * 2;
+    const chartHeight = 300 - padding * 2;
+    
+    // Find min/max prices for scale
+    const prices = data.map(d => d.pricePerKg);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    const priceRange = maxPrice - minPrice;
+    const priceBuffer = priceRange * 0.1;
+    const scaledMin = minPrice - priceBuffer;
+    const scaledMax = maxPrice + priceBuffer;
+    const scaledRange = scaledMax - scaledMin;
+    
+    // Draw grid and axes
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.font = '11px Arial';
+    ctx.fillStyle = 'rgba(0, 212, 255, 0.6)';
+    
+    // Y-axis labels (prices)
+    for (let i = 0; i <= 5; i++) {
+        const y = padding + (chartHeight / 5) * i;
+        const price = scaledMax - (scaledRange / 5) * i;
+        ctx.fillText(`€${price.toFixed(0)}k`, 5, y + 4);
+        ctx.beginPath();
+        ctx.moveTo(padding - 5, y);
+        ctx.lineTo(400 - padding, y);
+        ctx.stroke();
+    }
+    
+    // X-axis labels (missions)
+    for (let i = 0; i < data.length; i++) {
+        const x = padding + (chartWidth / (data.length - 1)) * i;
+        if (i % 2 === 0) {
+            ctx.fillText(data[i].missions, x - 10, 300 - 30);
+        }
+        ctx.beginPath();
+        ctx.moveTo(x, 300 - padding + 5);
+        ctx.lineTo(x, 300 - padding);
+        ctx.stroke();
+    }
+    
+    // Axis labels
+    ctx.font = 'bold 12px Arial';
+    ctx.fillStyle = 'rgba(0, 212, 255, 0.8)';
+    ctx.fillText('€/kg', 15, 20);
+    ctx.fillText('Number of Missions', 220, 292);
+    
+    // Plot line
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.8)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    
+    data.forEach((point, index) => {
+        const x = padding + (chartWidth / (data.length - 1)) * index;
+        const yNorm = (point.pricePerKg - scaledMin) / scaledRange;
+        const y = padding + chartHeight - yNorm * chartHeight;
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+    ctx.stroke();
+    
+    // Plot points
+    data.forEach((point, index) => {
+        const x = padding + (chartWidth / (data.length - 1)) * index;
+        const yNorm = (point.pricePerKg - scaledMin) / scaledRange;
+        const y = padding + chartHeight - yNorm * chartHeight;
+        
+        if (point.missions === currentMissionCount) {
+            // Highlight current point (gold/yellow star)
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.9)';
+            ctx.beginPath();
+            ctx.arc(x, y, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0, 212, 255, 1)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        } else {
+            // Regular point
+            ctx.fillStyle = 'rgba(0, 212, 255, 0.6)';
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    });
 }
 
 /**
