@@ -205,20 +205,8 @@ function updateFieldLabelsAndValues() {
         if (label) {
             const baseName = fieldLabelMap[fieldId] || fieldId;
             // Update label with unit symbol, preserving tooltip icon
-            const tooltipIcon = label.querySelector('.tooltip-icon');
             label.innerHTML = `${baseName} (${unitSymbol})<span class="tooltip-icon" data-phase="${fieldId}">?</span>`;
-            
-            // Re-attach tooltip event listener
-            const newTooltipIcon = label.querySelector('.tooltip-icon');
-            if (newTooltipIcon) {
-                newTooltipIcon.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const phase = this.getAttribute('data-phase');
-                    if (TOOLTIP_CONTENT[phase]) {
-                        showPhaseTooltip(phase);
-                    }
-                });
-            }
+            // Event listeners are now attached via event delegation, so no need to re-attach
         }
     });
 }
@@ -238,22 +226,20 @@ function setupEventListeners() {
     document.getElementById('resetBtn').addEventListener('click', reset);
     document.getElementById('exportBtn').addEventListener('click', exportAnalysis);
 
-    // Phase tooltip icons
-    const tooltipIcons = document.querySelectorAll('.tooltip-icon');
-    console.log('Found', tooltipIcons.length, 'tooltip icons');
-    
-    tooltipIcons.forEach(icon => {
-        icon.addEventListener('click', function(e) {
+    // Use event delegation for tooltip icons (works even after DOM updates)
+    document.addEventListener('click', function(e) {
+        const tooltipIcon = e.target.closest('.tooltip-icon');
+        if (tooltipIcon) {
             e.preventDefault();
             e.stopPropagation();
-            const phase = this.getAttribute('data-phase');
+            const phase = tooltipIcon.getAttribute('data-phase');
             console.log('Clicked tooltip icon for phase:', phase);
             if (TOOLTIP_CONTENT[phase]) {
                 showPhaseTooltip(phase);
             } else {
                 console.warn('No tooltip content for phase:', phase);
             }
-        });
+        }
     });
 
     // Tooltip modal close button
