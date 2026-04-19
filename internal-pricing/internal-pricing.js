@@ -10,6 +10,8 @@ const DEFAULTS = {
     phaseB: 800000,
     phaseC: 1800000,
     phaseD: 2100000,
+    phaseE: 300000,
+    phaseF: 200000,
     missionCount: 20,
     reusabilityFactor: 3,
     
@@ -31,6 +33,36 @@ const DEFAULTS = {
     targetMargin: 30
 };
 
+/**
+ * Tooltip content for each phase
+ */
+const TOOLTIP_CONTENT = {
+    A: {
+        title: "Phase A — Feasibility",
+        content: "Feasibility assessment of payload integration within Phoenix architecture. Includes compatibility checks with mechanical interfaces (payload plate, mounting grid), electrical interfaces (24–33V unregulated or regulated lines), and data protocols (Ethernet, CAN). Preliminary evaluation of environmental constraints such as vibration, quasi-static loads, and thermal conditions. Early assessment of reentry survivability and IAD compatibility for mission concept validation."
+    },
+    B: {
+        title: "Phase B — Preliminary Definition",
+        content: "Definition of system architecture and payload integration concept. Includes Interface Control Document (ICD) development, payload layout within pressurized bay, and definition of thermal, electrical, and communication interfaces. Preliminary sizing of propulsion (de-orbit), avionics (OBC, GPS, IMU), and power subsystems. Mission timeline definition including launch, orbital operations, and recovery concept in coordination with ground segment."
+    },
+    C: {
+        title: "Phase C — Detailed Definition",
+        content: "Detailed engineering design and subsystem validation. Includes structural analysis (CFRP payload bay), thermal modeling, vibration and shock verification, and avionics integration (redundant OBC, sensors, communication systems). Finalization of GNC algorithms for reentry trajectory control and IAD deployment. Payload verification requirements defined, including EMC, vibration, and pressure testing prior to integration."
+    },
+    D: {
+        title: "Phase D — Qualification and Production",
+        content: "Manufacturing, Assembly, Integration, and Testing (AIT) of Phoenix and payload. Includes cleanroom payload integration, mechanical mating to rideshare adapter, electrical connections, and system-level validation. Qualification campaigns cover vibration, thermal, and functional testing. Final launch readiness reviews, documentation sign-off, and transport to launch site. Includes late access procedures and coordination with launcher providers (e.g., Falcon 9, RFA One)."
+    },
+    E: {
+        title: "Phase E — Utilisation",
+        content: "Operational mission phase from launch to payload data acquisition. Includes launch, separation, orbital flight (3 hours to 3 months), payload operation, telemetry, and command via Iridium/UHF/S-band. Execution of de-orbit maneuver, IAD deployment, and controlled reentry. Covers hypersonic to subsonic descent phases, real-time navigation, and payload environmental control throughout mission execution."
+    },
+    F: {
+        title: "Phase F — Disposal",
+        content: "Final mission phase covering splashdown, recovery, and post-flight handling. Includes ocean landing stabilization, telemetry transmission for localization, and coordinated recovery using boat and aircraft. Payload is secured, transported to port, and returned to Lichtenau facilities. Includes post-mission inspection, data retrieval, refurbishment assessment, and preparation for reuse or disposal of subsystems."
+    }
+};
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
@@ -49,6 +81,27 @@ function setupEventListeners() {
     // Action buttons
     document.getElementById('resetBtn').addEventListener('click', reset);
     document.getElementById('exportBtn').addEventListener('click', exportAnalysis);
+
+    // Phase tooltip icons
+    document.querySelectorAll('.tooltip-icon').forEach(icon => {
+        icon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const phase = this.getAttribute('data-phase');
+            if (TOOLTIP_CONTENT[phase]) {
+                showPhaseTooltip(phase);
+            }
+        });
+    });
+
+    // Tooltip modal close button
+    document.getElementById('tooltipCloseBtn').addEventListener('click', closePhaseTooltip);
+
+    // Close tooltip when clicking outside the content
+    document.getElementById('phaseTooltipModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePhaseTooltip();
+        }
+    });
 
     // Calculation Engine Modal
     const modal = document.getElementById('calcEngineModal');
@@ -71,6 +124,25 @@ function setupEventListeners() {
 }
 
 /**
+ * Show phase tooltip modal
+ */
+function showPhaseTooltip(phase) {
+    const content = TOOLTIP_CONTENT[phase];
+    if (!content) return;
+    
+    document.getElementById('tooltipTitle').textContent = content.title;
+    document.getElementById('tooltipBody').textContent = content.content;
+    document.getElementById('phaseTooltipModal').classList.add('active');
+}
+
+/**
+ * Close phase tooltip modal
+ */
+function closePhaseTooltip() {
+    document.getElementById('phaseTooltipModal').classList.remove('active');
+}
+
+/**
  * Main calculation engine - ESA-aligned
  */
 function calculate() {
@@ -80,11 +152,13 @@ function calculate() {
     const phaseB = parseFloat(document.getElementById('phaseB').value) || DEFAULTS.phaseB;
     const phaseC = parseFloat(document.getElementById('phaseC').value) || DEFAULTS.phaseC;
     const phaseD = parseFloat(document.getElementById('phaseD').value) || DEFAULTS.phaseD;
+    const phaseE = parseFloat(document.getElementById('phaseE').value) || DEFAULTS.phaseE;
+    const phaseF = parseFloat(document.getElementById('phaseF').value) || DEFAULTS.phaseF;
     const missionCount = Math.max(1, parseInt(document.getElementById('missionCount').value) || DEFAULTS.missionCount);
     const reusabilityFactor = Math.max(1, parseFloat(document.getElementById('reusabilityFactor').value) || DEFAULTS.reusabilityFactor);
 
     // Calculate total NRC
-    const totalNrc = phaseA + phaseB + phaseC + phaseD;
+    const totalNrc = phaseA + phaseB + phaseC + phaseD + phaseE + phaseF;
     const devCostPerMission = totalNrc / missionCount;
 
     // Update Section A outputs
@@ -190,6 +264,8 @@ function reset() {
     document.getElementById('phaseB').value = DEFAULTS.phaseB;
     document.getElementById('phaseC').value = DEFAULTS.phaseC;
     document.getElementById('phaseD').value = DEFAULTS.phaseD;
+    document.getElementById('phaseE').value = DEFAULTS.phaseE;
+    document.getElementById('phaseF').value = DEFAULTS.phaseF;
     document.getElementById('missionCount').value = DEFAULTS.missionCount;
     document.getElementById('reusabilityFactor').value = DEFAULTS.reusabilityFactor;
 
@@ -224,6 +300,8 @@ function exportAnalysis() {
                     phaseB: parseFloat(document.getElementById('phaseB').value),
                     phaseC: parseFloat(document.getElementById('phaseC').value),
                     phaseD: parseFloat(document.getElementById('phaseD').value),
+                    phaseE: parseFloat(document.getElementById('phaseE').value),
+                    phaseF: parseFloat(document.getElementById('phaseF').value),
                     missionCount: parseInt(document.getElementById('missionCount').value),
                     reusabilityFactor: parseFloat(document.getElementById('reusabilityFactor').value)
                 },

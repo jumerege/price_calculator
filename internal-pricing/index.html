@@ -36,49 +36,63 @@
                     <div class="input-group">
                         <label for="phaseA">
                             Phase A – Feasibility (€)
-                            <span class="tooltip-icon" title="Conceptual study and feasibility analysis">?</span>
+                            <span class="tooltip-icon" data-phase="A">?</span>
                         </label>
                         <input type="number" id="phaseA" class="calc-input" value="300000" min="0" step="10000">
                     </div>
                     <div class="input-group">
                         <label for="phaseB">
                             Phase B – Preliminary Design (€)
-                            <span class="tooltip-icon" title="System design and trade studies">?</span>
+                            <span class="tooltip-icon" data-phase="B">?</span>
                         </label>
                         <input type="number" id="phaseB" class="calc-input" value="800000" min="0" step="10000">
                     </div>
                     <div class="input-group">
                         <label for="phaseC">
                             Phase C – Detailed Design (€)
-                            <span class="tooltip-icon" title="Detailed design implementation">?</span>
+                            <span class="tooltip-icon" data-phase="C">?</span>
                         </label>
                         <input type="number" id="phaseC" class="calc-input" value="1800000" min="0" step="10000">
                     </div>
                     <div class="input-group">
                         <label for="phaseD">
                             Phase D – Qualification & Manufacturing (€)
-                            <span class="tooltip-icon" title="Manufacturing, test, qualification, and delivery">?</span>
+                            <span class="tooltip-icon" data-phase="D">?</span>
                         </label>
                         <input type="number" id="phaseD" class="calc-input" value="2100000" min="0" step="10000">
                     </div>
                     <div class="input-group">
+                        <label for="phaseE">
+                            Phase E – Utilisation (€)
+                            <span class="tooltip-icon" data-phase="E">?</span>
+                        </label>
+                        <input type="number" id="phaseE" class="calc-input" value="300000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="phaseF">
+                            Phase F – Disposal (€)
+                            <span class="tooltip-icon" data-phase="F">?</span>
+                        </label>
+                        <input type="number" id="phaseF" class="calc-input" value="200000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
                         <label for="missionCount">
                             Number of Missions for Amortization
-                            <span class="tooltip-icon" title="Total missions over vehicle lifetime">?</span>
+                            <span class="tooltip-icon" data-phase="missionCount">?</span>
                         </label>
                         <input type="number" id="missionCount" class="calc-input" value="20" min="1" step="1">
                     </div>
                     <div class="input-group">
                         <label for="reusabilityFactor">
                             Reusability Factor (flights per vehicle)
-                            <span class="tooltip-icon" title="Number of flights per Phoenix vehicle before replacement">?</span>
+                            <span class="tooltip-icon" data-phase="reusabilityFactor">?</span>
                         </label>
                         <input type="number" id="reusabilityFactor" class="calc-input" value="3" min="1" step="1">
                     </div>
                 </div>
                 <div class="calc-output">
                     <div class="output-item">
-                        <span class="output-label">Total Development Cost (Phases A–D):</span>
+                        <span class="output-label">Total Development Cost (Phases A–F):</span>
                         <span class="output-value" id="totalNrc">€ 5.0M</span>
                     </div>
                     <div class="output-item highlight">
@@ -98,7 +112,7 @@
                     <div class="input-group">
                         <label for="launchCost">
                             Launch Cost (rideshare) (€)
-                            <span class="tooltip-icon" title="Cost of rideshare launch provider">?</span>
+                            <span class="tooltip-icon" data-phase="launchCost">?</span>
                         </label>
                         <input type="number" id="launchCost" class="calc-input" value="1500000" min="0" step="50000">
                     </div>
@@ -391,6 +405,102 @@
             font-weight: 600;
         }
 
+        /* Phase Tooltip Modal */
+        .tooltip-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .tooltip-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tooltip-content {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #16213e 100%);
+            border: 2px solid var(--primary-color);
+            border-radius: 16px;
+            padding: 35px;
+            max-width: 650px;
+            width: 90%;
+            max-height: 75vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 70px rgba(0, 212, 255, 0.35);
+            animation: slideInSmooth 0.3s ease;
+        }
+
+        @keyframes slideInSmooth {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .tooltip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .tooltip-header h3 {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            margin: 0;
+        }
+
+        .tooltip-close {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 5px;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .tooltip-close:hover {
+            color: var(--secondary-color);
+            transform: rotate(90deg);
+        }
+
+        .tooltip-body {
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
         @media (max-width: 768px) {
             .modal-content {
                 padding: 25px;
@@ -405,8 +515,33 @@
                 font-size: 0.85rem;
                 padding: 15px;
             }
+
+            .tooltip-content {
+                padding: 25px;
+                max-height: 80vh;
+            }
+
+            .tooltip-header h3 {
+                font-size: 1.3rem;
+            }
+
+            .tooltip-body {
+                font-size: 0.9rem;
+            }
         }
     </style>
+
+    <!-- Phase Tooltip Modal -->
+    <div id="phaseTooltipModal" class="tooltip-modal">
+        <div class="tooltip-content">
+            <div class="tooltip-header">
+                <h3 id="tooltipTitle">Phase A</h3>
+                <button class="tooltip-close" id="tooltipCloseBtn">&times;</button>
+            </div>
+            <div class="tooltip-body" id="tooltipBody">
+            </div>
+        </div>
+    </div>
 
     <!-- Calculation Engine Modal -->
     <div id="calcEngineModal" class="modal">
