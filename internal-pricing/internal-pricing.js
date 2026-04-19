@@ -204,13 +204,14 @@ function updateFieldLabelsAndValues() {
         const label = document.querySelector(`label[for="${fieldId}"]`);
         if (label) {
             const baseName = fieldLabelMap[fieldId] || fieldId;
-            // Update label with unit symbol
+            // Update label with unit symbol, preserving tooltip icon
+            const tooltipIcon = label.querySelector('.tooltip-icon');
             label.innerHTML = `${baseName} (${unitSymbol})<span class="tooltip-icon" data-phase="${fieldId}">?</span>`;
             
             // Re-attach tooltip event listener
-            const tooltipIcon = label.querySelector('.tooltip-icon');
-            if (tooltipIcon) {
-                tooltipIcon.addEventListener('click', function(e) {
+            const newTooltipIcon = label.querySelector('.tooltip-icon');
+            if (newTooltipIcon) {
+                newTooltipIcon.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const phase = this.getAttribute('data-phase');
                     if (TOOLTIP_CONTENT[phase]) {
