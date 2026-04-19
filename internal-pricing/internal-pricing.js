@@ -127,8 +127,16 @@ const fieldIdToPhase = {
     'phaseB': 'B',
     'phaseC': 'C',
     'phaseD': 'D',
-    'phaseE': 'E',
-    'phaseF': 'F'
+    'missionCount': 'missionCount',
+    'reusabilityFactor': 'reusabilityFactor',
+    'launchCost': 'launchCost',
+    'insuranceCost': 'insurance',
+    'integrationCost': 'integrationCost',
+    'operationsCost': 'operationsCost',
+    'recoveryCost': 'recoveryCost',
+    'refurbishmentCost': 'refurbishmentCost',
+    'logisticsCost': 'logisticsCost',
+    'corporateOverheadCost': 'corporateOverheadCost'
 };
 
 // Label map for dynamic field labels
