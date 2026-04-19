@@ -322,6 +322,43 @@ function exportAnalysis() {
     const operationalMarginAmount = revenuePerMission - totalCostPerMission;
     const operationalMarginPercent = (operationalMarginAmount / revenuePerMission) * 100;
     
+    // Load logo asynchronously
+    const logoUrl = '../atmos_logo.webp';
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const logoBase64 = reader.result;
+            createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE, phaseF, missionCount, 
+                                launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost,
+                                maxPayloadMass, utilization, targetMargin, totalNrc, devCostPerMission, totalRecurringCost,
+                                avgSoldMass, totalCostPerMission, breakEvenPricePerKg, recommendedPricePerKg, revenuePerMission,
+                                operationalMarginAmount, operationalMarginPercent);
+        };
+        reader.readAsDataURL(xhr.response);
+    };
+    xhr.onerror = function() {
+        // Fallback if logo fails to load
+        createAndDownloadPDF('', phaseA, phaseB, phaseC, phaseD, phaseE, phaseF, missionCount, 
+                            launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost,
+                            maxPayloadMass, utilization, targetMargin, totalNrc, devCostPerMission, totalRecurringCost,
+                            avgSoldMass, totalCostPerMission, breakEvenPricePerKg, recommendedPricePerKg, revenuePerMission,
+                            operationalMarginAmount, operationalMarginPercent);
+    };
+    xhr.open('GET', logoUrl);
+    xhr.send();
+}
+
+/**
+ * Create and download PDF with all parameters
+ */
+function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE, phaseF, missionCount,
+                               launchCost, operationsCost, recoveryCost, integrationCost, refurbishmentCost, logisticsCost,
+                               maxPayloadMass, utilization, targetMargin, totalNrc, devCostPerMission, totalRecurringCost,
+                               avgSoldMass, totalCostPerMission, breakEvenPricePerKg, recommendedPricePerKg, revenuePerMission,
+                               operationalMarginAmount, operationalMarginPercent) {
+    
     // Create HTML content for PDF
     const pdfContent = `
         <!DOCTYPE html>
@@ -340,17 +377,18 @@ function exportAnalysis() {
                     display: flex;
                     align-items: center;
                     margin-bottom: 20px;
-                    border-bottom: 3px solid #00d4ff;
+                    border-bottom: 3px solid #1a3a52;
                     padding-bottom: 15px;
                 }
                 .logo {
                     width: 60px;
                     height: 60px;
                     margin-right: 20px;
+                    flex-shrink: 0;
                 }
                 .header-text h1 {
                     margin: 0;
-                    color: #00d4ff;
+                    color: #1a3a52;
                     font-size: 24px;
                 }
                 .header-text p {
@@ -371,7 +409,7 @@ function exportAnalysis() {
                     font-size: 12px;
                 }
                 .section-title {
-                    background: #00d4ff;
+                    background: #1a3a52;
                     color: white;
                     padding: 10px 15px;
                     margin-top: 20px;
@@ -380,8 +418,8 @@ function exportAnalysis() {
                     font-weight: bold;
                     font-size: 13px;
                 }
-                .section-title.orange {
-                    background: #16a34a;
+                .section-title.success {
+                    background: #28a745;
                 }
                 table {
                     width: 100%;
@@ -404,7 +442,7 @@ function exportAnalysis() {
                 }
                 .formula-box {
                     background: #f9f9f9;
-                    border-left: 4px solid #00d4ff;
+                    border-left: 4px solid #1a3a52;
                     padding: 12px;
                     margin: 12px 0;
                     font-family: 'Courier New', monospace;
@@ -414,7 +452,7 @@ function exportAnalysis() {
                 .highlight {
                     background: #e8f4f8;
                     font-weight: bold;
-                    color: #00a8cc;
+                    color: #1a3a52;
                 }
                 .result-box {
                     background: #d4edda;
@@ -438,23 +476,29 @@ function exportAnalysis() {
                 .footer {
                     margin-top: 20px;
                     padding-top: 15px;
-                    border-top: 1px solid #ddd;
+                    border-top: 2px solid #1a3a52;
                     font-size: 9px;
                     color: #666;
                     text-align: center;
                 }
                 .page-break {
                     page-break-after: always;
-                    margin-bottom: 30px;
+                    margin-bottom: 20px;
+                }
+                .spacing-b-c {
+                    height: 30px;
+                }
+                .spacing-c-d {
+                    margin-bottom: 10px;
                 }
             </style>
         </head>
         <body>
             <!-- Header with Logo -->
             <div class="header-section">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" class="logo" alt="ATMOS Logo">
+                ${logoBase64 ? `<img src="${logoBase64}" class="logo" alt="ATMOS Logo">` : ''}
                 <div class="header-text">
-                    <h1>Phoenix Internal Pricing</h1>
+                    <h1>Base Price Definition</h1>
                     <p>ESA-Aligned Financial Model — Calculation Breakdown</p>
                 </div>
             </div>
@@ -467,7 +511,7 @@ function exportAnalysis() {
             
             <!-- Document Info -->
             <p style="font-size: 10px; color: #666; margin-bottom: 20px;">
-                Generated: ${new Date().toLocaleString()} | Document Version: Calculation for Recommended Base Price
+                Generated: ${new Date().toLocaleString()} | Document Version: Base Price Definition Report
             </p>
             
             <!-- SECTION A: NON-RECURRING COSTS -->
@@ -512,7 +556,7 @@ function exportAnalysis() {
             <div class="formula-box">
                 <strong>Dev Cost per Mission = Total NRC ÷ Mission Count</strong><br>
                 = €${numberToEuro(totalNrc)} ÷ ${missionCount} missions<br>
-                = <span style="color: #00a8cc; font-weight: bold;">${numberToEuro(devCostPerMission)}</span> per mission
+                = <span style="color: #1a3a52; font-weight: bold;">${numberToEuro(devCostPerMission)}</span> per mission
             </div>
             
             <!-- SECTION B: RECURRING COST PER MISSION -->
@@ -554,6 +598,9 @@ function exportAnalysis() {
                 </tr>
             </table>
             
+            <!-- Extra spacing between B and C -->
+            <div class="spacing-b-c"></div>
+            
             <!-- SECTION C: PAYLOAD ASSUMPTIONS -->
             <div class="section-title">SECTION C: PAYLOAD & REVENUE ASSUMPTIONS</div>
             
@@ -579,8 +626,11 @@ function exportAnalysis() {
             <div class="formula-box">
                 <strong>Avg Sold Mass = Max Payload × Utilization Rate</strong><br>
                 = ${maxPayloadMass} kg × (${utilization}% ÷ 100)<br>
-                = <span style="color: #00a8cc; font-weight: bold;">${avgSoldMass.toFixed(2)} kg</span>
+                = <span style="color: #1a3a52; font-weight: bold;">${avgSoldMass.toFixed(2)} kg</span>
             </div>
+            
+            <!-- Reduced spacing between C and D -->
+            <div class="spacing-c-d"></div>
             
             <!-- PAGE BREAK -->
             <div class="page-break"></div>
@@ -592,17 +642,17 @@ function exportAnalysis() {
             <div class="formula-box">
                 <strong>Total Cost per Mission = Dev Cost + Recurring Cost</strong><br>
                 = €${numberToEuro(devCostPerMission)} + €${numberToEuro(totalRecurringCost)}<br>
-                = <span style="color: #00a8cc; font-weight: bold;">€${numberToEuro(totalCostPerMission)}</span>
+                = <span style="color: #1a3a52; font-weight: bold;">€${numberToEuro(totalCostPerMission)}</span>
             </div>
             
             <div class="formula-box">
                 <strong>Break-even Price per kg = Total Cost ÷ Avg Sold Mass</strong><br>
                 = €${numberToEuro(totalCostPerMission)} ÷ ${avgSoldMass.toFixed(2)} kg<br>
-                = <span style="color: #00a8cc; font-weight: bold;">€${numberToEuro(breakEvenPricePerKg)} / kg</span>
+                = <span style="color: #1a3a52; font-weight: bold;">€${numberToEuro(breakEvenPricePerKg)} / kg</span>
             </div>
             
             <!-- SECTION E: PRICING & MARGIN TARGETS -->
-            <div class="section-title orange">SECTION E: PRICING & MARGIN TARGETS</div>
+            <div class="section-title success">SECTION E: PRICING & MARGIN TARGETS</div>
             <p style="font-size: 11px; margin: 10px 0;">Calculate recommended commercial price with target operational margin</p>
             
             <table>
@@ -636,7 +686,7 @@ function exportAnalysis() {
                 <strong>Recommended Price per kg = Break-even × (1 + Target Margin)</strong><br>
                 = €${numberToEuro(breakEvenPricePerKg)} × (1 + ${targetMargin}% ÷ 100)<br>
                 = €${numberToEuro(breakEvenPricePerKg)} × ${(1 + targetMargin / 100).toFixed(2)}<br>
-                = <span style="color: #00a8cc; font-weight: bold;">€${numberToEuro(recommendedPricePerKg)} / kg</span>
+                = <span style="color: #1a3a52; font-weight: bold;">€${numberToEuro(recommendedPricePerKg)} / kg</span>
             </div>
             
             <!-- FINAL RESULT -->
@@ -665,7 +715,7 @@ function exportAnalysis() {
     
     const opt = {
         margin: 10,
-        filename: `Phoenix-Pricing-Calculation-${new Date().toISOString().split('T')[0]}.pdf`,
+        filename: `Base-Price-Definition-${new Date().toISOString().split('T')[0]}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
