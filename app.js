@@ -86,6 +86,8 @@ const TRANSLATIONS = {
         'pricing.mdl_premium': 'MDL',
         'pricing.power_surcharge': 'Power Surcharge',
         'pricing.exclusive_discount': 'Exclusive Flight Discount',
+        'pricing.duration_multiplier': 'Duration Factor',
+        'pricing.duration_multiplier_helper': 'Longer missions require extended operational support, telemetry throughput, and onboard resource usage.',
         'pricing.density': 'kg/L density',
         'pricing.per_kg': '€ per kg',
         'pricing.per_liter': '€ per L',
@@ -210,6 +212,8 @@ const TRANSLATIONS = {
         'pricing.mdl_premium': 'MDL',
         'pricing.power_surcharge': 'Surcharge Puissance',
         'pricing.exclusive_discount': 'Remise Vol Exclusif',
+        'pricing.duration_multiplier': 'Facteur de Durée',
+        'pricing.duration_multiplier_helper': 'Les missions plus longues nécessitent un soutien opérationnel étendu, un débit de télémétrie et une utilisation accrue des ressources.',
         'pricing.density': 'densité kg/L',
         'pricing.per_kg': '€ par kg',
         'pricing.per_liter': '€ par L',
@@ -334,6 +338,8 @@ const TRANSLATIONS = {
         'pricing.mdl_premium': 'MDL',
         'pricing.power_surcharge': 'Leistungszuschlag',
         'pricing.exclusive_discount': 'Rabatt Exklusivflug',
+        'pricing.duration_multiplier': 'Dauer-Faktor',
+        'pricing.duration_multiplier_helper': 'Längere Missionen erfordern erweiterte Betriebsunterstützung, Telemetrie-Durchsatz und verstärkte Ressourcennutzung.',
         'pricing.density': 'kg/L Dichte',
         'pricing.per_kg': '€ pro kg',
         'pricing.per_liter': '€ pro L',
@@ -1191,10 +1197,29 @@ function applyPreset(btn) {
 }
 
 // ─────────────────────────────────────────────────────
+// DURATION MULTIPLIER CALCULATION
+// ─────────────────────────────────────────────────────
+
+function calculateDurationMultiplier(missionDurationWeeks) {
+    // Calculate pricing multiplier based on mission duration
+    // Longer missions require extended operational support, telemetry throughput,
+    // and sustained use of onboard resources
+    
+    if (missionDurationWeeks >= 3 && missionDurationWeeks <= 4) {
+        return 1.00;  // Short missions: no multiplier
+    } else if (missionDurationWeeks >= 5 && missionDurationWeeks <= 8) {
+        return 1.05;  // Medium duration: 5% increase
+    } else if (missionDurationWeeks >= 9 && missionDurationWeeks <= 12) {
+        return 1.10;  // Longer missions: 10% increase
+    }
+    return 1.00;  // Fallback
+}
+
+// ─────────────────────────────────────────────────────
 // PRICING CALCULATION
 // ─────────────────────────────────────────────────────
 
-function calculatePricing(mass, volume, mdl, power, payloadType) {
+function calculatePricing(mass, volume, mdl, power, payloadType, missionDuration = 3) {
     const isMDL = payloadType === 'mdl';
 
     // ─── VOLUMETRIC BILLING MODEL ───────────────────────────────
@@ -1225,7 +1250,17 @@ function calculatePricing(mass, volume, mdl, power, payloadType) {
         discountAmount = subtotal * (currentPricing.exclusiveFlightDiscount / 100);
     }
 
-    const totalCost = subtotal - discountAmount;
+    const priceAfterDiscount = subtotal - discountAmount;
+
+    // ─── MISSION DURATION MULTIPLIER ───────────────────────────────
+    // Apply a duration-based multiplier to reflect resource requirements:
+    // - Longer missions require extended operational support and telemetry
+    // - 3-4 weeks: 1.00× (no adjustment)
+    // - 5-8 weeks: 1.05× (5% increase for medium-duration operations)
+    // - 9-12 weeks: 1.10× (10% increase for extended-duration support)
+    const durationMultiplier = calculateDurationMultiplier(missionDuration);
+    const durationAdjustment = priceAfterDiscount * (durationMultiplier - 1);
+    const totalCost = priceAfterDiscount * durationMultiplier;
     
     return {
         // Original inputs
@@ -1233,6 +1268,7 @@ function calculatePricing(mass, volume, mdl, power, payloadType) {
         volume: volume,
         mdl: mdl,
         power: power,
+        missionDuration: missionDuration,
         
         // Volumetric calculations
         volumetricFactor: currentPricing.volumetricFactor,
@@ -1247,6 +1283,9 @@ function calculatePricing(mass, volume, mdl, power, payloadType) {
         subtotal: subtotal,
         discountAmount: discountAmount,
         exclusiveFlightDiscount: currentPricing.exclusiveFlightDiscount,
+        priceAfterDiscount: priceAfterDiscount,
+        durationMultiplier: durationMultiplier,
+        durationAdjustment: durationAdjustment,
         totalCost: totalCost,
         
         // Metrics
@@ -1265,6 +1304,7 @@ function recalculate() {
     const volume = parseFloat(document.getElementById('volume').value) || 0;
     const mdl    = parseInt(document.getElementById('mdl').value)      || 0;
     const power  = parseFloat(document.getElementById('power').value)  || 0;
+    const missionDuration = parseInt(document.getElementById('missionDurationSlider').value) || 3;
     const customerName = document.getElementById('customerName').value.trim();
 
     updateCapacityBars(mass, volume, mdl, power);
@@ -1287,7 +1327,7 @@ function recalculate() {
         return;
     }
 
-    const pricing = calculatePricing(mass, volume, mdl, power, selectedPayloadType);
+    const pricing = calculatePricing(mass, volume, mdl, power, selectedPayloadType, missionDuration);
 
     // Live total
     document.getElementById('liveTotalCost').textContent = formatEuro(pricing.totalCost);
@@ -1324,7 +1364,7 @@ function recalculate() {
 
 function updateBreakdown(pricing, mass, volume, mdl, power) {
     if (!pricing) {
-        ['baseCost','billableMassValue','mdlCost','powerCost','discountCost'].forEach(id => {
+        ['baseCost','billableMassValue','mdlCost','powerCost','discountCost','durationMultiplierCost'].forEach(id => {
             if (document.getElementById(id)) {
                 document.getElementById(id).textContent = '€ 0';
             }
@@ -1336,6 +1376,9 @@ function updateBreakdown(pricing, mass, volume, mdl, power) {
         // Hide discount row if exists
         const discountRow = document.getElementById('discountRow');
         if (discountRow) discountRow.style.display = 'none';
+        // Hide duration multiplier row if exists
+        const durationRow = document.getElementById('durationRow');
+        if (durationRow) durationRow.style.display = 'none';
         return;
     }
 
@@ -1381,6 +1424,16 @@ function updateBreakdown(pricing, mass, volume, mdl, power) {
         }
     } else {
         if (discountRow) discountRow.style.display = 'none';
+    }
+
+    // ─── MISSION DURATION FACTOR ───────────────────────────────
+    // Always display duration factor: shows multiplier percentage and adjustment cost
+    const durationRow = document.getElementById('durationRow');
+    if (durationRow) {
+        document.getElementById('durationMultiplierCost').textContent = pricing.durationAdjustment > 0 
+            ? '+' + formatEuro(pricing.durationAdjustment) 
+            : formatEuro(pricing.durationAdjustment);
+        document.getElementById('durationMultiplierSub').textContent = `${(pricing.durationMultiplier * 100).toFixed(0)}% for ${pricing.missionDuration} weeks`;
     }
 }
 
