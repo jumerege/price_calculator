@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why ATMOS? Space Logistics Value Proposition</title>
+    <link rel="stylesheet" href="style.css?v=20260419-03">
+    <style>
+        /* Value Proposition Specific Styles */
+        .vp-hero {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(255, 107, 53, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 60px;
+            backdrop-filter: blur(10px);
+        }
+
+        .vp-hero h1 {
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, #00d4ff, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .vp-hero-subtitle {
+            font-size: 1.3rem;
+            color: #b0b8c7;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .vp-cta {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .vp-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .vp-section {
+            margin-bottom: 80px;
+        }
+
+        .vp-section-title {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #00d4ff, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .comparison-card {
+            background: rgba(10, 14, 39, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 32px 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comparison-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #ff6b35);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .comparison-card:hover::before {
+            opacity: 1;
+        }
+
+        .comparison-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+
+        .comparison-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .comparison-card p {
+            color: #b0b8c7;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0 0 0;
+        }
+
+        .comparison-card li {
+            color: #b0b8c7;
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .comparison-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #06d6a0;
+            font-weight: bold;
+        }
+
+        .persona-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .persona-tab-btn {
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: #b0b8c7;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .persona-tab-btn.active {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            border-color: transparent;
+        }
+
+        .persona-tab-btn:hover {
+            border-color: rgba(0, 212, 255, 0.6);
+            color: #00d4ff;
+        }
+
+        .persona-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .persona-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .persona-card {
+            background: rgba(10, 14, 39, 0.88);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .persona-card h3 {
+            font-size: 1.8rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        .persona-card .subtitle {
+            color: #ff6b35;
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .persona-card h4 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-top: 28px;
+            margin-bottom: 14px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .persona-card p {
+            color: #b0b8c7;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .persona-card ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .persona-card li {
+            color: #b0b8c7;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .value-chain {
+            background: rgba(10, 14, 39, 0.88);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .chain-flow {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .chain-step {
+            flex: 1;
+            min-width: 160px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px 16px;
+            text-align: center;
+            font-weight: 600;
+            color: #00d4ff;
+            font-size: 0.95rem;
+        }
+
+        .chain-arrow {
+            font-size: 2rem;
+            color: #00d4ff;
+            display: none;
+            animation: slideRight 0.6s ease infinite;
+        }
+
+        @keyframes slideRight {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(8px); }
+        }
+
+        @media (min-width: 768px) {
+            .chain-arrow {
+                display: block;
+            }
+        }
+
+        .benefits-icons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .benefit-box {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 28px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-box:hover {
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .benefit-box .icon {
+            font-size: 3rem;
+            margin-bottom: 14px;
+        }
+
+        .benefit-box h4 {
+            color: #00d4ff;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .benefit-box p {
+            color: #b0b8c7;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 50px 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            color: #b0b8c7;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .vp-footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b0b8c7;
+        }
+
+        @media (max-width: 768px) {
+            .vp-hero {
+                padding: 40px 20px;
+            }
+
+            .vp-hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .vp-section-title {
+                font-size: 1.8rem;
+            }
+
+            .persona-card {
+                padding: 24px;
+            }
+
+            .chain-flow {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <img src="atmos_logo.webp" alt="ATMOS Space Cargo" class="atmos-logo-img">
+        </div>
+        <div class="header-center">
+            <h1>ATMOS Value Proposition</h1>
+            <p>Why Leading Organizations Choose ATMOS for Space Logistics</p>
+        </div>
+        <div class="header-right">
+            <div class="language-selector">
+                <button data-lang="en" class="lang-btn" title="English">
+                    <img src="flags/flag-gb.svg" alt="UK" class="flag-emoji">
+                </button>
+                <button data-lang="fr" class="lang-btn" title="Français">
+                    <img src="flags/flag-fr.svg" alt="France" class="flag-emoji">
+                </button>
+                <button data-lang="de" class="lang-btn" title="Deutsch">
+                    <img src="flags/flag-de.svg" alt="Germany" class="flag-emoji">
+                </button>
+            </div>
+            <div class="nav-menu-container">
+                <button id="navMenuBtn" class="nav-menu-btn" title="Navigation Menu">☰</button>
+                <div id="navMenuDropdown" class="nav-menu-dropdown">
+                    <a href="index.html" class="nav-menu-item">
+                        <span class="nav-menu-icon">💰</span>
+                        <span class="nav-menu-text">Pricing Calculator</span>
+                    </a>
+                    <a href="internal-pricing/" class="nav-menu-item">
+                        <span class="nav-menu-icon">📊</span>
+                        <span class="nav-menu-text">Internal Pricing</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 1200px;">
+        <!-- Hero Section -->
+        <section class="vp-hero">
+            <h1>The Complete Space Logistics Solution</h1>
+            <p class="vp-hero-subtitle">
+                ATMOS closes the loop for space research and material production. Send your experiments up. Get them back down. 
+                No commercial space stations. No parabolic flights. Pure microgravity access with guaranteed sample recovery.
+            </p>
+            <a href="index.html" class="vp-cta">Explore Pricing</a>
+        </section>
+
+        <!-- Problem/Solution Section -->
+        <section class="vp-section">
+            <h2 class="vp-section-title">🚀 The Space Logistics Challenge</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <span class="icon">🛸</span>
+                    <h3>Commercial Space Stations</h3>
+                    <p>Limited experimental slots. Expensive recurring costs. No guaranteed sample retrieval. Long waiting times.</p>
+                    <ul>
+                        <li>Sharing payload space</li>
+                        <li>Extended mission durations</li>
+                        <li>High ongoing fees</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card">
+                    <span class="icon">✈️</span>
+                    <h3>Parabolic Flights</h3>
+                    <p>Only 20-30 seconds of microgravity per parabola. Low-quality data. Severe motion artifacts. Not true space conditions.</p>
+                    <ul>
+                        <li>Brief exposure time</li>
+                        <li>Vibration & motion</li>
+                        <li>No orbital environment</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card">
+                    <span class="icon">🧪</span>
+                    <h3>Drop Towers</h3>
+                    <p>Maximum 10 seconds of free fall. Limited to facilities in specific locations. Cannot replicate orbital conditions.</p>
+                    <ul>
+                        <li>Ultra-short duration</li>
+                        <li>Gravity constraints</li>
+                        <li>Fixed infrastructure</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ATMOS Solution -->
+        <section class="vp-section">
+            <h2 class="vp-section-title">✨ How ATMOS Solves This</h2>
+
+            <div class="value-chain">
+                <h3 style="text-align: center; color: #00d4ff; margin-bottom: 30px; font-size: 1.4rem;">The ATMOS Value Chain</h3>
+                
+                <div class="chain-flow">
+                    <div class="chain-step">
+                        <div style="font-size: 1.4rem; margin-bottom: 8px;">📦</div>
+                        Your Experiment
+                    </div>
+                    <div class="chain-arrow">→</div>
+                    <div class="chain-step">
+                        <div style="font-size: 1.4rem; margin-bottom: 8px;">🔧</div>
+                        Integration & Testing
+                    </div>
+                    <div class="chain-arrow">→</div>
+                    <div class="chain-step">
+                        <div style="font-size: 1.4rem; margin-bottom: 8px;">🚀</div>
+                        Launch to LEO
+                    </div>
+                </div>
+
+                <div class="chain-flow">
+                    <div class="chain-step">
+                        <div style="font-size: 1.4rem; margin-bottom: 8px;">⏳</div>
+                        3-12 Week Mission
+                    </div>
+                    <div class="chain-arrow">←</div>
+                    <div class="chain-step">
+                        <div style="font-size: 1.4rem; margin-bottom: 8px;">🛬</div>
+                        Guaranteed Recovery
+                    </div>
+                    <div class="chain-arrow">←</div>
+                    <div class="chain-step">
+                        <div style="font-size: 1.4rem; margin-bottom: 8px;">📊</div>
+                        Data in Hand
+                    </div>
+                </div>
+
+                <p style="text-align: center; color: #b0b8c7; margin-top: 30px; font-size: 0.95rem;">
+                    <strong style="color: #00d4ff;">The Complete Loop:</strong> 
+                    We handle payload preparation, launch coordination, in-orbit operations, and certified recovery. 
+                    You focus on science.
+                </p>
+            </div>
+
+            <div class="benefits-icons">
+                <div class="benefit-box">
+                    <span class="icon">⏱️</span>
+                    <h4>3-12 Week Duration</h4>
+                    <p>100x longer than parabolic flights. 1000x longer than drop towers. Real microgravity environment.</p>
+                </div>
+
+                <div class="benefit-box">
+                    <span class="icon">🎯</span>
+                    <h4>Guaranteed Recovery</h4>
+                    <p>Your samples return safely to your lab. Not left in orbit. Not inaccessible. In your hands.</p>
+                </div>
+
+                <div class="benefit-box">
+                    <span class="icon">💼</span>
+                    <h4>Dedicated Access</h4>
+                    <p>Your own mission slot. No shared payload congestion. Full control of mission timeline.</p>
+                </div>
+
+                <div class="benefit-box">
+                    <span class="icon">🔬</span>
+                    <h4>True Microgravity</h4>
+                    <p>550 km LEO orbit. Persistent (~10⁻⁶g) microgravity. Scientific-grade environment.</p>
+                </div>
+
+                <div class="benefit-box">
+                    <span class="icon">📈</span>
+                    <h4>Reproducible Data</h4>
+                    <p>Run multiple missions. Compare results across flights. Build robust datasets.</p>
+                </div>
+
+                <div class="benefit-box">
+                    <span class="icon">🌍</span>
+                    <h4>European Service</h4>
+                    <p>Launches from ESA facilities. Operated by experienced European space logistics company.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Persona Section -->
+        <section class="vp-section">
+            <h2 class="vp-section-title">👥 Who Benefits from ATMOS?</h2>
+
+            <div class="persona-tabs">
+                <button class="persona-tab-btn active" data-persona="end-user">🧪 End-User (Research Team)</button>
+                <button class="persona-tab-btn" data-persona="integrator">⚙️ Payload Integrator</button>
+            </div>
+
+            <!-- End-User Persona -->
+            <div class="persona-content active" data-persona="end-user">
+                <div class="persona-card">
+                    <h3>You are a Research Team Lead</h3>
+                    <div class="subtitle">Pharma company | Materials scientist | Biotech researcher | University lab</div>
+
+                    <h4>Your Challenge:</h4>
+                    <p>
+                        You have a hypothesis that requires true microgravity to test. Your experiment cannot wait 5 years for ISS access. 
+                        Parabolic flights give only 20 seconds. You need weeks of data to be statistically significant.
+                    </p>
+
+                    <h4>Why ATMOS?</h4>
+                    <ul>
+                        <li><strong>Fast Access:</strong> Secure a mission slot in under 6 months, not years</li>
+                        <li><strong>Complete Solution:</strong> One vendor handles everything—you focus on your science</li>
+                        <li><strong>Sample Retrieval:</strong> Your materials return to your lab for post-flight analysis</li>
+                        <li><strong>Predictable Cost:</strong> Transparent pricing. No hidden fees for extended missions</li>
+                        <li><strong>Data Rich:</strong> 3-12 weeks of continuous microgravity data beats single parabolic flight</li>
+                        <li><strong>Repeatable:</strong> Run multiple missions to validate results and build datasets</li>
+                    </ul>
+
+                    <h4>Real-World Example:</h4>
+                    <p>
+                        <strong>Scenario:</strong> A pharmaceutical company tests protein crystallization in microgravity to accelerate drug development.
+                    </p>
+                    <ul>
+                        <li>Parabolic flight: 20 seconds of data, high variability, motion artifacts</li>
+                        <li>ISS: 2-year waiting list, shared payload space, no guaranteed recovery schedule</li>
+                        <li>ATMOS: 8-week dedicated mission, samples return in your hands, reproducible results for regulatory submission</li>
+                    </ul>
+
+                    <h4>The ROI:</h4>
+                    <p>
+                        Reduced drug development timeline = Faster time to market = Competitive advantage. 
+                        The cost of one ATMOS mission is recovered in months through accelerated research outcomes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Integrator Persona -->
+            <div class="persona-content" data-persona="integrator">
+                <div class="persona-card">
+                    <h3>You are a Payload Integrator</h3>
+                    <div class="subtitle">Aerospace company | Systems integrator | Engineering firm | Space logistics partner</div>
+
+                    <h4>Your Challenge:</h4>
+                    <p>
+                        Your clients demand space access but don't have expertise in payload integration, launch logistics, or orbital operations. 
+                        You need a reliable partner to handle the operational complexity so you can focus on client relations and payload engineering.
+                    </p>
+
+                    <h4>Why ATMOS?</h4>
+                    <ul>
+                        <li><strong>Turnkey Operations:</strong> ATMOS handles all mission planning, launch coordination, and orbital operations</li>
+                        <li><strong>White-Label Ready:</strong> Transparent technical specifications your clients need</li>
+                        <li><strong>Guaranteed Delivery:</strong> Professional SLAs and insurance coverage for your client assets</li>
+                        <li><strong>Competitive Advantage:</strong> Offer space access without building your own launch infrastructure</li>
+                        <li><strong>Scalability:</strong> From single payload to multi-payload missions, ATMOS scales with your business</li>
+                        <li><strong>Technical Support:</strong> Expert engineering team available throughout payload lifecycle</li>
+                    </ul>
+
+                    <h4>Real-World Example:</h4>
+                    <p>
+                        <strong>Scenario:</strong> An engineering firm integrates experiments from 3 research institutes into one ATMOS mission.
+                    </p>
+                    <ul>
+                        <li>Each institute gets dedicated payload space (100 kg max, 300 L max)</li>
+                        <li>The integrator manages interfaces between payloads and ATMOS systems</li>
+                        <li>ATMOS provides mission command, telemetry, and certified recovery</li>
+                        <li>All samples return safely, all data collected, all research teams satisfied</li>
+                    </ul>
+
+                    <h4>The Business Model:</h4>
+                    <p>
+                        Charge your client a markup on ATMOS pricing. Handle payload engineering. Let ATMOS handle orbital operations. 
+                        Retain recurring revenue from future missions. Scale without hiring expert astronauts.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Matrix Section -->
+        <section class="vp-section">
+            <h2 class="vp-section-title">📊 ATMOS vs. Alternatives: Quick Comparison</h2>
+
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; color: #b0b8c7; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid rgba(0, 212, 255, 0.3);">
+                            <th style="padding: 16px; text-align: left; color: #00d4ff; font-weight: 700;">Feature</th>
+                            <th style="padding: 16px; text-align: center; color: #00d4ff; font-weight: 700;">ATMOS</th>
+                            <th style="padding: 16px; text-align: center; color: #b0b8c7;">Parabolic Flights</th>
+                            <th style="padding: 16px; text-align: center; color: #b0b8c7;">Drop Towers</th>
+                            <th style="padding: 16px; text-align: center; color: #b0b8c7;">ISS/Stations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 14px; text-align: left;">Microgravity Duration</td>
+                            <td style="padding: 14px; text-align: center; color: #06d6a0; font-weight: 600;">21-84 days</td>
+                            <td style="padding: 14px; text-align: center;">20-40 seconds</td>
+                            <td style="padding: 14px; text-align: center;">3-10 seconds</td>
+                            <td style="padding: 14px; text-align: center;">Weeks (limited)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 14px; text-align: left;">True Orbital Environment</td>
+                            <td style="padding: 14px; text-align: center; color: #06d6a0; font-weight: 600;">✓ Yes</td>
+                            <td style="padding: 14px; text-align: center;">✗ No (atmosphere)</td>
+                            <td style="padding: 14px; text-align: center;">✗ No (ground)</td>
+                            <td style="padding: 14px; text-align: center;">✓ Yes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 14px; text-align: left;">Sample Recovery</td>
+                            <td style="padding: 14px; text-align: center; color: #06d6a0; font-weight: 600;">✓ Guaranteed</td>
+                            <td style="padding: 14px; text-align: center;">✓ Immediate</td>
+                            <td style="padding: 14px; text-align: center;">✓ Immediate</td>
+                            <td style="padding: 14px; text-align: center;">? Controlled</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 14px; text-align: left;">Time to Flight</td>
+                            <td style="padding: 14px; text-align: center; color: #06d6a0; font-weight: 600;">3-6 months</td>
+                            <td style="padding: 14px; text-align: center;">2-4 weeks</td>
+                            <td style="padding: 14px; text-align: center;">Weeks (local)</td>
+                            <td style="padding: 14px; text-align: center;">1-2 years</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 14px; text-align: left;">Dedicated Access</td>
+                            <td style="padding: 14px; text-align: center; color: #06d6a0; font-weight: 600;">✓ Full</td>
+                            <td style="padding: 14px; text-align: center;">~ Shared crew</td>
+                            <td style="padding: 14px; text-align: center;">✓ Full</td>
+                            <td style="padding: 14px; text-align: center;">✗ Limited</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 14px; text-align: left;">Predictable Cost</td>
+                            <td style="padding: 14px; text-align: center; color: #06d6a0; font-weight: 600;">✓ Transparent</td>
+                            <td style="padding: 14px; text-align: center;">✓ Fixed</td>
+                            <td style="padding: 14px; text-align: center;">✓ Fixed</td>
+                            <td style="padding: 14px; text-align: center;">~ Complex</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Ready to Access Space?</h2>
+            <p>
+                Whether you're a researcher with an experiment, an integrator managing payloads, or a team seeking space logistics expertise—
+                ATMOS is the complete solution for your mission.
+            </p>
+            <a href="index.html" class="vp-cta">Explore Pricing & Reserve Your Slot</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>ATMOS Space Cargo GmbH · The Complete Space Logistics Solution · Lichtenau, Germany</p>
+    </footer>
+
+    <script>
+        // Navigation menu setup
+        function setupNavigationMenu() {
+            const navMenuBtn = document.getElementById('navMenuBtn');
+            const navMenuDropdown = document.getElementById('navMenuDropdown');
+
+            if (navMenuBtn && navMenuDropdown) {
+                navMenuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navMenuDropdown.classList.toggle('active');
+                }, false);
+            }
+
+            document.addEventListener('click', function(e) {
+                if (navMenuDropdown && !navMenuDropdown.contains(e.target) && e.target !== navMenuBtn) {
+                    navMenuDropdown.classList.remove('active');
+                }
+            }, false);
+        }
+
+        // Persona tabs
+        function setupPersonaTabs() {
+            document.querySelectorAll('.persona-tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const persona = this.dataset.persona;
+
+                    // Update active button
+                    document.querySelectorAll('.persona-tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update active content
+                    document.querySelectorAll('.persona-content').forEach(content => content.classList.remove('active'));
+                    document.querySelector(`[data-persona="${persona}"]`).classList.add('active');
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupNavigationMenu();
+            setupPersonaTabs();
+        });
+    </script>
+</body>
+</html>
