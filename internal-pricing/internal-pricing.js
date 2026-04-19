@@ -287,83 +287,404 @@ function reset() {
 }
 
 /**
- * Export analysis as JSON
+ * Export analysis as PDF with detailed calculation breakdown
  */
 function exportAnalysis() {
-    const analysis = {
-        timestamp: new Date().toISOString(),
-        title: "Phoenix ESA-Aligned Internal Pricing Analysis",
-        sections: {
-            A_nrc: {
-                inputs: {
-                    phaseA: parseFloat(document.getElementById('phaseA').value),
-                    phaseB: parseFloat(document.getElementById('phaseB').value),
-                    phaseC: parseFloat(document.getElementById('phaseC').value),
-                    phaseD: parseFloat(document.getElementById('phaseD').value),
-                    phaseE: parseFloat(document.getElementById('phaseE').value),
-                    phaseF: parseFloat(document.getElementById('phaseF').value),
-                    missionCount: parseInt(document.getElementById('missionCount').value),
-                    reusabilityFactor: parseFloat(document.getElementById('reusabilityFactor').value)
-                },
-                outputs: {
-                    totalNrc: document.getElementById('totalNrc').textContent,
-                    devCostPerMission: document.getElementById('devCostPerMission').textContent
+    // Gather all current input values
+    const phaseA = parseFloat(document.getElementById('phaseA').value) || DEFAULTS.phaseA;
+    const phaseB = parseFloat(document.getElementById('phaseB').value) || DEFAULTS.phaseB;
+    const phaseC = parseFloat(document.getElementById('phaseC').value) || DEFAULTS.phaseC;
+    const phaseD = parseFloat(document.getElementById('phaseD').value) || DEFAULTS.phaseD;
+    const phaseE = parseFloat(document.getElementById('phaseE').value) || DEFAULTS.phaseE;
+    const phaseF = parseFloat(document.getElementById('phaseF').value) || DEFAULTS.phaseF;
+    const missionCount = Math.max(1, parseInt(document.getElementById('missionCount').value) || DEFAULTS.missionCount);
+    
+    const launchCost = parseFloat(document.getElementById('launchCost').value) || DEFAULTS.launchCost;
+    const operationsCost = parseFloat(document.getElementById('operationsCost').value) || DEFAULTS.operationsCost;
+    const recoveryCost = parseFloat(document.getElementById('recoveryCost').value) || DEFAULTS.recoveryCost;
+    const integrationCost = parseFloat(document.getElementById('integrationCost').value) || DEFAULTS.integrationCost;
+    const refurbishmentCost = parseFloat(document.getElementById('refurbishmentCost').value) || DEFAULTS.refurbishmentCost;
+    const logisticsCost = parseFloat(document.getElementById('logisticsCost').value) || DEFAULTS.logisticsCost;
+    
+    const maxPayloadMass = Math.max(0.1, parseFloat(document.getElementById('maxPayloadMass').value) || DEFAULTS.maxPayloadMass);
+    const utilization = Math.max(1, Math.min(100, parseFloat(document.getElementById('utilization').value) || DEFAULTS.utilization));
+    const targetMargin = Math.max(0, Math.min(100, parseFloat(document.getElementById('targetMargin').value) || DEFAULTS.targetMargin));
+    
+    // Perform calculations
+    const totalNrc = phaseA + phaseB + phaseC + phaseD + phaseE + phaseF;
+    const devCostPerMission = totalNrc / missionCount;
+    const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost;
+    const avgSoldMass = Math.max(0.1, maxPayloadMass * (utilization / 100));
+    const totalCostPerMission = devCostPerMission + totalRecurringCost;
+    const breakEvenPricePerKg = totalCostPerMission / avgSoldMass;
+    const recommendedPricePerKg = breakEvenPricePerKg * (1 + targetMargin / 100);
+    const revenuePerMission = recommendedPricePerKg * avgSoldMass;
+    const operationalMarginAmount = revenuePerMission - totalCostPerMission;
+    const operationalMarginPercent = (operationalMarginAmount / revenuePerMission) * 100;
+    
+    // Create HTML content for PDF
+    const pdfContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    line-height: 1.5;
+                    color: #0a0e27;
+                    margin: 0;
+                    padding: 20px;
                 }
-            },
-            B_recurring: {
-                inputs: {
-                    launchCost: parseFloat(document.getElementById('launchCost').value),
-                    operationsCost: parseFloat(document.getElementById('operationsCost').value),
-                    recoveryCost: parseFloat(document.getElementById('recoveryCost').value),
-                    integrationCost: parseFloat(document.getElementById('integrationCost').value),
-                    refurbishmentCost: parseFloat(document.getElementById('refurbishmentCost').value),
-                    logisticsCost: parseFloat(document.getElementById('logisticsCost').value)
-                },
-                outputs: {
-                    totalRecurringCost: document.getElementById('totalRecurringCost').textContent
+                .header-section {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 20px;
+                    border-bottom: 3px solid #00d4ff;
+                    padding-bottom: 15px;
                 }
-            },
-            C_payload: {
-                inputs: {
-                    maxPayloadMass: parseFloat(document.getElementById('maxPayloadMass').value),
-                    maxVolume: parseFloat(document.getElementById('maxVolume').value),
-                    utilization: parseFloat(document.getElementById('utilization').value),
-                    volumetricFactor: parseFloat(document.getElementById('volumetricFactor').value)
-                },
-                outputs: {
-                    maxSellableMass: document.getElementById('maxSellableMass').textContent,
-                    avgSoldMass: document.getElementById('avgSoldMass').textContent
+                .logo {
+                    width: 60px;
+                    height: 60px;
+                    margin-right: 20px;
                 }
-            },
-            D_costModel: {
-                outputs: {
-                    totalCostPerMission: document.getElementById('totalCostPerMission').textContent,
-                    breakEvenPrice: document.getElementById('breakEvenPrice').textContent
+                .header-text h1 {
+                    margin: 0;
+                    color: #00d4ff;
+                    font-size: 24px;
                 }
-            },
-            E_pricing: {
-                inputs: {
-                    targetMargin: parseFloat(document.getElementById('targetMargin').value)
-                },
-                outputs: {
-                    recommendedPrice: document.getElementById('recommendedPrice').textContent,
-                    revenuePerMission: document.getElementById('revenuePerMission').textContent,
-                    operationalMarginPercent: document.getElementById('operationalMarginPercent').textContent
+                .header-text p {
+                    margin: 5px 0 0 0;
+                    color: #666;
+                    font-size: 12px;
+                    font-weight: bold;
                 }
-            }
-        }
+                .internal-use {
+                    background: #fff3cd;
+                    border: 2px solid #ffc107;
+                    padding: 12px;
+                    margin-bottom: 20px;
+                    border-radius: 6px;
+                    text-align: center;
+                    font-weight: bold;
+                    color: #856404;
+                    font-size: 12px;
+                }
+                .section-title {
+                    background: #00d4ff;
+                    color: white;
+                    padding: 10px 15px;
+                    margin-top: 20px;
+                    margin-bottom: 12px;
+                    border-radius: 4px;
+                    font-weight: bold;
+                    font-size: 13px;
+                }
+                .section-title.orange {
+                    background: #16a34a;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 15px;
+                    font-size: 11px;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: right;
+                }
+                th {
+                    background: #f0f0f0;
+                    font-weight: bold;
+                    text-align: left;
+                }
+                td:first-child {
+                    text-align: left;
+                }
+                .formula-box {
+                    background: #f9f9f9;
+                    border-left: 4px solid #00d4ff;
+                    padding: 12px;
+                    margin: 12px 0;
+                    font-family: 'Courier New', monospace;
+                    font-size: 10px;
+                    line-height: 1.6;
+                }
+                .highlight {
+                    background: #e8f4f8;
+                    font-weight: bold;
+                    color: #00a8cc;
+                }
+                .result-box {
+                    background: #d4edda;
+                    border: 2px solid #28a745;
+                    padding: 15px;
+                    margin: 15px 0;
+                    border-radius: 6px;
+                    text-align: center;
+                }
+                .result-box-title {
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: #155724;
+                    margin-bottom: 8px;
+                }
+                .result-box-value {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #28a745;
+                }
+                .footer {
+                    margin-top: 20px;
+                    padding-top: 15px;
+                    border-top: 1px solid #ddd;
+                    font-size: 9px;
+                    color: #666;
+                    text-align: center;
+                }
+                .page-break {
+                    page-break-after: always;
+                    margin-bottom: 30px;
+                }
+            </style>
+        </head>
+        <body>
+            <!-- Header with Logo -->
+            <div class="header-section">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" class="logo" alt="ATMOS Logo">
+                <div class="header-text">
+                    <h1>Phoenix Internal Pricing</h1>
+                    <p>ESA-Aligned Financial Model — Calculation Breakdown</p>
+                </div>
+            </div>
+            
+            <!-- Internal Use Warning -->
+            <div class="internal-use">
+                ⚠️ INTERNAL USE ONLY — STRATEGIC DECISION DOCUMENT<br>
+                For Finance and Business Development Team — Confidential
+            </div>
+            
+            <!-- Document Info -->
+            <p style="font-size: 10px; color: #666; margin-bottom: 20px;">
+                Generated: ${new Date().toLocaleString()} | Document Version: Calculation for Recommended Base Price
+            </p>
+            
+            <!-- SECTION A: NON-RECURRING COSTS -->
+            <div class="section-title">SECTION A: NON-RECURRING COSTS (NRC)</div>
+            <p style="font-size: 11px; margin: 10px 0;">Phases A–F development costs amortized across mission portfolio</p>
+            
+            <table>
+                <tr>
+                    <th>Development Phase</th>
+                    <th>Amount (€)</th>
+                </tr>
+                <tr>
+                    <td>Phase A – Feasibility</td>
+                    <td>${numberToEuro(phaseA)}</td>
+                </tr>
+                <tr>
+                    <td>Phase B – Preliminary Design</td>
+                    <td>${numberToEuro(phaseB)}</td>
+                </tr>
+                <tr>
+                    <td>Phase C – Detailed Design</td>
+                    <td>${numberToEuro(phaseC)}</td>
+                </tr>
+                <tr>
+                    <td>Phase D – Qualification & Manufacturing</td>
+                    <td>${numberToEuro(phaseD)}</td>
+                </tr>
+                <tr>
+                    <td>Phase E – Utilisation</td>
+                    <td>${numberToEuro(phaseE)}</td>
+                </tr>
+                <tr>
+                    <td>Phase F – Disposal</td>
+                    <td>${numberToEuro(phaseF)}</td>
+                </tr>
+                <tr class="highlight">
+                    <td><strong>Total NRC (Phases A–F)</strong></td>
+                    <td>${numberToEuro(totalNrc)}</td>
+                </tr>
+            </table>
+            
+            <div class="formula-box">
+                <strong>Dev Cost per Mission = Total NRC ÷ Mission Count</strong><br>
+                = €${numberToEuro(totalNrc)} ÷ ${missionCount} missions<br>
+                = <span style="color: #00a8cc; font-weight: bold;">${numberToEuro(devCostPerMission)}</span> per mission
+            </div>
+            
+            <!-- SECTION B: RECURRING COST PER MISSION -->
+            <div class="section-title">SECTION B: RECURRING COST PER MISSION</div>
+            <p style="font-size: 11px; margin: 10px 0;">Direct and indirect operational costs for one Phoenix flight</p>
+            
+            <table>
+                <tr>
+                    <th>Cost Category</th>
+                    <th>Amount (€)</th>
+                </tr>
+                <tr>
+                    <td>Launch Cost (rideshare)</td>
+                    <td>${numberToEuro(launchCost)}</td>
+                </tr>
+                <tr>
+                    <td>Mission Operations</td>
+                    <td>${numberToEuro(operationsCost)}</td>
+                </tr>
+                <tr>
+                    <td>Recovery Operations</td>
+                    <td>${numberToEuro(recoveryCost)}</td>
+                </tr>
+                <tr>
+                    <td>Payload Integration & AIT</td>
+                    <td>${numberToEuro(integrationCost)}</td>
+                </tr>
+                <tr>
+                    <td>Refurbishment</td>
+                    <td>${numberToEuro(refurbishmentCost)}</td>
+                </tr>
+                <tr>
+                    <td>Logistics & Transport</td>
+                    <td>${numberToEuro(logisticsCost)}</td>
+                </tr>
+                <tr class="highlight">
+                    <td><strong>Total Recurring Cost</strong></td>
+                    <td>${numberToEuro(totalRecurringCost)}</td>
+                </tr>
+            </table>
+            
+            <!-- SECTION C: PAYLOAD ASSUMPTIONS -->
+            <div class="section-title">SECTION C: PAYLOAD & REVENUE ASSUMPTIONS</div>
+            
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Max Payload Capacity</td>
+                    <td>${maxPayloadMass} kg</td>
+                </tr>
+                <tr>
+                    <td>Utilization Rate</td>
+                    <td>${utilization}%</td>
+                </tr>
+                <tr class="highlight">
+                    <td><strong>Avg Sold Payload Mass</strong></td>
+                    <td><strong>${avgSoldMass.toFixed(1)} kg</strong></td>
+                </tr>
+            </table>
+            
+            <div class="formula-box">
+                <strong>Avg Sold Mass = Max Payload × Utilization Rate</strong><br>
+                = ${maxPayloadMass} kg × (${utilization}% ÷ 100)<br>
+                = <span style="color: #00a8cc; font-weight: bold;">${avgSoldMass.toFixed(2)} kg</span>
+            </div>
+            
+            <!-- PAGE BREAK -->
+            <div class="page-break"></div>
+            
+            <!-- SECTION D: COST MODEL -->
+            <div class="section-title">SECTION D: COST MODEL</div>
+            <p style="font-size: 11px; margin: 10px 0;">Mission economics and total cost per mission</p>
+            
+            <div class="formula-box">
+                <strong>Total Cost per Mission = Dev Cost + Recurring Cost</strong><br>
+                = €${numberToEuro(devCostPerMission)} + €${numberToEuro(totalRecurringCost)}<br>
+                = <span style="color: #00a8cc; font-weight: bold;">€${numberToEuro(totalCostPerMission)}</span>
+            </div>
+            
+            <div class="formula-box">
+                <strong>Break-even Price per kg = Total Cost ÷ Avg Sold Mass</strong><br>
+                = €${numberToEuro(totalCostPerMission)} ÷ ${avgSoldMass.toFixed(2)} kg<br>
+                = <span style="color: #00a8cc; font-weight: bold;">€${numberToEuro(breakEvenPricePerKg)} / kg</span>
+            </div>
+            
+            <!-- SECTION E: PRICING & MARGIN TARGETS -->
+            <div class="section-title orange">SECTION E: PRICING & MARGIN TARGETS</div>
+            <p style="font-size: 11px; margin: 10px 0;">Calculate recommended commercial price with target operational margin</p>
+            
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Break-even Price per kg</td>
+                    <td>€${numberToEuro(breakEvenPricePerKg)} / kg</td>
+                </tr>
+                <tr>
+                    <td>Target Operational Margin</td>
+                    <td>${targetMargin}%</td>
+                </tr>
+                <tr>
+                    <td>Revenue per Mission</td>
+                    <td>€${numberToEuro(revenuePerMission)}</td>
+                </tr>
+                <tr>
+                    <td>Operational Margin (€)</td>
+                    <td>€${numberToEuro(operationalMarginAmount)}</td>
+                </tr>
+                <tr class="highlight">
+                    <td><strong>Operational Margin (%)</strong></td>
+                    <td><strong>${operationalMarginPercent.toFixed(1)}%</strong></td>
+                </tr>
+            </table>
+            
+            <div class="formula-box">
+                <strong>Recommended Price per kg = Break-even × (1 + Target Margin)</strong><br>
+                = €${numberToEuro(breakEvenPricePerKg)} × (1 + ${targetMargin}% ÷ 100)<br>
+                = €${numberToEuro(breakEvenPricePerKg)} × ${(1 + targetMargin / 100).toFixed(2)}<br>
+                = <span style="color: #00a8cc; font-weight: bold;">€${numberToEuro(recommendedPricePerKg)} / kg</span>
+            </div>
+            
+            <!-- FINAL RESULT -->
+            <div class="result-box">
+                <div class="result-box-title">RECOMMENDED BASE PRICE PER KG</div>
+                <div class="result-box-value">€${numberToEuro(recommendedPricePerKg)} / kg</div>
+                <p style="font-size: 10px; margin-top: 10px; color: #155724;">
+                    This price ensures €${numberToEuro(revenuePerMission)} in revenue per mission,<br>
+                    covering €${numberToEuro(totalCostPerMission)} in costs with ${operationalMarginPercent.toFixed(1)}% operational margin.
+                </p>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <p>This document is automatically generated based on current calculator parameters.</p>
+                <p>For questions, contact the Finance or Business Development team.</p>
+                <p style="margin-top: 10px; font-weight: bold;">CONFIDENTIAL — INTERNAL USE ONLY</p>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    // Generate PDF
+    const element = document.createElement('div');
+    element.innerHTML = pdfContent;
+    
+    const opt = {
+        margin: 10,
+        filename: `Phoenix-Pricing-Calculation-${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
     };
+    
+    html2pdf().set(opt).from(element).save();
+}
 
-    const dataStr = JSON.stringify(analysis, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Phoenix-Pricing-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+/**
+ * Format number as EUR with K/M abbreviation
+ */
+function numberToEuro(value) {
+    if (!isFinite(value)) return '0';
+    if (value >= 1000000) {
+        return `${(value / 1000000).toFixed(2).replace(/\.?0+$/, '')}M`;
+    } else if (value >= 1000) {
+        return `${(value / 1000).toFixed(1).replace(/\.?0+$/, '')}k`;
+    }
+    return value.toFixed(2);
 }
 
 /**
