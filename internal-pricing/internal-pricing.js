@@ -65,6 +65,14 @@ const TOOLTIP_CONTENT = {
     insurance: {
         title: "Insurance",
         content: "This cost represents mission-level risk protection. It is modeled separately because it is not a development cost, but a recurring mission cost that may vary depending on launch conditions, payload value, mission profile, and customer risk allocation.\n\nA percentage-based approach is useful because insurance often scales with the economic value at risk during a mission, rather than remaining strictly fixed.\n\nSuggested formula: Insurance = 10% × (Launch + Ops + Recovery + Payload value)\n\nThis formula is only a recommended modeling approach for internal pricing purposes. This field remains manually adjustable—you may enter any value based on your risk assessment and customer requirements."
+    },
+    missionCount: {
+        title: "Number of Missions for Amortization",
+        content: "This defines how many missions are used to spread the development cost of Phoenix. Instead of charging all development cost in one mission, it is distributed across multiple flights. More missions reduce cost per mission, while fewer missions increase it. This reflects expected demand over time."
+    },
+    reusabilityFactor: {
+        title: "Reusability Factor (flights per vehicle)",
+        content: "This represents how many times a single Phoenix vehicle can be reused. A higher value means the same vehicle flies multiple missions, reducing the need to build new hardware. This improves cost efficiency, but may increase refurbishment needs and operational complexity over time."
     }
 };
 
