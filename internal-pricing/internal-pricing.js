@@ -867,16 +867,13 @@ function drawSensitivityChart(data, currentMissionCount) {
     const canvas = document.getElementById('sensitivityChart');
     if (!canvas) return;
     
-    // Set canvas size based on container (handle DPI scaling)
-    const container = canvas.parentElement;
-    const dpr = window.devicePixelRatio || 1;
-    const rect = container.getBoundingClientRect();
-    
-    canvas.width = 400 * dpr;
-    canvas.height = 300 * dpr;
+    // Set fixed canvas size
+    canvas.width = 400;
+    canvas.height = 300;
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
     
     const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
     
     // Clear canvas
     ctx.fillStyle = 'rgba(10, 14, 39, 0.5)';
