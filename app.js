@@ -489,6 +489,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✓ setupWizard');
     setupSettings();
     console.log('✓ setupSettings');
+    setupNavigationMenu();
+    console.log('✓ setupNavigationMenu');
     setupForm();
     console.log('✓ setupForm');
     setupMissionTypeSelector();
@@ -711,6 +713,46 @@ function setupSettings() {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', () => { updatePricing(); recalculate(); });
     });
+}
+
+// ─────────────────────────────────────────────
+// NAVIGATION MENU LOGIC
+// ─────────────────────────────────────────────
+
+function setupNavigationMenu() {
+    const navMenuBtn = document.getElementById('navMenuBtn');
+    const navMenuDropdown = document.getElementById('navMenuDropdown');
+    const settingsMenuItem = document.getElementById('settingsMenuItem');
+    const settingsToggleBtn = document.getElementById('settingsToggleBtn');
+
+    // Toggle menu on button click
+    if (navMenuBtn) {
+        navMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navMenuDropdown.classList.toggle('active');
+        });
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (navMenuDropdown && !navMenuDropdown.contains(e.target) && e.target !== navMenuBtn) {
+            navMenuDropdown.classList.remove('active');
+        }
+    });
+
+    // Settings menu item opens settings drawer
+    if (settingsMenuItem) {
+        settingsMenuItem.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const settingsDrawer = document.getElementById('settingsDrawer');
+            navMenuDropdown.classList.remove('active');
+            settingsDrawer.classList.add('open');
+            if (settingsToggleBtn) {
+                settingsToggleBtn.textContent = '✕ Close Settings';
+            }
+        });
+    }
 }
 
 function updatePricing() {
