@@ -258,6 +258,12 @@ function updateFieldLabelsAndValues() {
             label.innerHTML = `${baseName} (${unitSymbol})<span class="tooltip-icon" data-phase="${tooltipPhase}">?</span>`;
         }
     });
+
+    // Update overhead title with current unit
+    const overheadTitle = document.getElementById('overheadTitleLabel');
+    if (overheadTitle) {
+        overheadTitle.textContent = `Additional Corporate Overhead per Mission (${unitSymbol})`;
+    }
 }
 
 /**
