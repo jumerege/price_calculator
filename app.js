@@ -693,18 +693,8 @@ function showStep(stepId) {
 // ─────────────────────────────────────────────
 
 function setupSettings() {
-    const settingsToggleBtn = document.getElementById('settingsToggleBtn');
     const settingsDrawer = document.getElementById('settingsDrawer');
     const resetSettingsBtn = document.getElementById('resetSettings');
-
-    if (settingsToggleBtn) {
-        settingsToggleBtn.addEventListener('click', () => {
-            settingsDrawer.classList.toggle('open');
-            settingsToggleBtn.textContent = settingsDrawer.classList.contains('open')
-                ? '✕ Close Settings'
-                : '⚙️ Pricing Settings';
-        });
-    }
 
     if (resetSettingsBtn) resetSettingsBtn.addEventListener('click', resetSettings);
 
@@ -723,7 +713,6 @@ function setupNavigationMenu() {
     const navMenuBtn = document.getElementById('navMenuBtn');
     const navMenuDropdown = document.getElementById('navMenuDropdown');
     const settingsMenuItem = document.getElementById('settingsMenuItem');
-    const settingsToggleBtn = document.getElementById('settingsToggleBtn');
 
     // Toggle menu on button click
     if (navMenuBtn) {
@@ -748,9 +737,6 @@ function setupNavigationMenu() {
             const settingsDrawer = document.getElementById('settingsDrawer');
             navMenuDropdown.classList.remove('active');
             settingsDrawer.classList.add('open');
-            if (settingsToggleBtn) {
-                settingsToggleBtn.textContent = '✕ Close Settings';
-            }
         });
     }
 }
