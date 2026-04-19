@@ -323,6 +323,36 @@
                 </div>
             </section>
 
+            <!-- Sensitivity Analysis Toggle Button -->
+            <section class="sensitivity-toggle-section">
+                <button id="sensitivityToggleBtn" class="btn-sensitivity-toggle">
+                    👉 View Sensitivity Analysis chart
+                </button>
+            </section>
+
+            <!-- Sensitivity Analysis Section (Hidden by default) -->
+            <section id="sensitivityAnalysisSection" class="pricing-card sensitivity-analysis-section" style="display: none;">
+                <div class="card-header">
+                    <h2>
+                        Sensitivity Analysis – Missions vs Price
+                        <span class="tooltip-icon" title="This chart shows how the number of missions affects the price per kg. Fewer missions → higher cost per mission → higher price. More missions → lower cost per mission → lower price.">?</span>
+                    </h2>
+                </div>
+                <div class="sensitivity-content">
+                    <table class="sensitivity-table">
+                        <thead>
+                            <tr>
+                                <th>Number of Missions</th>
+                                <th>Recommended €/kg</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sensitivityTableBody">
+                            <!-- Dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Action Buttons -->
             <section class="action-buttons">
                 <button id="resetBtn" class="btn-secondary">Reset to Defaults</button>

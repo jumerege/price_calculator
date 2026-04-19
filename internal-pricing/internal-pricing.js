@@ -260,6 +260,9 @@ function setupEventListeners() {
     // Action buttons
     document.getElementById('resetBtn').addEventListener('click', reset);
     document.getElementById('exportBtn').addEventListener('click', exportAnalysis);
+    
+    // Sensitivity Analysis Toggle
+    setupSensitivityAnalysis();
 
     // Use event delegation for tooltip icons (works even after DOM updates)
     document.addEventListener('click', function(e) {
@@ -451,6 +454,9 @@ function calculate() {
     // ============ LEGACY SECTIONS (backward compatibility) ============
     updateLegacySections(devCostPerMission, totalRecurringCost, totalCostPerMission, 
                         avgSoldMass, recommendedPricePerKg, revenuePerMission);
+    
+    // Update Sensitivity Analysis if visible
+    updateSensitivityIfVisible();
 }
 
 /**
@@ -752,4 +758,111 @@ function formatNumber(value) {
         return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
     return value.toFixed(1);
+}
+
+/**
+ * Setup Sensitivity Analysis toggle and calculations
+ */
+function setupSensitivityAnalysis() {
+    const toggleBtn = document.getElementById('sensitivityToggleBtn');
+    const section = document.getElementById('sensitivityAnalysisSection');
+    
+    if (!toggleBtn || !section) return;
+    
+    let isOpen = false;
+    
+    toggleBtn.addEventListener('click', function() {
+        isOpen = !isOpen;
+        section.style.display = isOpen ? 'block' : 'none';
+        toggleBtn.textContent = isOpen 
+            ? '👈 Hide Sensitivity Analysis chart' 
+            : '👉 View Sensitivity Analysis chart';
+        
+        if (isOpen) {
+            updateSensitivityAnalysis();
+        }
+    });
+}
+
+/**
+ * Calculate and update Sensitivity Analysis table
+ */
+function calculateSensitivityAnalysis() {
+    // Get current values (convert from display unit to euros)
+    const phaseA = convertToEuro(parseFloat(document.getElementById('phaseA').value)) || DEFAULTS.phaseA;
+    const phaseB = convertToEuro(parseFloat(document.getElementById('phaseB').value)) || DEFAULTS.phaseB;
+    const phaseC = convertToEuro(parseFloat(document.getElementById('phaseC').value)) || DEFAULTS.phaseC;
+    const phaseD = convertToEuro(parseFloat(document.getElementById('phaseD').value)) || DEFAULTS.phaseD;
+    
+    const launchCost = convertToEuro(parseFloat(document.getElementById('launchCost').value)) || DEFAULTS.launchCost;
+    const operationsCost = convertToEuro(parseFloat(document.getElementById('operationsCost').value)) || DEFAULTS.operationsCost;
+    const recoveryCost = convertToEuro(parseFloat(document.getElementById('recoveryCost').value)) || DEFAULTS.recoveryCost;
+    const integrationCost = convertToEuro(parseFloat(document.getElementById('integrationCost').value)) || DEFAULTS.integrationCost;
+    const refurbishmentCost = convertToEuro(parseFloat(document.getElementById('refurbishmentCost').value)) || DEFAULTS.refurbishmentCost;
+    const logisticsCost = convertToEuro(parseFloat(document.getElementById('logisticsCost').value)) || DEFAULTS.logisticsCost;
+    const insuranceCost = convertToEuro(parseFloat(document.getElementById('insuranceCost').value)) || DEFAULTS.insuranceCost;
+    
+    const maxPayloadMass = Math.max(0.1, parseFloat(document.getElementById('maxPayloadMass').value) || DEFAULTS.maxPayloadMass);
+    const utilization = Math.max(1, Math.min(100, parseFloat(document.getElementById('utilization').value) || DEFAULTS.utilization));
+    const targetMargin = Math.max(0, Math.min(100, parseFloat(document.getElementById('targetMargin').value) || DEFAULTS.targetMargin));
+    const currentMissionCount = Math.max(1, parseInt(document.getElementById('missionCount').value) || DEFAULTS.missionCount);
+    
+    // Calculate totals
+    const totalNrc = phaseA + phaseB + phaseC + phaseD;
+    const phaseE = launchCost + insuranceCost + integrationCost + operationsCost;
+    const phaseF = recoveryCost + refurbishmentCost + logisticsCost;
+    const totalRecurringCost = phaseE + phaseF;
+    
+    const avgSoldMass = Math.max(0.1, maxPayloadMass * (utilization / 100));
+    
+    // Generate data for 5 to 50 missions, step of 5
+    const sensitivityData = [];
+    for (let missions = 5; missions <= 50; missions += 5) {
+        const devCostPerMission = totalNrc / missions;
+        const totalCostPerMission = devCostPerMission + totalRecurringCost;
+        const breakEvenPricePerKg = totalCostPerMission / avgSoldMass;
+        const recommendedPricePerKg = breakEvenPricePerKg * (1 + targetMargin / 100);
+        
+        sensitivityData.push({
+            missions: missions,
+            pricePerKg: recommendedPricePerKg,
+            isCurrent: missions === currentMissionCount
+        });
+    }
+    
+    return { data: sensitivityData, currentMissionCount };
+}
+
+/**
+ * Update Sensitivity Analysis table with current calculations
+ */
+function updateSensitivityAnalysis() {
+    const result = calculateSensitivityAnalysis();
+    const tbody = document.getElementById('sensitivityTableBody');
+    
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    result.data.forEach(row => {
+        const tr = document.createElement('tr');
+        if (row.isCurrent) {
+            tr.className = 'current-missions';
+        }
+        tr.innerHTML = `
+            <td>${row.missions}</td>
+            <td>${numberToEuro(row.pricePerKg)}/kg</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+/**
+ * Update sensitivity analysis when parameters change
+ */
+function updateSensitivityIfVisible() {
+    const section = document.getElementById('sensitivityAnalysisSection');
+    if (section && section.style.display !== 'none') {
+        updateSensitivityAnalysis();
+    }
 }
