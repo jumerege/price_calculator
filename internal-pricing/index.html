@@ -7,8 +7,8 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="expires" content="0">
     <title>Phoenix Internal Pricing Engine</title>
-    <link rel="stylesheet" href="../style.css?v=20260419T1002">
-    <link rel="stylesheet" href="internal-pricing.css?v=20260419T1002">
+    <link rel="stylesheet" href="../style.css?v=20260419T1003">
+    <link rel="stylesheet" href="internal-pricing.css?v=20260419T1003">
     <!-- PDF Export Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -92,22 +92,8 @@
                         <span class="output-value" id="devCostPerMission">€ 275k</span>
                     </div>
                 </div>
-                <!-- Remaining Phases (E, F) and Parameters -->
+                <!-- Mission Amortization Parameters -->
                 <div class="input-grid" style="margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(0, 212, 255, 0.1);">
-                    <div class="input-group">
-                        <label for="phaseE">
-                            Phase E – Utilisation (€)
-                            <span class="tooltip-icon" data-phase="E">?</span>
-                        </label>
-                        <input type="number" id="phaseE" class="calc-input" value="300" min="0" step="1">
-                    </div>
-                    <div class="input-group">
-                        <label for="phaseF">
-                            Phase F – Disposal (€)
-                            <span class="tooltip-icon" data-phase="F">?</span>
-                        </label>
-                        <input type="number" id="phaseF" class="calc-input" value="200" min="0" step="1">
-                    </div>
                     <div class="input-group">
                         <label for="missionCount">
                             Number of Missions for Amortization
@@ -129,63 +115,91 @@
             <section class="pricing-card">
                 <div class="card-header">
                     <h2>Recurring Cost per Mission</h2>
-                    <p class="card-subtitle">Direct and indirect costs for one Phoenix flight.</p>
+                    <p class="card-subtitle">Mission execution and recovery costs split into operational phases.</p>
                 </div>
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label for="launchCost">
-                            Launch Cost (rideshare) (€)
-                            <span class="tooltip-icon" data-phase="launchCost">?</span>
-                        </label>
-                        <input type="number" id="launchCost" class="calc-input" value="1500" min="0" step="10">
+
+                <!-- Phase E – Utilisation Container -->
+                <div class="phase-container phase-e-container">
+                    <div class="phase-title">
+                        <h3>Phase E – Utilisation</h3>
+                        <p class="phase-subtitle">Mission execution costs (automatically calculated below)</p>
                     </div>
-                    <div class="input-group">
-                        <label for="operationsCost">
-                            Mission Operations (€)
-                            <span class="tooltip-icon" title="Flight planning, control, and oversight">?</span>
-                        </label>
-                        <input type="number" id="operationsCost" class="calc-input" value="150" min="0" step="1">
+                    <div class="input-grid phase-input-grid">
+                        <div class="input-group">
+                            <label for="launchCost">
+                                Launch Cost (rideshare) (€)
+                                <span class="tooltip-icon" data-phase="launchCost">?</span>
+                            </label>
+                            <input type="number" id="launchCost" class="calc-input" value="1500" min="0" step="10">
+                        </div>
+                        <div class="input-group">
+                            <label for="insuranceCost">
+                                Insurance (€)
+                                <span class="tooltip-icon" data-phase="insurance">?</span>
+                            </label>
+                            <input type="number" id="insuranceCost" class="calc-input" value="100" min="0" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="integrationCost">
+                                Payload Integration & AIT (€)
+                                <span class="tooltip-icon" title="Assembly, integration, and testing">?</span>
+                            </label>
+                            <input type="number" id="integrationCost" class="calc-input" value="150" min="0" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="operationsCost">
+                                Mission Operations (€)
+                                <span class="tooltip-icon" title="Flight planning, control, and oversight">?</span>
+                            </label>
+                            <input type="number" id="operationsCost" class="calc-input" value="150" min="0" step="1">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label for="recoveryCost">
-                            Recovery Operations (€)
-                            <span class="tooltip-icon" title="Spacecraft retrieval and logistics">?</span>
-                        </label>
-                        <input type="number" id="recoveryCost" class="calc-input" value="200" min="0" step="1">
-                    </div>
-                    <div class="input-group">
-                        <label for="integrationCost">
-                            Payload Integration & AIT (€)
-                            <span class="tooltip-icon" title="Assembly, integration, and testing">?</span>
-                        </label>
-                        <input type="number" id="integrationCost" class="calc-input" value="150" min="0" step="1">
-                    </div>
-                    <div class="input-group">
-                        <label for="refurbishmentCost">
-                            Refurbishment Cost (€)
-                            <span class="tooltip-icon" title="Post-flight vehicle refurbishment">?</span>
-                        </label>
-                        <input type="number" id="refurbishmentCost" class="calc-input" value="200" min="0" step="1">
-                    </div>
-                    <div class="input-group">
-                        <label for="logisticsCost">
-                            Logistics & Transport (€)
-                            <span class="tooltip-icon" title="Ground transport, documentation, handling">?</span>
-                        </label>
-                        <input type="number" id="logisticsCost" class="calc-input" value="100" min="0" step="1">
-                    </div>
-                    <div class="input-group">
-                        <label for="insuranceCost">
-                            Insurance (€)
-                            <span class="tooltip-icon" data-phase="insurance">?</span>
-                        </label>
-                        <input type="number" id="insuranceCost" class="calc-input" value="100" min="0" step="1">
+                    <div class="phase-subtotal-output">
+                        <span class="phase-subtotal-label">Phase E Subtotal (automatically calculated):</span>
+                        <span class="phase-subtotal-value" id="phaseESubtotal">€ 1.9M</span>
                     </div>
                 </div>
-                <div class="calc-output">
+
+                <!-- Phase F – Disposal Container -->
+                <div class="phase-container phase-f-container">
+                    <div class="phase-title">
+                        <h3>Phase F – Disposal</h3>
+                        <p class="phase-subtitle">Recovery and refurbishment costs (automatically calculated below)</p>
+                    </div>
+                    <div class="input-grid phase-input-grid">
+                        <div class="input-group">
+                            <label for="recoveryCost">
+                                Recovery Operations (€)
+                                <span class="tooltip-icon" title="Spacecraft retrieval and logistics">?</span>
+                            </label>
+                            <input type="number" id="recoveryCost" class="calc-input" value="200" min="0" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="refurbishmentCost">
+                                Refurbishment Cost (€)
+                                <span class="tooltip-icon" title="Post-flight vehicle refurbishment">?</span>
+                            </label>
+                            <input type="number" id="refurbishmentCost" class="calc-input" value="200" min="0" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="logisticsCost">
+                                Logistics & Transport (€)
+                                <span class="tooltip-icon" title="Ground transport, documentation, handling">?</span>
+                            </label>
+                            <input type="number" id="logisticsCost" class="calc-input" value="100" min="0" step="1">
+                        </div>
+                    </div>
+                    <div class="phase-subtotal-output">
+                        <span class="phase-subtotal-label">Phase F Subtotal (automatically calculated):</span>
+                        <span class="phase-subtotal-value" id="phaseFSubtotal">€ 0.5M</span>
+                    </div>
+                </div>
+
+                <!-- Total Recurring Cost -->
+                <div class="calc-output" style="margin-top: 25px;">
                     <div class="output-item highlight">
-                        <span class="output-label">Total Recurring Cost per Mission:</span>
-                        <span class="output-value" id="totalRecurringCost">€ 2.3M</span>
+                        <span class="output-label">Total Recurring Cost per Mission (Phase E + Phase F):</span>
+                        <span class="output-value" id="totalRecurringCost">€ 2.4M</span>
                     </div>
                 </div>
             </section>
@@ -601,8 +615,8 @@
             <div class="modal-formulas">
                 <p><strong>Total NRC</strong> = Phase A + Phase B + Phase C + Phase D</p>
                 <p><strong>Dev Cost per Mission</strong> = Total NRC / Number of Missions for Amortization</p>
-                <p><strong>Phase E</strong> = Launch Cost + Insurance + Mission Operations + Payload Integration & AIT</p>
-                <p><strong>Phase F</strong> = Recovery Operations + Refurbishment Cost + Logistics & Transport</p>
+                <p><strong>Phase E – Utilisation</strong> = Launch Cost + Insurance + Payload Integration & AIT + Mission Operations</p>
+                <p><strong>Phase F – Disposal</strong> = Recovery Operations + Refurbishment Cost + Logistics & Transport</p>
                 <p><strong>Total Recurring Cost per Mission</strong> = Phase E + Phase F</p>
                 <p><strong>Total Cost per Mission</strong> = Dev Cost per Mission + Total Recurring Cost per Mission</p>
                 <p><strong>Break-even €/kg</strong> = Total Cost per Mission / Sold Mass</p>
@@ -613,6 +627,6 @@
         </div>
     </div>
 
-    <script src="internal-pricing.js?v=20260419T1002"></script>
+    <script src="internal-pricing.js?v=20260419T1003"></script>
 </body>
 </html>

@@ -79,7 +79,7 @@ let currentInputUnit = 'keur'; // Default: thousands of euros
 
 // List of all monetary field IDs
 const monetaryFieldIds = [
-    'phaseA', 'phaseB', 'phaseC', 'phaseD', 'phaseE', 'phaseF',
+    'phaseA', 'phaseB', 'phaseC', 'phaseD',
     'launchCost', 'operationsCost', 'recoveryCost', 'integrationCost',
     'refurbishmentCost', 'logisticsCost', 'insuranceCost'
 ];
@@ -367,8 +367,6 @@ function calculate() {
     const phaseB = convertToEuro(parseFloat(document.getElementById('phaseB').value) || convertFromEuro(DEFAULTS.phaseB));
     const phaseC = convertToEuro(parseFloat(document.getElementById('phaseC').value) || convertFromEuro(DEFAULTS.phaseC));
     const phaseD = convertToEuro(parseFloat(document.getElementById('phaseD').value) || convertFromEuro(DEFAULTS.phaseD));
-    const phaseE = convertToEuro(parseFloat(document.getElementById('phaseE').value) || convertFromEuro(DEFAULTS.phaseE));
-    const phaseF = convertToEuro(parseFloat(document.getElementById('phaseF').value) || convertFromEuro(DEFAULTS.phaseF));
     const missionCount = Math.max(1, parseInt(document.getElementById('missionCount').value) || DEFAULTS.missionCount);
     const reusabilityFactor = Math.max(1, parseFloat(document.getElementById('reusabilityFactor').value) || DEFAULTS.reusabilityFactor);
 
@@ -391,9 +389,18 @@ function calculate() {
     const logisticsCost = convertToEuro(parseFloat(document.getElementById('logisticsCost').value) || convertFromEuro(DEFAULTS.logisticsCost));
     const insuranceCost = convertToEuro(parseFloat(document.getElementById('insuranceCost').value) || convertFromEuro(DEFAULTS.insuranceCost));
 
-    const totalRecurringCost = launchCost + operationsCost + recoveryCost + integrationCost + refurbishmentCost + logisticsCost + insuranceCost;
+    // Calculate Phase E (Utilisation) = Launch + Insurance + Integration + Operations
+    const phaseE = launchCost + insuranceCost + integrationCost + operationsCost;
+    
+    // Calculate Phase F (Disposal) = Recovery + Refurbishment + Logistics
+    const phaseF = recoveryCost + refurbishmentCost + logisticsCost;
+    
+    // Calculate Total Recurring Cost = Phase E + Phase F
+    const totalRecurringCost = phaseE + phaseF;
 
-    // Update Section B outputs
+    // Update Section B outputs: Phase subtotals (display only, not editable)
+    document.getElementById('phaseESubtotal').textContent = formatEuro(phaseE);
+    document.getElementById('phaseFSubtotal').textContent = formatEuro(phaseF);
     document.getElementById('totalRecurringCost').textContent = formatEuro(totalRecurringCost);
 
     // ============ SECTION C: PAYLOAD & REVENUE ASSUMPTIONS ============
