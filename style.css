@@ -628,7 +628,6 @@ header {
 /* ── Navigation Menu ────────────────────────────────── */
 .nav-menu-container {
     position: relative;
-    z-index: 101;
 }
 
 .nav-menu-btn {
@@ -645,7 +644,6 @@ header {
     justify-content: center;
     min-width: 40px;
     height: 40px;
-    z-index: 102;
 }
 
 .nav-menu-btn:hover {
@@ -654,20 +652,19 @@ header {
 }
 
 .nav-menu-dropdown {
-    position: fixed;
-    top: auto;
-    right: 20px;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
     background: rgba(10, 14, 39, 0.98);
     border: 1px solid var(--card-border);
     border-radius: 8px;
     min-width: 220px;
-    margin-top: 8px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
-    z-index: 103;
+    z-index: 1000;
     backdrop-filter: blur(10px);
     pointer-events: none;
 }
