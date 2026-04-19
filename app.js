@@ -721,10 +721,11 @@ function setupNavigationMenu() {
     if (navMenuBtn && navMenuDropdown) {
         navMenuBtn.addEventListener('click', function(e) {
             console.log('🔔 Menu button clicked');
+            e.preventDefault();
             e.stopPropagation();
             navMenuDropdown.classList.toggle('active');
             console.log('🔔 Active class toggled. Current state:', navMenuDropdown.classList.contains('active'));
-        });
+        }, false);
     } else {
         console.warn('⚠️ navMenuBtn or navMenuDropdown not found');
     }
@@ -734,7 +735,7 @@ function setupNavigationMenu() {
         if (navMenuDropdown && !navMenuDropdown.contains(e.target) && e.target !== navMenuBtn) {
             navMenuDropdown.classList.remove('active');
         }
-    });
+    }, false);
 
     // Settings menu item opens settings drawer
     if (settingsMenuItem && navMenuDropdown) {
@@ -748,7 +749,7 @@ function setupNavigationMenu() {
                 settingsDrawer.classList.add('open');
                 console.log('⚙️ Settings drawer opened');
             }
-        });
+        }, false);
     }
 }
 
