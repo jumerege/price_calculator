@@ -961,10 +961,10 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
     
     // Generate PDF
     const opt = {
-        margin: [10, 10, 10, 10],
+        margin: 10,
         filename: `Base-Price-Definition-${new Date().toISOString().split('T')[0]}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true },
         jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
     };
     
@@ -974,11 +974,17 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
         console.log('Phase F:', phaseF);
         console.log('Total Recurring:', totalRecurringCost);
         
-        // Create a temporary container
+        // Create a temporary container positioned off-screen instead of display:none
         const tempContainer = document.createElement('div');
         tempContainer.innerHTML = pdfContent;
-        tempContainer.style.display = 'none';
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '-9999px';
+        tempContainer.style.width = '210mm';
+        tempContainer.style.fontSize = '14px';
         document.body.appendChild(tempContainer);
+        
+        console.log('Temp container created with content length:', tempContainer.innerHTML.length);
         
         // Use html2pdf to generate and download
         html2pdf()
@@ -987,12 +993,14 @@ function createAndDownloadPDF(logoBase64, phaseA, phaseB, phaseC, phaseD, phaseE
             .save()
             .then(() => {
                 console.log('PDF export successful');
+                // Clean up temporary container
+                if (document.body.contains(tempContainer)) {
+                    document.body.removeChild(tempContainer);
+                }
             })
             .catch((error) => {
-                console.error('PDF export error:', error);
+                console.error('PDF export error details:', error);
                 alert('Error generating PDF: ' + error.message);
-            })
-            .finally(() => {
                 // Clean up temporary container
                 if (document.body.contains(tempContainer)) {
                     document.body.removeChild(tempContainer);
