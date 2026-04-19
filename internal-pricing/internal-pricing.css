@@ -104,6 +104,35 @@ body::before {
     padding-left: 12px;
 }
 
+/* Tooltip Icon */
+.tooltip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    margin-left: 6px;
+    background: rgba(0, 212, 255, 0.2);
+    border: 1.5px solid var(--primary-color);
+    border-radius: 50%;
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    vertical-align: middle;
+}
+
+.tooltip-icon:hover {
+    background: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.5);
+    transform: scale(1.1);
+}
+
+.tooltip-icon:active {
+    transform: scale(0.95);
+}
+
 /* Scenario Buttons */
 .scenario-buttons {
     display: grid;
