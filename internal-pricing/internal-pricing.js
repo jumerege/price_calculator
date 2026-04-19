@@ -630,6 +630,8 @@ td:first-child { text-align: left; }
 <tr><td class="label" style="font-size: 13px;">Total Recurring Cost per Mission (Phase E + Phase F)</td><td class="value" style="font-size: 13px;">${numberToEuro(totalRecurringCost)}</td></tr>
 </table>
 
+<div style="height: 45px;"></div>
+
 <h2>SECTION C: PAYLOAD & REVENUE ASSUMPTIONS</h2>
 <table>
 <tr><th>Parameter</th><th>Value</th></tr>
