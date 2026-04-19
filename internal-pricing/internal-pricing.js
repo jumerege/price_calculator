@@ -227,6 +227,8 @@ function updateFieldLabelsAndValues() {
  * Setup all event listeners
  */
 function setupEventListeners() {
+    console.log('Setting up event listeners...');
+    
     // All calculation inputs
     document.querySelectorAll('.calc-input').forEach(input => {
         input.addEventListener('input', calculate);
@@ -237,12 +239,19 @@ function setupEventListeners() {
     document.getElementById('exportBtn').addEventListener('click', exportAnalysis);
 
     // Phase tooltip icons
-    document.querySelectorAll('.tooltip-icon').forEach(icon => {
+    const tooltipIcons = document.querySelectorAll('.tooltip-icon');
+    console.log('Found', tooltipIcons.length, 'tooltip icons');
+    
+    tooltipIcons.forEach(icon => {
         icon.addEventListener('click', function(e) {
+            e.preventDefault();
             e.stopPropagation();
             const phase = this.getAttribute('data-phase');
+            console.log('Clicked tooltip icon for phase:', phase);
             if (TOOLTIP_CONTENT[phase]) {
                 showPhaseTooltip(phase);
+            } else {
+                console.warn('No tooltip content for phase:', phase);
             }
         });
     });
@@ -292,8 +301,12 @@ function setupEventListeners() {
  */
 function showPhaseTooltip(phase) {
     const content = TOOLTIP_CONTENT[phase];
-    if (!content) return;
+    if (!content) {
+        console.warn('No tooltip content for phase:', phase);
+        return;
+    }
     
+    console.log('Showing tooltip for phase:', phase);
     document.getElementById('tooltipTitle').textContent = content.title;
     // Use innerHTML to preserve line breaks and formatting
     const bodyDiv = document.getElementById('tooltipBody');
@@ -301,7 +314,9 @@ function showPhaseTooltip(phase) {
         .split('\n')
         .map(line => line.trim() ? `<p>${line}</p>` : '<br>')
         .join('');
-    document.getElementById('phaseTooltipModal').classList.add('active');
+    const modal = document.getElementById('phaseTooltipModal');
+    modal.classList.add('active');
+    console.log('Tooltip modal should now be visible');
 }
 
 /**
