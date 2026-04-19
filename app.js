@@ -462,7 +462,6 @@ function updatePageTranslations() {
     // Update header
     document.querySelector('h1').textContent = t('header.title');
     document.querySelector('header p').textContent = t('header.subtitle');
-    document.getElementById('settingsToggleBtn').textContent = t('header.settings');
     
     // Update wizard titles and buttons
     document.querySelectorAll('[data-i18n]').forEach(el => {
