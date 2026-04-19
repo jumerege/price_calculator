@@ -15,14 +15,14 @@ const DEFAULTS = {
     missionCount: 20,
     reusabilityFactor: 3,
     
-    // Section B - Recurring Costs
+    // Section B - Recurring Costs (stored in euros internally)
     launchCost: 1500000,
     operationsCost: 150000,
     recoveryCost: 200000,
     integrationCost: 150000,  
     refurbishmentCost: 200000,
     logisticsCost: 100000,
-    insuranceCost: 0,
+    insuranceCost: 100000,
     
     // Section C - Payload & Revenue
     maxPayloadMass: 100,
