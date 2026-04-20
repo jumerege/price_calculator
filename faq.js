@@ -189,8 +189,8 @@ const FAQ_DATA = {
                 a: 'The base price includes: payload integration, transport to the launch site, end-to-end testing, launch and in-orbit operations, re-entry, recovery, and return to ATMOS headquarters in Lichtenau, Germany. Engineering information and documentation deliverables (interface definition L–10m, EM L–9m, qualified FM+GSE L–8m, SpaceX verification docs L–3.5m) are required from you according to mission timelines.'
             },
             {
-                q: 'Are there any extra costs beyond the €45,000/kg base price?',
-                a: 'Possible additional costs include: (1) Interface/structures engineering support at €110/hour, (2) external antenna mounting fees, and (3) surcharge for payloads exceeding 100 kg (€50–80k per kg, depending on mission timing). All optional and contingent costs are detailed and agreed upon at mission signature.'
+                q: 'I have already used the price calculator. Are there any other services that I could request to Atmos?',
+                a: 'It depends on the mission complexity. For instance, if the interface of your platform is not compatible with Phoenix, you may request the support of our engineers for a hourly fee. We can also help on antenna mounting, should this be necessary for your project. Please contact the business development team for further information.'
             },
             {
                 q: 'What software is used for payload communications?',
@@ -393,8 +393,8 @@ const FAQ_DATA = {
                 a: 'Le prix de base inclut : l\'intégration de charge utile, le transport vers le site de lancement, les essais de bout en bout, les opérations de lancement et en orbite, la rentrée, la récupération et le retour au siège d\'ATMOS à Lichtenau, Allemagne. Les informations d\'ingénierie et les livrables de documentation (définition d\'interface L–10m, EM L–9m, FM+GSE qualifiés L–8m, documents de vérification SpaceX L–3,5m) sont requis de votre part selon les calendriers de mission.'
             },
             {
-                q: 'Y a-t-il des coûts supplémentaires au-delà du prix de base de €45 000/kg ?',
-                a: 'Les coûts supplémentaires possibles incluent : (1) Support d\'ingénierie d\'interface/structures à €110/heure, (2) frais de montage d\'antenne externe, et (3) surcharge pour les charges utiles dépassant 100 kg (€50–80k par kg, selon le calendrier de mission). Tous les coûts optionnels et contingents sont détaillés et acceptés à la signature de mission.'
+                q: 'J\'ai déjà utilisé le calculateur de prix. Y a-t-il d\'autres services que je pourrais demander à Atmos ?',
+                a: 'Cela dépend de la complexité de la mission. Par exemple, si l\'interface de votre plateforme n\'est pas compatible avec Phoenix, vous pouvez demander le soutien de nos ingénieurs à titre onéreux horaire. Nous pouvons également vous aider pour le montage d\'antenne, si cela s\'avère nécessaire pour votre projet. Veuillez contacter l\'équipe de développement commercial pour plus d\'informations.'
             },
             {
                 q: 'Quel logiciel est utilisé pour les communications de charge utile ?',
@@ -597,8 +597,8 @@ const FAQ_DATA = {
                 a: 'Der Basispreis umfasst: Nutzlastintegration, Transport zur Startanlage, End-zu-End-Tests, Start- und Orbitaloperationen, Wiedereintritt, Bergung und Rückgabe zur ATMOS-Zentrale in Lichtenau, Deutschland. Ingenieurinformationen und Dokumentationslieferungen (Interfacedefinition L–10m, EM L–9m, qualifizierte FM+GSE L–8m, SpaceX-Verifizierungsdocs L–3,5m) werden von Ihnen nach Missionskalender verlangt.'
             },
             {
-                q: 'Gibt es Zusatzkosten über dem Basispreis von €45.000/kg hinaus?',
-                a: 'Mögliche Zusatzkosten umfassen: (1) Interface-/Strukturingenieur-Unterstützung zu €110/Stunde, (2) externe Antennen-Montagegebühren und (3) Aufschlag für Nutzlasten über 100 kg (€50–80k pro kg, je nach Missionskalender). Alle optionalen und bedingten Kosten werden bei Missionssignatur detailliert und vereinbart.'
+                q: 'Ich habe bereits den Preisrechner verwendet. Gibt es andere Dienstleistungen, die ich bei Atmos anfordern könnte?',
+                a: 'Das hängt von der Missionskomplexität ab. Wenn beispielsweise die Schnittstelle Ihrer Plattform nicht mit Phoenix kompatibel ist, können Sie um die Unterstützung unserer Ingenieure gegen Stundenhonorar bitten. Wir können auch bei der Antennenmontage helfen, falls dies für Ihr Projekt erforderlich ist. Bitte kontaktieren Sie unser Business Development Team für weitere Informationen.'
             },
             {
                 q: 'Welche Software wird für Nutzlastkommunikationen benutzt?',
