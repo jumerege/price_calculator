@@ -710,6 +710,83 @@
         </div>
     </div>
 
+    <!-- Launch Timelines Modal -->
+    <div id="launchTimelinesModal" class="modal-overlay">
+        <div class="modal-panel modal-panel-wide">
+            <div class="modal-header">
+                <h3>📅 Launch Timelines</h3>
+                <button type="button" class="modal-close-btn" id="launchTimelinesCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: var(--text-secondary); line-height: 1.7;">
+                    Currently, two launcher options are considered for Phoenix missions:<br><br>
+                    • <strong>RFA One</strong> from SaxaVord Spaceport (60.8184°N, 0.7692°W)<br>
+                    • <strong>SpaceX Falcon 9</strong> from Kennedy Space Center (28°31′27″N, 80°39′03″W) or Vandenberg Space Force Base (34°43′47″N, 120°34′37″W)<br><br>
+                    Below are indicative launch timelines for both launcher options and Phoenix payload integration.
+                </p>
+
+                <!-- RFA One Timeline -->
+                <div class="timeline-section">
+                    <h4 class="timeline-title">RFA One Timeline</h4>
+                    <div class="timeline-container">
+                        <div class="timeline-row">
+                            <div class="timeline-step">L-3M</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step">L-2M</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step">L-1M</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step">L-2D</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step">L-1D</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step launch-highlight">LAUNCH</div>
+                        </div>
+                        <div class="timeline-labels">
+                            <div class="timeline-label">Contract signature</div>
+                            <div class="timeline-label">Mission analysis</div>
+                            <div class="timeline-label">Payload qualification</div>
+                            <div class="timeline-label">Payload integration</div>
+                            <div class="timeline-label">Launch readiness review</div>
+                            <div class="timeline-label"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Falcon 9 Timeline -->
+                <div class="timeline-section">
+                    <h4 class="timeline-title">Falcon 9 Timeline</h4>
+                    <div class="timeline-container">
+                        <div class="timeline-row">
+                            <div class="timeline-step">L-24M</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step">L-22M</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step">L-12M</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step">L-3M</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step">L-2D</div>
+                            <div class="timeline-arrow">→</div>
+                            <div class="timeline-step launch-highlight">LAUNCH</div>
+                        </div>
+                        <div class="timeline-labels">
+                            <div class="timeline-label">Contract signature</div>
+                            <div class="timeline-label">Mission integration kickoff</div>
+                            <div class="timeline-label">Completion of mission integration analyses</div>
+                            <div class="timeline-label">Launch campaign readiness review</div>
+                            <div class="timeline-label">Launch readiness review</div>
+                            <div class="timeline-label"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-action-btn" id="launchTimelinesConfirmBtn">Got it</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Right-side Typical Use Cases Drawer -->
     <div class="presets-drawer-wrapper" id="presetsDrawerWrapper">
         <div class="presets-drawer-overlay" id="presetsDrawerOverlay"></div>

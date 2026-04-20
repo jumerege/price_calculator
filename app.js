@@ -1055,6 +1055,49 @@ function setupModalHandlers() {
         });
         console.log('   ✓ Overlay click listener attached');
     }
+
+    // ─── LAUNCH TIMELINES MODAL ───────────────────────────────────
+    console.log('📅 Setting up launch timelines modal');
+    const launchTimelinesBtn = document.getElementById('launchTimelinesBtn');
+    const launchTimelinesModal = document.getElementById('launchTimelinesModal');
+    const launchTimelinesCloseBtn = document.getElementById('launchTimelinesCloseBtn');
+    const launchTimelinesConfirmBtn = document.getElementById('launchTimelinesConfirmBtn');
+
+    if (launchTimelinesBtn) {
+        launchTimelinesBtn.addEventListener('click', () => {
+            console.log('   📅 Launch Timelines button clicked');
+            openLaunchTimelinesModal();
+        });
+        console.log('   ✓ Launch Timelines button listener attached');
+    } else {
+        console.error('   ❌ ERROR: launchTimelinesBtn not found');
+    }
+
+    if (launchTimelinesCloseBtn) {
+        launchTimelinesCloseBtn.addEventListener('click', () => {
+            console.log('   ✓ Launch Timelines close button clicked');
+            closeLaunchTimelinesModal();
+        });
+        console.log('   ✓ Launch Timelines close button listener attached');
+    }
+
+    if (launchTimelinesConfirmBtn) {
+        launchTimelinesConfirmBtn.addEventListener('click', () => {
+            console.log('   ✓ Launch Timelines confirm button clicked');
+            closeLaunchTimelinesModal();
+        });
+        console.log('   ✓ Launch Timelines confirm button listener attached');
+    }
+
+    if (launchTimelinesModal) {
+        launchTimelinesModal.addEventListener('click', (e) => {
+            if (e.target === launchTimelinesModal) {
+                console.log('   ✓ Clicked outside launch timelines modal');
+                closeLaunchTimelinesModal();
+            }
+        });
+        console.log('   ✓ Launch Timelines outside click listener attached');
+    }
 }
 
 function openPayloadModal() {
@@ -1078,6 +1121,32 @@ function closePayloadModal() {
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
         console.log('   ✓ Modal closed');
+    } else {
+        console.error('   ❌ ERROR: Modal element not found!');
+    }
+}
+
+function openLaunchTimelinesModal() {
+    console.log('🪟 openLaunchTimelinesModal called');
+    const modal = document.getElementById('launchTimelinesModal');
+    console.log('   - modal element:', modal);
+    if (modal) {
+        console.log('   - adding active class');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        console.log('   ✓ Modal should now be visible');
+    } else {
+        console.error('   ❌ ERROR: Launch Timelines Modal element not found!');
+    }
+}
+
+function closeLaunchTimelinesModal() {
+    console.log('🪟 closeLaunchTimelinesModal called');
+    const modal = document.getElementById('launchTimelinesModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        console.log('   ✓ Launch Timelines Modal closed');
     } else {
         console.error('   ❌ ERROR: Modal element not found!');
     }
