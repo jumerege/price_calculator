@@ -1222,12 +1222,12 @@ function updateMissionDuration(weeks, durationValue, midPhaseTitle) {
     }
 }
 
-// Mission name to launch date mapping
+// Mission name to launch date mapping (MM YYYY format)
 const missionDates = {
-    'Phoenix 2.1': '2026-12',  // Dec/2026
-    'Phoenix 2.2': '2027-04',  // Apr/2027
-    'Phoenix 2.3': '2027-08',  // Aug/2027
-    'Phoenix 2.4': '2028-01'   // Jan/2028
+    'Phoenix 2.1': '01 2027',  // January 2027
+    'Phoenix 2.2': '07 2027',  // July 2027
+    'Phoenix 2.3': '01 2028',  // January 2028
+    'Phoenix 2.4': '07 2028'   // July 2028
 };
 
 // Auto-update launch date when mission changes
