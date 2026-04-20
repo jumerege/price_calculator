@@ -1704,103 +1704,189 @@ header {
     transform: translateY(0);
 }
 
-/* ── Launch Timelines – Timeline Styling ─────────────── */
-.timeline-section {
-    margin-bottom: 40px;
-    background: rgba(0, 212, 255, 0.05);
-    padding: 24px;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 212, 255, 0.15);
+/* ── Launch Timelines – Vertical Timeline Styling ───── */
+.vertical-timeline {
+    position: relative;
+    padding-left: 40px;
 }
 
-.timeline-title {
+.vertical-timeline::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--primary-color), rgba(0, 212, 255, 0.3));
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 32px;
+    padding-bottom: 0;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: 3px solid var(--bg-dark);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.5);
+    z-index: 2;
+}
+
+.timeline-item:hover::before {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+    transform: scale(1.2);
+    transition: all 0.3s ease;
+}
+
+.timeline-item.launch-milestone::before {
+    background: var(--success-color);
+    box-shadow: 0 0 15px rgba(6, 214, 160, 0.6);
+    width: 20px;
+    height: 20px;
+    border-width: 3px;
+    left: -37px;
+    top: 0px;
+}
+
+.timeline-item.launch-milestone:hover::before {
+    box-shadow: 0 0 25px rgba(6, 214, 160, 1);
+    transform: scale(1.25);
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -68px;
+    top: -2px;
+    width: 55px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.85rem;
     color: var(--primary-color);
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 24px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.timeline-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.timeline-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: max-content;
-    padding: 0 4px;
-    margin-bottom: 24px;
-}
-
-.timeline-step {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 14px;
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1));
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 8px;
-    font-weight: 600;
+.timeline-item.launch-milestone .timeline-marker {
+    color: var(--success-color);
     font-size: 0.9rem;
+}
+
+.timeline-content {
+    background: rgba(0, 212, 255, 0.06);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: all 0.3s ease;
+}
+
+.timeline-item:hover .timeline-content {
+    background: rgba(0, 212, 255, 0.12);
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.15);
+    transform: translateX(4px);
+}
+
+.timeline-item.launch-milestone .timeline-content {
+    background: rgba(6, 214, 160, 0.08);
+    border-color: rgba(6, 214, 160, 0.3);
+}
+
+.timeline-item.launch-milestone:hover .timeline-content {
+    background: rgba(6, 214, 160, 0.15);
+    border-color: rgba(6, 214, 160, 0.5);
+    box-shadow: 0 4px 15px rgba(6, 214, 160, 0.2);
+}
+
+.timeline-milestone {
+    margin: 0 0 8px 0;
     color: var(--primary-color);
-    white-space: nowrap;
-    box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.1);
+    font-size: 1rem;
+    font-weight: 600;
 }
 
-.timeline-step:hover {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 212, 255, 0.2));
-    border-color: rgba(0, 212, 255, 0.5);
-    box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.2), 0 0 15px rgba(0, 212, 255, 0.2);
+.timeline-item.launch-milestone .timeline-milestone {
+    color: var(--success-color);
 }
 
-.timeline-step.launch-highlight {
-    background: linear-gradient(135deg, var(--success-color), rgba(6, 214, 160, 0.7));
-    border-color: var(--success-color);
-    color: var(--bg-dark);
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    box-shadow: 0 0 20px rgba(6, 214, 160, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
-}
-
-.timeline-step.launch-highlight:hover {
-    box-shadow: 0 0 30px rgba(6, 214, 160, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-}
-
-.timeline-arrow {
-    color: rgba(0, 212, 255, 0.4);
-    font-weight: bold;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-.timeline-labels {
-    display: flex;
-    gap: 8px;
-    font-size: 0.8rem;
+.timeline-description {
+    margin: 0;
     color: var(--text-secondary);
-    flex-wrap: wrap;
-    justify-content: space-between;
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
 
-.timeline-label {
-    flex: 1;
-    min-width: 120px;
-    text-align: center;
-    padding: 8px 4px;
-    color: var(--text-secondary);
-    line-height: 1.4;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .vertical-timeline {
+        padding-left: 32px;
+    }
+
+    .vertical-timeline::before {
+        left: 10px;
+    }
+
+    .timeline-item::before {
+        left: -28px;
+        width: 12px;
+        height: 12px;
+        border-width: 2px;
+    }
+
+    .timeline-item.launch-milestone::before {
+        width: 16px;
+        height: 16px;
+        left: -30px;
+    }
+
+    .timeline-marker {
+        left: -65px;
+        width: 50px;
+        font-size: 0.75rem;
+    }
+
+    .timeline-content {
+        padding: 12px 14px;
+    }
+
+    .timeline-milestone {
+        font-size: 0.9rem;
+    }
+
+    .timeline-description {
+        font-size: 0.85rem;
+    }
 }
 
-/* ── Modal Panel Wide (for timelines) ─────────────────── */
-.modal-panel-wide {
-    max-width: 900px;
-}
+@media (max-width: 480px) {
+    .vertical-timeline {
+        padding-left: 28px;
+    }
+
+    .vertical-timeline::before {
+        left: 8px;
+    }
+
+    .timeline-item::before {
+        left: -26px;
+        width: 10px;
+        height: 10px;
+        border-width: 2px;
+    }
+
+    .timeline-marker {
+        left: -62px;
+        width: 45px;
+        font-size: 0.7rem;
+    }
 
 .total-sublabel {
     font-size: 0.78rem;

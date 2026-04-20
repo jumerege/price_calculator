@@ -718,65 +718,75 @@
                 <button type="button" class="modal-close-btn" id="launchTimelinesCloseBtn">&times;</button>
             </div>
             <div class="modal-body">
-                <p style="margin-bottom: 20px; color: var(--text-secondary); line-height: 1.7;">
-                    Currently, two launcher options are considered for Phoenix missions:<br><br>
-                    • <strong>RFA One</strong> from SaxaVord Spaceport (60.8184°N, 0.7692°W)<br>
-                    • <strong>SpaceX Falcon 9</strong> from Kennedy Space Center (28°31′27″N, 80°39′03″W) or Vandenberg Space Force Base (34°43′47″N, 120°34′37″W)<br><br>
-                    Below are indicative launch timelines for both launcher options and Phoenix payload integration.
+                <p style="margin-bottom: 24px; color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem;">
+                    ATMOS is responsible for booking the launch services and defining the mission schedule in accordance with the specific requirements of the payload and the overall mission configuration. Based on these requirements, ATMOS coordinates with the launch provider and communicates the corresponding launch schedule to the customer as early as possible during the mission preparation phase.<br><br>
+                    The Phoenix platform is designed to support regular and recurring flight opportunities.<br><br>
+                    In order to support payload integration and mission preparation activities, ATMOS defines a global development schedule covering the full mission timeline.
                 </p>
 
-                <!-- RFA One Timeline -->
-                <div class="timeline-section">
-                    <h4 class="timeline-title">RFA One Timeline</h4>
-                    <div class="timeline-container">
-                        <div class="timeline-row">
-                            <div class="timeline-step">L-3M</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step">L-2M</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step">L-1M</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step">L-2D</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step">L-1D</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step launch-highlight">LAUNCH</div>
-                        </div>
-                        <div class="timeline-labels">
-                            <div class="timeline-label">Contract signature</div>
-                            <div class="timeline-label">Mission analysis</div>
-                            <div class="timeline-label">Payload qualification</div>
-                            <div class="timeline-label">Payload integration</div>
-                            <div class="timeline-label">Launch readiness review</div>
-                            <div class="timeline-label"></div>
+                <!-- Vertical Timeline -->
+                <div class="vertical-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker">L-10m</div>
+                        <div class="timeline-content">
+                            <h5 class="timeline-milestone">Final interfaces definition</h5>
+                            <p class="timeline-description">Final interfaces definition between customer payload and Phoenix vehicle</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Falcon 9 Timeline -->
-                <div class="timeline-section">
-                    <h4 class="timeline-title">Falcon 9 Timeline</h4>
-                    <div class="timeline-container">
-                        <div class="timeline-row">
-                            <div class="timeline-step">L-24M</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step">L-22M</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step">L-12M</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step">L-3M</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step">L-2D</div>
-                            <div class="timeline-arrow">→</div>
-                            <div class="timeline-step launch-highlight">LAUNCH</div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">L-9m</div>
+                        <div class="timeline-content">
+                            <h5 class="timeline-milestone">Delivery of payload EM</h5>
+                            <p class="timeline-description">Delivery of payload Engineering Model (EM) to ATMOS, for testing of interfaces and fit check</p>
                         </div>
-                        <div class="timeline-labels">
-                            <div class="timeline-label">Contract signature</div>
-                            <div class="timeline-label">Mission integration kickoff</div>
-                            <div class="timeline-label">Completion of mission integration analyses</div>
-                            <div class="timeline-label">Launch campaign readiness review</div>
-                            <div class="timeline-label">Launch readiness review</div>
-                            <div class="timeline-label"></div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">L-8m</div>
+                        <div class="timeline-content">
+                            <h5 class="timeline-milestone">Delivery of payload FM & GSE</h5>
+                            <p class="timeline-description">Delivery of qualified payload FM and Ground Support Equipment (GSE) to ATMOS. Integration of payload Flight Model (FM) at the ATMOS facility in Lichtenau, Germany.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">L-7m</div>
+                        <div class="timeline-content">
+                            <h5 class="timeline-milestone">Final end-to-end system testing</h5>
+                            <p class="timeline-description">Final end-to-end system level testing of Phoenix vehicle FM with payload FM</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">L-6m</div>
+                        <div class="timeline-content">
+                            <h5 class="timeline-milestone">Final environmental testing</h5>
+                            <p class="timeline-description">The integrated Phoenix vehicle FM will undergo final environmental testing according to launcher requirements.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">L-3.5m</div>
+                        <div class="timeline-content">
+                            <h5 class="timeline-milestone">Test documentation submission</h5>
+                            <p class="timeline-description">All required test verification documentation from customer needs to be submitted to ATMOS.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">L-2m</div>
+                        <div class="timeline-content">
+                            <h5 class="timeline-milestone">Launch site delivery</h5>
+                            <p class="timeline-description">Launch site delivery of the qualified Phoenix vehicle FM.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item launch-milestone">
+                        <div class="timeline-marker launch-marker">LAUNCH</div>
+                        <div class="timeline-content">
+                            <h5 class="timeline-milestone">Phoenix vehicle launch & mission operations</h5>
+                            <p class="timeline-description">Phoenix vehicle FM launch and mission operations.</p>
                         </div>
                     </div>
                 </div>
