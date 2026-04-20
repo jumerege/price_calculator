@@ -1233,9 +1233,17 @@ const missionDates = {
 // Auto-update launch date when mission changes
 function updateLaunchDateFromMission(missionName) {
     const launchDateInput = document.getElementById('launchDate');
+    console.log('🔍 updateLaunchDateFromMission called with:', missionName);
+    console.log('📋 missionDates object:', missionDates);
+    console.log('🎯 Looking for key:', missionName);
+    console.log('✅ Found date?:', missionDates[missionName]);
+    
     if (missionDates[missionName]) {
         launchDateInput.value = missionDates[missionName];
+        console.log('✨ Set value to:', missionDates[missionName]);
         recalculate(); // Trigger recalculation with new date
+    } else {
+        console.log('❌ Mission date not found in mapping');
     }
 }
 
