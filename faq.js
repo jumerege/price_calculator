@@ -185,7 +185,7 @@ const FAQ_DATA = {
                 a: 'Phoenix is mission-governable under multiple space licensing regimes. Although UK jurisdiction is not engaged in the baseline concept, the mission governance, safety case structure, and liability framework are compatible with UK Space Industry Act requirements should UK jurisdiction apply. The primary licensing regimes currently applicable are those of Germany (operator state) and Portugal (planned reentry state), with launcher-dependent requirements.'
             },
             {
-                q: 'What is included in the base €45,000/kg price?',
+                q: 'What does the base price include?',
                 a: 'The base price includes: payload integration, transport to the launch site, end-to-end testing, launch and in-orbit operations, re-entry, recovery, and return to ATMOS headquarters in Lichtenau, Germany. Engineering information and documentation deliverables (interface definition L–10m, EM L–9m, qualified FM+GSE L–8m, SpaceX verification docs L–3.5m) are required from you according to mission timelines.'
             },
             {
@@ -389,7 +389,7 @@ const FAQ_DATA = {
                 a: 'Phoenix est gouvernable par mission selon plusieurs régimes de licenses spatiales. Bien que la juridiction britannique ne soit pas engagée dans le concept de base, la gouvernance de mission, la structure du dossier de sécurité et le cadre de responsabilité sont compatibles avec les exigences de la loi sur l\'industrie spatiale du Royaume-Uni au cas où la juridiction britannique s\'appliquerait. Les régimes de licenses principalement applicables actuellement sont ceux de l\'Allemagne (état opérateur) et du Portugal (état de rentrée prévu), avec des exigences dépendantes du lanceur.'
             },
             {
-                q: 'Qu\'est-ce qui est inclus dans le prix de base de €45 000/kg ?',
+                q: 'Que comprend le prix de base ?',
                 a: 'Le prix de base inclut : l\'intégration de charge utile, le transport vers le site de lancement, les essais de bout en bout, les opérations de lancement et en orbite, la rentrée, la récupération et le retour au siège d\'ATMOS à Lichtenau, Allemagne. Les informations d\'ingénierie et les livrables de documentation (définition d\'interface L–10m, EM L–9m, FM+GSE qualifiés L–8m, documents de vérification SpaceX L–3,5m) sont requis de votre part selon les calendriers de mission.'
             },
             {
@@ -593,7 +593,7 @@ const FAQ_DATA = {
                 a: 'Phoenix kann unter mehreren Raumfahrt-Genehmigungsystemen regiert werden. Obwohl die britische Gerichtsbarkeit nicht im Basiskonzept beteiligt ist, sind die Negativ-Regierung, Sicherheitsfallstruktur und Haftungsrahmen kompatibel mit britischen Raumfahrt-Gesetzes-Anforderungen, falls britische Gerichtsbarkeit anzuwenden ist. Die primär anwendbaren Bahn-Regime sind derzeit diejenigen von Deutschland (Betreiberlands) und Portugal (geplantes Rückkehrland), mit trägerabhängigen Anforderungen.'
             },
             {
-                q: 'Was ist im Basispreis von €45.000/kg enthalten?',
+                q: 'Was umfasst der Basispreis?',
                 a: 'Der Basispreis umfasst: Nutzlastintegration, Transport zur Startanlage, End-zu-End-Tests, Start- und Orbitaloperationen, Wiedereintritt, Bergung und Rückgabe zur ATMOS-Zentrale in Lichtenau, Deutschland. Ingenieurinformationen und Dokumentationslieferungen (Interfacedefinition L–10m, EM L–9m, qualifizierte FM+GSE L–8m, SpaceX-Verifizierungsdocs L–3,5m) werden von Ihnen nach Missionskalender verlangt.'
             },
             {
