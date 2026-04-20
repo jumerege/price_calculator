@@ -203,10 +203,6 @@ const FAQ_DATA = {
             {
                 q: 'What if my payload has hazardous materials?',
                 a: 'ATMOS follows all regulatory requirements for hazardous payload disclosure and handling. Hazardous materials must be declared and documented per SpaceX RPUG and international space regulations. Handling, integration, and safety procedures are defined in mission-specific documentation. Early communication about hazardous material content is essential for mission planning.'
-            },
-            {
-                q: 'When is the next Phoenix mission opportunity?',
-                a: 'Phoenix missions are available throughout 2028 and beyond, with launches planned for Q3 2028 (June–December 2028 window) as baseline. Additional flights are confirmed for late 2026 and April 2027. Mission-specific launch dates are negotiated based on payload readiness and mission requirements.'
             }
         ]
     },
@@ -407,10 +403,6 @@ const FAQ_DATA = {
             {
                 q: 'Et si ma charge utile contient des matières dangereuses ?',
                 a: 'ATMOS suit tous les exigences réglementaires pour la divulgation et la manipulation des charges utiles dangereuses. Les matières dangereuses doivent être déclarées et documentées selon SpaceX RPUG et les réglementations spatiales internationales. Les procédures de manipulation, d\'intégration et de sécurité sont définies dans la documentation spécifique à la mission. La communication précoce sur le contenu en matières dangereuses est essentielle pour la planification de mission.'
-            },
-            {
-                q: 'Quelle est la prochaine opportunité de mission Phoenix ?',
-                a: 'Les missions Phoenix sont disponibles tout au long de 2028 et au-delà, avec des lancements prévus pour la fenêtre Q3 2028 (juin–décembre 2028) comme référence. Des vols supplémentaires sont confirmés pour fin 2026 et avril 2027. Les dates de lancement spécifiques à la mission sont négociées selon la disponibilité de la charge utile et les exigences de mission.'
             }
         ]
     },
@@ -611,10 +603,7 @@ const FAQ_DATA = {
             {
                 q: 'Was ist, wenn meine Nutzlast gefährliche Materialien enthält?',
                 a: 'ATMOS befolgt alle behördlichen Anforderungen zur Offenlegung und Handhabung gefährlicher Nutzlasten. Gefährliche Materialien müssen nach SpaceX RPUG und internationalem Raumfahrtsrecht erklärt und dokumentiert werden. Handhabungs-, Integrations- und Sicherheitsverfahren werden in missionsspezifischen Dokumenten definiert. Frühe Mitteilung über gefährliche Materialinhalte ist für Missionsplanung wesentlich.'
-            },
-            {
-                q: 'Wann ist die nächste Phoenix-Missionsopportunität?',
-                a: 'Phoenix-Missionen sind während 2028 und darüber hinaus verfügbar, mit Starts geplant für Q3 2028 (Juni–Dezember 2028 Fenster) als Basis. Zusätzliche Flüge sind für Ende 2026 und April 2027 bestätigt. Missionsspezifische Startdaten werden basierend auf Nutzlast-Bereitschaft und Missionsanforderungen verhandelt.'
+
             }
         ]
     }
